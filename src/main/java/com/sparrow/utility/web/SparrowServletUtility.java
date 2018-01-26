@@ -1,0 +1,63 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.sparrow.utility.web;
+
+import com.sparrow.constant.CONSTANT;
+import com.sparrow.core.Pair;
+import com.sparrow.support.ContextHolder;
+import com.sparrow.support.web.ServletUtility;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
+/**
+ * @author harry
+ */
+public class SparrowServletUtility {
+
+    private static final SparrowServletUtility INSTANCE = new SparrowServletUtility();
+
+    private ServletUtility servletUtility = ServletUtility.getInstance();
+
+    public static SparrowServletUtility getInstance() {
+        return INSTANCE;
+    }
+
+    public void moveAttribute(ServletRequest request) {
+        String actionKey = servletUtility.getActionKey(request);
+        Map<String, Object> map = ContextHolder.getInstance().getHolder();
+        for (String key : map.keySet()) {
+            Object value = map.get(key);
+            //Alert js 兼容
+            if (key.equals(CONSTANT.ACTION_RESULT_JAVASCRIPT)) {
+                request.setAttribute(key + "_" + actionKey, value);
+            } else {
+                request.setAttribute(key, value);
+            }
+        }
+        ContextHolder.getInstance().remove();
+    }
+
+    public void flash(HttpServletRequest request, String sourceUrl) {
+        Map<String, Object> values = ContextHolder.getInstance().getHolder();
+        Pair<String, Map<String, Object>> sessionMap = Pair.create(sourceUrl, values);
+        request.getSession().setAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY, sessionMap);
+        ContextHolder.getInstance().remove();
+    }
+}
