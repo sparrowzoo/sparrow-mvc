@@ -18,16 +18,19 @@
 package com.sparrow.mvc.ui;
 
 import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.utility.StringUtility;
 
 /**
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JSpan extends AbstractJWebBodyControl {
-
+public class TextBox extends AbstractJWebInputControl {
     @Override
     public String setTagNameAndGetTagAttributes() {
-        super.setTagName("span");
+        super.setType("text");
+        if (StringUtility.isNullOrEmpty(this.getCssClass())) {
+            super.setCssClass("input");
+        }
         return SYMBOL.EMPTY;
     }
 }

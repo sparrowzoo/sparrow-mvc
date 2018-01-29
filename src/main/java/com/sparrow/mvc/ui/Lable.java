@@ -17,15 +17,38 @@
 
 package com.sparrow.mvc.ui;
 
+import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.utility.StringUtility;
+
 /**
  * @author harry
  */
-public class JButton extends AbstractJWebInputControl {
-    private static final long serialVersionUID = 1L;
+public class Lable extends AbstractJWebBodyControl {
+
+    private String forCtrl;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7885097366405702047L;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getForCtrl() {
+        return forCtrl;
+    }
+
+    public void setForCtrl(String forCtrl) {
+        this.forCtrl = forCtrl;
+    }
 
     @Override
     public String setTagNameAndGetTagAttributes() {
-        super.setType("button");
-        return "";
+        super.setTagName("Label");
+        if (!StringUtility.isNullOrEmpty(this.getForCtrl())) {
+            return String.format(" for='%1$s' ", this.getForCtrl());
+        }
+        return SYMBOL.EMPTY;
     }
 }

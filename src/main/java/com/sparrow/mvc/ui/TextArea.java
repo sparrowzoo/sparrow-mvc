@@ -24,7 +24,7 @@ import com.sparrow.utility.StringUtility;
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JTextArea extends AbstractJWebBodyControl {
+public class TextArea extends AbstractJWebBodyControl {
 
     private String rows;
     private String cols;

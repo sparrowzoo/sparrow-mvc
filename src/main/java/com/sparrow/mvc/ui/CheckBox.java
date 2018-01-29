@@ -21,7 +21,7 @@ package com.sparrow.mvc.ui;
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JCheckBox extends AbstractJWebInputControl {
+public class CheckBox extends AbstractJWebInputControl {
     private String checked;
 
     @Override

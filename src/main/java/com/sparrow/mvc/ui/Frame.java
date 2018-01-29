@@ -30,7 +30,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JIFrame extends TagSupport {
+public class Frame extends TagSupport {
     private String id;
     private String name;
     private String src;

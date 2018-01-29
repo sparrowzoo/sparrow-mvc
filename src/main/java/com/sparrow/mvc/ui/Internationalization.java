@@ -17,6 +17,12 @@
 
 package com.sparrow.mvc.ui;
 
+import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.CONSTANT;
+import com.sparrow.support.ContextHolder;
+import com.sparrow.utility.Config;
+import com.sparrow.utility.StringUtility;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
@@ -24,34 +30,30 @@ import java.io.IOException;
 /**
  * @author harry
  */
-@SuppressWarnings("serial")
-public class JTitle extends TagSupport {
+public class Internationalization extends TagSupport {
+    private static final long serialVersionUID = -4455912995732848670L;
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     @Override
     public int doStartTag() throws JspException {
         int returnValue = TagSupport.SKIP_BODY;
-        String writeHTML = "<title>";
-        String title = (String) this.pageContext.getRequest().getAttribute("title");
-        if (title == null) {
-            returnValue = TagSupport.EVAL_BODY_INCLUDE;
-        } else {
-            writeHTML += title;
-        }
         try {
-            this.pageContext.getOut().print(writeHTML);
-        } catch (IOException e) {
-            e.printStackTrace();
+            String language = (String) ContextHolder.getInstance().get(CONSTANT.REQUEST_LANGUAGE);
+            if (StringUtility.isNullOrEmpty(language)) {
+                language = Config.getValue(CONFIG.LANGUAGE);
+            }
+            this.pageContext.getOut().print(
+                Config.getLanguageValue(this.getKey(), language));
+        } catch (IOException ignore) {
         }
         return returnValue;
-    }
-
-    @Override
-    public int doEndTag() throws JspException {
-        try {
-            this.pageContext.getOut().print("</title>");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return super.doEndTag();
     }
 }

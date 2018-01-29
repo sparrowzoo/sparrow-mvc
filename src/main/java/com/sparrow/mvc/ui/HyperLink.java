@@ -24,7 +24,7 @@ import com.sparrow.utility.StringUtility;
 /**
  * @author harry
  */
-public class JHyperLink extends AbstractJWebBodyControl {
+public class HyperLink extends AbstractJWebBodyControl {
 
     private String href;
     private String target;

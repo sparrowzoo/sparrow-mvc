@@ -25,7 +25,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  * @author harry
  */
-public abstract class AbstractJWebBodyControl extends JWebControl {
+public abstract class AbstractJWebBodyControl extends WebControl {
     /**
      *
      */

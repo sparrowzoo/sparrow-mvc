@@ -22,11 +22,29 @@ import com.sparrow.constant.magic.SYMBOL;
 /**
  * @author harry
  */
-public class JHidden extends AbstractJWebInputControl {
+@SuppressWarnings("serial")
+public class RadioBox extends AbstractJWebInputControl {
+    private String checked;
 
     @Override
     public String setTagNameAndGetTagAttributes() {
-        super.setType("hidden");
-        return SYMBOL.EMPTY;
+        super.setType("radiobox");
+        Object isChecked = this.pageContext.getRequest().getAttribute(
+            this.getId() + ".checked");
+        if (isChecked == null) {
+            isChecked = super.getRequestValue();
+        }
+        if (isChecked == null) {
+            isChecked = this.getChecked();
+        }
+        return !Boolean.FALSE.toString().equalsIgnoreCase(isChecked.toString()) ? SYMBOL.EMPTY : " checked=\"checked\" ";
+    }
+
+    public String getChecked() {
+        return checked;
+    }
+
+    public void setChecked(String checked) {
+        this.checked = checked;
     }
 }

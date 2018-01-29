@@ -17,20 +17,15 @@
 
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.magic.SYMBOL;
-import com.sparrow.utility.StringUtility;
-
 /**
  * @author harry
  */
-@SuppressWarnings("serial")
-public class JTextBox extends AbstractJWebInputControl {
+public class Button extends AbstractJWebInputControl {
+    private static final long serialVersionUID = 1L;
+
     @Override
     public String setTagNameAndGetTagAttributes() {
-        super.setType("text");
-        if (StringUtility.isNullOrEmpty(this.getCssClass())) {
-            super.setCssClass("input");
-        }
-        return SYMBOL.EMPTY;
+        super.setType("button");
+        return "";
     }
 }

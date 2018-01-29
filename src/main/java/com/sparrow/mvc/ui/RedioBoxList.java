@@ -34,8 +34,8 @@ import java.util.Set;
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JRedioBoxList extends JWebControl {
-    Logger logger = LoggerFactory.getLogger(JRedioBoxList.class);
+public class RedioBoxList extends WebControl {
+    Logger logger = LoggerFactory.getLogger(RedioBoxList.class);
     private String col = "3";
     private boolean isShowTable = true;
     private String selectedValue;

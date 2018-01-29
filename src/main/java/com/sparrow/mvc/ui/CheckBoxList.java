@@ -44,7 +44,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  *          String[] selectedList =new String[]; Map<String, String> allItems=null; super.getRequest().setAttribute("chlRoleList.valueText",
  *          allItems); super .getRequest().setAttribute("chlRoleList.selectedValue",selectedList );
  */
-public class JCheckBoxList extends JWebControl {
+public class CheckBoxList extends WebControl {
     private static final long serialVersionUID = -2203780367514791117L;
     private boolean isShowTable = true;
     private int col = DIGIT.THREE;

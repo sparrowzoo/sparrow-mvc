@@ -31,8 +31,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  * @author harry
  */
-public class JWebControl extends TagSupport {
-    protected static Logger logger = LoggerFactory.getLogger(JWebControl.class);
+public class WebControl extends TagSupport {
+    protected static Logger logger = LoggerFactory.getLogger(WebControl.class);
     private String id;
     private String name;
     private String cssClass = SYMBOL.EMPTY;

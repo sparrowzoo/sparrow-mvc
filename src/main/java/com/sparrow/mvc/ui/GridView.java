@@ -44,8 +44,8 @@ import java.util.List;
  * @version 1.0
  */
 @SuppressWarnings("serial")
-public class JGridView extends JWebControl {
-    Logger logger = LoggerFactory.getLogger(JGridView.class);
+public class GridView extends WebControl {
+    Logger logger = LoggerFactory.getLogger(GridView.class);
     private String emptyString = "没有符合条件的记录。";
     /**
      * tab缩进数

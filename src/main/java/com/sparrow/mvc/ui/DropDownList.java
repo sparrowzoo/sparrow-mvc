@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
  * @author harry
  * @version 1.0
  */
-public class JDropDownList extends JWebControl {
+public class DropDownList extends WebControl {
     private static final long serialVersionUID = 8678128692032102460L;
-    Logger logger = LoggerFactory.getLogger(JDropDownList.class);
+    Logger logger = LoggerFactory.getLogger(DropDownList.class);
     /**
      * 只读属性
      */

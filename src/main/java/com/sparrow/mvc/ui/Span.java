@@ -17,16 +17,17 @@
 
 package com.sparrow.mvc.ui;
 
+import com.sparrow.constant.magic.SYMBOL;
+
 /**
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JDiv extends AbstractJWebBodyControl {
+public class Span extends AbstractJWebBodyControl {
 
     @Override
     public String setTagNameAndGetTagAttributes() {
-        super.setTagName("div");
-        return "";
+        super.setTagName("span");
+        return SYMBOL.EMPTY;
     }
-
 }

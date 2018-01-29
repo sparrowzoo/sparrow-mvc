@@ -17,34 +17,16 @@
 
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.magic.SYMBOL;
-
 /**
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JRadioBox extends AbstractJWebInputControl {
-    private String checked;
+public class Div extends AbstractJWebBodyControl {
 
     @Override
     public String setTagNameAndGetTagAttributes() {
-        super.setType("radiobox");
-        Object isChecked = this.pageContext.getRequest().getAttribute(
-            this.getId() + ".checked");
-        if (isChecked == null) {
-            isChecked = super.getRequestValue();
-        }
-        if (isChecked == null) {
-            isChecked = this.getChecked();
-        }
-        return !Boolean.FALSE.toString().equalsIgnoreCase(isChecked.toString()) ? SYMBOL.EMPTY : " checked=\"checked\" ";
+        super.setTagName("div");
+        return "";
     }
 
-    public String getChecked() {
-        return checked;
-    }
-
-    public void setChecked(String checked) {
-        this.checked = checked;
-    }
 }

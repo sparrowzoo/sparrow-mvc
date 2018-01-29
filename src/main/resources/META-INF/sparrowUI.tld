@@ -26,8 +26,8 @@
     <!-- BODYUI -->
     <!-- JLabel -->
     <tag>
-        <name>JLabel</name><!--另一个标签的别名 -->
-        <tag-class>com.sparrow.mvc.ui.JLable</tag-class>
+        <name>label</name><!--另一个标签的别名 -->
+        <tag-class>com.sparrow.mvc.ui.Lable</tag-class>
         <!-- 标签类文件的物理地址 -->
         <body-content>JSP</body-content><!--看看是不是具有标签体 -->
 
@@ -75,8 +75,8 @@
     </tag>
     <!-- JDiv -->
     <tag>
-        <name>JDiv</name><!--另一个标签的别名 -->
-        <tag-class>com.sparrow.mvc.ui.JDiv</tag-class><!--标签类文件的物理地址 -->
+        <name>div</name><!--另一个标签的别名 -->
+        <tag-class>com.sparrow.mvc.ui.Div</tag-class><!--标签类文件的物理地址 -->
         <body-content>JSP</body-content><!--看看是不是具有标签体 -->
 
         <attribute><!--带参数的标签必须写 -->
@@ -118,8 +118,8 @@
     </tag>
     <!--SPAN -->
     <tag>
-        <name>JSpan</name>
-        <tag-class>com.sparrow.mvc.ui.JSpan</tag-class>
+        <name>span</name>
+        <tag-class>com.sparrow.mvc.ui.Span</tag-class>
         <body-content>JSP</body-content>
 
         <attribute>
@@ -163,8 +163,8 @@
     </tag>
     <!-- JHyperLink -->
     <tag>
-        <name>JHyperLink</name>
-        <tag-class>com.sparrow.mvc.ui.JHyperLink</tag-class>
+        <name>hyper</name>
+        <tag-class>com.sparrow.mvc.ui.HyperLink</tag-class>
         <body-content>JSP</body-content>
 
         <attribute>
@@ -220,8 +220,8 @@
     <!-- FORMUI -->
     <!-- JTextBox -->
     <tag>
-        <name>JTextBox</name>
-        <tag-class>com.sparrow.mvc.ui.JTextBox</tag-class>
+        <name>text_box</name>
+        <tag-class>com.sparrow.mvc.ui.TextBox</tag-class>
         <body-content>JSP</body-content>
 
         <attribute>
@@ -293,8 +293,8 @@
 
     <!-- JCheckBox -->
     <tag>
-        <name>JCheckBox</name>
-        <tag-class>com.sparrow.mvc.ui.JCheckBox</tag-class>
+        <name>check_box</name>
+        <tag-class>com.sparrow.mvc.ui.CheckBox</tag-class>
         <body-content>JSP</body-content>
 
         <attribute>
@@ -364,8 +364,8 @@
 
     <!-- JRadioBox -->
     <tag>
-        <name>JRadioBox</name>
-        <tag-class>com.sparrow.mvc.ui.JRadioBox</tag-class>
+        <name>radio_box</name>
+        <tag-class>com.sparrow.mvc.ui.RadioBox</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -431,8 +431,8 @@
 
     <!-- JHidden -->
     <tag>
-        <name>JHidden</name>
-        <tag-class>com.sparrow.mvc.ui.JHidden</tag-class>
+        <name>hidden</name>
+        <tag-class>com.sparrow.mvc.ui.Hidden</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -477,8 +477,8 @@
     </tag>
     <!-- JButton -->
     <tag>
-        <name>JButton</name>
-        <tag-class>com.sparrow.mvc.ui.JButton</tag-class>
+        <name>button</name>
+        <tag-class>com.sparrow.mvc.ui.Button</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -523,8 +523,8 @@
     </tag>
     <!-- JTextArea -->
     <tag>
-        <name>JTextArea</name>
-        <tag-class>com.sparrow.mvc.ui.JTextArea</tag-class>
+        <name>text_area</name>
+        <tag-class>com.sparrow.mvc.ui.TextArea</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -591,8 +591,8 @@
 
     <!-- JDropDownList -->
     <tag>
-        <name>JDropDownList</name>
-        <tag-class>com.sparrow.mvc.ui.JDropDownList</tag-class>
+        <name>drop_down_list</name>
+        <tag-class>com.sparrow.mvc.ui.DropDownList</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -664,8 +664,8 @@
 
     <!-- JGridView -->
     <tag>
-        <name>JGridView</name>
-        <tag-class>com.sparrow.mvc.ui.JGridView</tag-class>
+        <name>grid_view</name>
+        <tag-class>com.sparrow.mvc.ui.GridView</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -762,14 +762,14 @@
     <!-- Page Head Label -->
     <!-- Title -->
     <tag>
-        <name>JTitle</name>
-        <tag-class>com.sparrow.mvc.ui.JTitle</tag-class>
+        <name>title</name>
+        <tag-class>com.sparrow.mvc.ui.Title</tag-class>
         <body-content>JSP</body-content>
     </tag>
     <!-- Javascript -->
     <tag>
-        <name>JScript</name>
-        <tag-class>com.sparrow.mvc.ui.JScript</tag-class>
+        <name>script</name>
+        <tag-class>com.sparrow.mvc.ui.Script</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>src</name>
@@ -779,8 +779,8 @@
     </tag>
     <!-- JStyleLink -->
     <tag>
-        <name>JStyleLink</name>
-        <tag-class>com.sparrow.mvc.ui.JStyleLink</tag-class>
+        <name>style</name>
+        <tag-class>com.sparrow.mvc.ui.StyleLink</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>href</name>
@@ -790,8 +790,8 @@
     </tag>
     <!-- JCheckBoxList -->
     <tag>
-        <name>JCheckBoxList</name>
-        <tag-class>com.sparrow.mvc.ui.JCheckBoxList</tag-class>
+        <name>check_box_list</name>
+        <tag-class>com.sparrow.mvc.ui.CheckBoxList</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -831,8 +831,8 @@
     </tag>
     <!-- JRadioBoxList -->
     <tag>
-        <name>JRadioBoxList</name>
-        <tag-class>com.sparrow.mvc.ui.JRedioBoxList</tag-class>
+        <name>radio_box_list</name>
+        <tag-class>com.sparrow.mvc.ui.RedioBoxList</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>
@@ -877,8 +877,8 @@
     </tag>
     <!-- JIFrame -->
     <tag>
-        <name>JIFrame</name>
-        <tag-class>com.sparrow.mvc.ui.JIFrame</tag-class>
+        <name>iframe</name>
+        <tag-class>com.sparrow.mvc.ui.Frame</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>id</name>

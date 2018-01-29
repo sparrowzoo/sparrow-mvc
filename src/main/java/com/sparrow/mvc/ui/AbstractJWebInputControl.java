@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author harry
  */
-public abstract class AbstractJWebInputControl extends JWebControl {
+public abstract class AbstractJWebInputControl extends WebControl {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final long serialVersionUID = 6411644320375966060L;

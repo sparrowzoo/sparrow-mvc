@@ -18,8 +18,10 @@
 package com.sparrow.mvc.ui;
 
 import java.io.IOException;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
 import com.sparrow.constant.CONFIG;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
@@ -28,53 +30,42 @@ import com.sparrow.utility.StringUtility;
  * @author harry
  */
 @SuppressWarnings("serial")
-public class JScript extends TagSupport {
-    private String src;
+public class StyleLink extends TagSupport {
+    private String href;
 
-    public String getSrc() {
-        return src;
+    public String getHref() {
+        return href;
     }
 
-    public void setSrc(String src) {
-        this.src = src;
+    public void setHref(String href) {
+        this.href = href;
     }
 
     @Override
     public int doStartTag() throws JspException {
         int returnValue = TagSupport.SKIP_BODY;
         String writeHTML = "";
-        if (this.getSrc().contains("$language")) {
-            Object language = this.pageContext.getSession().getAttribute(
-                "language");
-            if (language == null) {
-                language = Config.getValue(CONFIG.LANGUAGE);
-            }
-            this.setSrc(this.getSrc().replace("$language", language.toString()));
-        }
-
-        writeHTML = "<script language=\"javascript\" type=\"text/javascript\"  src=\"";
-        String src = this.getSrc();
-        if (src.contains("$resource")) {
-            src = src.replace("$resource",
+        writeHTML = "<link rel=\"stylesheet\" type=\"text/css\"  href=\"";
+        String href = this.getHref();
+        if (href.contains("$resource")) {
+            href = href.replace("$resource",
                 Config.getValue(CONFIG.RESOURCE));
         }
-
-        if (src.contains("$rootPath")) {
-            src = src.replace("$rootPath",
+        if (href.contains("$rootPath")) {
+            href = href.replace("$rootPath",
                 Config.getValue(CONFIG.ROOT_PATH));
         }
 
-        if (src.contains("$website")) {
-            src = src.replace("$website", Config.getValue(CONFIG.IMAGE_WEBSITE));
+        if (href.contains("$website")) {
+            href = href.replace("$website",
+                Config.getValue(CONFIG.IMAGE_WEBSITE));
         }
-
-        writeHTML += src;
+        writeHTML += href;
         writeHTML += "?v=" + Config.getValue(CONFIG.RESOURCE_VERSION)
-            + "\"></script>";
-
+            + "\"";
         try {
             if (!StringUtility.isNullOrEmpty(writeHTML)) {
-                this.pageContext.getOut().print(writeHTML);
+                this.pageContext.getOut().print(writeHTML + "/>");
             }
         } catch (IOException e) {
             e.printStackTrace();
