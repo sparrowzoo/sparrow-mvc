@@ -17,10 +17,13 @@
 
 package com.sparrow.web.support;
 
+import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.CONSTANT;
+import com.sparrow.constant.EXTENSION;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
 import com.sparrow.support.protocol.VO;
+import com.sparrow.utility.Config;
 
 /**
  * @author harry
@@ -45,10 +48,9 @@ public class ViewWithModel {
         this.vo = vo;
         this.url = url;
         this.switchMode = switchMode;
-        if (this.url.contains(SYMBOL.VERTICAL_LINE)) {
-            Pair<String, String> urlPair = Pair.split(this.url, SYMBOL.VERTICAL_LINE);
-            this.url = urlPair.getFirst();
-            this.flashUrl = urlPair.getSecond();
+        String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
+        if (this.url.endsWith(extension)||!switchMode.equals(PageSwitchMode.FORWARD)) {
+            this.flashUrl = url;
         }
     }
 

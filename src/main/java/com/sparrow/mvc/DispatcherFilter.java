@@ -56,6 +56,7 @@ import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -88,6 +89,7 @@ public class DispatcherFilter implements Filter {
     private Container container;
 
     private CookieUtility cookieUtility;
+
     @Override
     public void destroy() {
     }
@@ -95,7 +97,6 @@ public class DispatcherFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
         FilterChain chain) {
-
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -112,7 +113,14 @@ public class DispatcherFilter implements Filter {
             }
             this.initAttribute(httpRequest, httpResponse);
             if (invocableHandlerMethod == null) {
-                chain.doFilter(request, response);
+                String actionKey = servletUtility.getActionKey(request);
+                String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
+                if (actionKey.endsWith(extension)) {
+                    chain.doFilter(request, response);
+                } else {
+                    RequestDispatcher dispatcher = request.getRequestDispatcher(actionKey + extension);
+                    dispatcher.forward(request, response);
+                }
             } else {
                 HandlerAdapter adapter = this.getHandlerAdapter(invocableHandlerMethod);
                 adapter.handle(chain, httpRequest, httpResponse, invocableHandlerMethod);
@@ -287,7 +295,7 @@ public class DispatcherFilter implements Filter {
         if (sessionPair == null) {
             return;
         }
-        if (StringUtility.matchUrl(sessionPair.getFirst(), actionKey)) {
+        if (StringUtility.matchUrl(sessionPair.getFirst(), actionKey)||StringUtility.matchUrl(sessionPair.getFirst(),request.getQueryString())) {
             Map<String, Object> values = sessionPair.getSecond();
             for (String key : values.keySet()) {
                 request.setAttribute(key, values.get(key));
@@ -422,11 +430,11 @@ public class DispatcherFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
         this.config = config;
         this.container = ApplicationContext.getContainer();
-        String cookieUtilityKey=config.getInitParameter("cookieUtility");
-        if(StringUtility.isNullOrEmpty(cookieUtilityKey)){
-            cookieUtilityKey="cookieUtility";
+        String cookieUtilityKey = config.getInitParameter("cookieUtility");
+        if (StringUtility.isNullOrEmpty(cookieUtilityKey)) {
+            cookieUtilityKey = "cookieUtility";
         }
-        this.cookieUtility=this.container.getBean(cookieUtilityKey);
+        this.cookieUtility = this.container.getBean(cookieUtilityKey);
         this.initStrategies();
     }
 

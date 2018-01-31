@@ -66,17 +66,11 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         ContextHolder.getInstance().remove();
     }
 
-
     /**
      * 根据返回结果判断url
      *
-     * @param actionResult direct:login
-     *                     direct:login.jsp
-     *                     direct:login|flash_url.jsp
-     *                     direct:success
-     *                     login
-     *                     login.jsp
-     *                     success
+     * @param actionResult direct:login direct:login.jsp direct:login|flash_url.jsp direct:success login login.jsp
+     * success
      */
     private ViewWithModel parse(String actionResult, String referer, String defaultSucceessUrl) {
         String url;
@@ -122,18 +116,14 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         if (!url.startsWith(CONSTANT.HTTP_PROTOCOL) && !url.startsWith(CONSTANT.HTTPS_PROTOCOL) && !url.startsWith(SYMBOL.SLASH)) {
             url = SYMBOL.SLASH + url;
         }
+
         // /index-->/index.jsp
-        if (!url.contains(SYMBOL.DOT)) {
+        if (PageSwitchMode.FORWARD.equals(pageSwitchMode) && !url.contains(SYMBOL.DOT)) {
             String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION);
             if (StringUtility.isNullOrEmpty(extension)) {
                 extension = EXTENSION.JSP;
             }
             url = url + extension;
-        }
-
-        String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
-        if (!StringUtility.isNullOrEmpty(transitUrl) && PageSwitchMode.TRANSIT.equals(pageSwitchMode)) {
-            url = transitUrl + "|" + url;
         }
 
         Object urlParameters = ContextHolder.getInstance().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
@@ -142,7 +132,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             for (int i = 0; i < listParameters.size(); i++) {
                 if (listParameters.get(i) != null) {
                     url = url.replace(SYMBOL.DOLLAR, SYMBOL.AND).replace(
-                            "{" + i + "}", listParameters.get(i).toString());
+                        "{" + i + "}", listParameters.get(i).toString());
                 }
             }
         }
@@ -151,8 +141,8 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
     @Override
     public void resolve(ServletInvocableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
-                        HttpServletRequest request,
-                        HttpServletResponse response) throws IOException, ServletException {
+        HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         String referer = servletUtility.referer(request);
         ViewWithModel viewWithModel = null;
 
@@ -173,11 +163,8 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         String key = StringUtility.setFirstByteLowerCase(viewWithModel.getVo().getClass().getSimpleName());
         if (!StringUtility.isNullOrEmpty(viewWithModel.getFlashUrl())) {
             this.flash(request, viewWithModel.getFlashUrl(), key, viewWithModel.getVo());
-        } else if (PageSwitchMode.REDIRECT.equals(viewWithModel.getSwitchMode())) {
-            this.flash(request, viewWithModel.getUrl(), key, viewWithModel.getVo());
-        } else {
-            request.setAttribute(key, viewWithModel.getVo());
         }
+        request.setAttribute(key, viewWithModel.getVo());
 
         if (url == null) {
             chain.doFilter(request, response);
@@ -194,20 +181,17 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 break;
             case TRANSIT:
                 String transitType = Config.getValue(CONFIG.TRANSIT_TYPE);
-                if (!StringUtility.isNullOrEmpty(transitType)) {
-                    //to 策略模式修改
-                    if ("alert".equalsIgnoreCase(transitType)) {
-                        if (StringUtility.isNullOrEmpty(url) || StringUtility.matchUrl(referer, url)) {
-                            Alert.smile(message);
-                        } else {
-                            Alert.wait(message, url);
-                        }
-                        response.sendRedirect(referer);
+                if (!StringUtility.isNullOrEmpty(transitType) && "alert".equalsIgnoreCase(transitType)) {
+                    if (StringUtility.isNullOrEmpty(url) || StringUtility.matchUrl(referer, url)) {
+                        Alert.smile(message);
+                    } else {
+                        Alert.wait(message, url);
                     }
+                    response.sendRedirect(referer);
                 } else {
                     String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
                     if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
-                        transitUrl = Config.getValue(CONFIG.ROOT_PATH) + transitUrl;
+                        transitUrl = rootPath+ transitUrl;
                     }
                     response.sendRedirect(transitUrl + "?" + url);
                 }
@@ -226,8 +210,8 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
     @Override
     public void errorResolve(Throwable exception,
-                             HttpServletRequest request,
-                             HttpServletResponse response) throws IOException, ServletException {
+        HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
 
         PageSwitchMode errorPageSwitch = PageSwitchMode.REDIRECT;
         String exceptionSwitchMode = Config.getValue(CONFIG.EXCEPTION_SWITCH_MODE);
