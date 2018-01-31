@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MethodReturnValueResolverHandlerComposite implements MethodReturnValueResolverHandler {
 
-    private Logger logger = LoggerFactory.getLogger(MethodReturnValueResolverHandlerComposite.class);
+    private static Logger logger = LoggerFactory.getLogger(MethodReturnValueResolverHandlerComposite.class);
 
     private List<MethodReturnValueResolverHandler> resolverHandlers = new ArrayList<MethodReturnValueResolverHandler>();
 

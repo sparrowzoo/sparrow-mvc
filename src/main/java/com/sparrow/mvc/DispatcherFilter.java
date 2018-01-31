@@ -96,6 +96,7 @@ public class DispatcherFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
         FilterChain chain) {
 
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         this.handlerInterceptorList = initInterceptors(request);
@@ -104,7 +105,6 @@ public class DispatcherFilter implements Filter {
             return;
         }
         ServletInvocableHandlerMethod invocableHandlerMethod = null;
-        Object actionReturnValue = null;
         try {
             invocableHandlerMethod = this.getHandler(httpRequest);
             if (!this.validateUser(httpRequest, httpResponse)) {
@@ -115,8 +115,7 @@ public class DispatcherFilter implements Filter {
                 chain.doFilter(request, response);
             } else {
                 HandlerAdapter adapter = this.getHandlerAdapter(invocableHandlerMethod);
-                actionReturnValue = adapter.handle(chain, httpRequest, httpResponse, invocableHandlerMethod);
-
+                adapter.handle(chain, httpRequest, httpResponse, invocableHandlerMethod);
             }
             this.postHandler(httpRequest, httpResponse);
         } catch (Exception e) {
@@ -249,9 +248,11 @@ public class DispatcherFilter implements Filter {
                 Config.getValue(CONFIG.WEBSITE));
         }
 
+        //国际化
         String internationalization = Config
             .getValue(CONFIG.INTERNATIONALIZATION);
         if (internationalization != null) {
+            //设置当前请求语言
             String language = request.getParameter(CONFIG.LANGUAGE);
             if (language == null
                 || !internationalization.contains(language)) {
@@ -259,10 +260,11 @@ public class DispatcherFilter implements Filter {
             }
             ContextHolder.getInstance().put(CONSTANT.REQUEST_LANGUAGE, language);
         }
-
+        //设置资源根路径
         request.setAttribute(CONFIG.RESOURCE,
             Config.getValue(CONFIG.RESOURCE));
 
+        //设置图片域
         request.setAttribute(CONFIG.IMAGE_WEBSITE, Config.getValue(CONFIG.IMAGE_WEBSITE));
 
         String configWebsiteName = Config.getLanguageValue(
@@ -278,7 +280,7 @@ public class DispatcherFilter implements Filter {
             }
         }
         if (request.getQueryString() != null) {
-            request.setAttribute("hdnPreUrl.value", request.getQueryString());
+            request.setAttribute("previous_url", request.getQueryString());
         }
 
         Pair<String, Map<String, Object>> sessionPair = (Pair<String, Map<String, Object>>) request.getSession().getAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY);
@@ -294,7 +296,6 @@ public class DispatcherFilter implements Filter {
         }
         //url换掉时，则session 被清空 （非include）
         request.getSession().removeAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY);
-
     }
 
     private boolean validateUser(

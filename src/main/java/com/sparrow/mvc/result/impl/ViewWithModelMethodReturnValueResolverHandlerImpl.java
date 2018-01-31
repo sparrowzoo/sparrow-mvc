@@ -17,9 +17,8 @@
 
 package com.sparrow.mvc.result.impl;
 
-import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.CONSTANT;
-import com.sparrow.constant.SPARROW_ERROR;
+import com.sparrow.constant.*;
+import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
 import com.sparrow.exception.BusinessException;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
@@ -39,6 +38,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,15 +66,103 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         ContextHolder.getInstance().remove();
     }
 
+
+    /**
+     * 根据返回结果判断url
+     *
+     * @param actionResult direct:login
+     *                     direct:login.jsp
+     *                     direct:login|flash_url.jsp
+     *                     direct:success
+     *                     login
+     *                     login.jsp
+     *                     success
+     */
+    private ViewWithModel parse(String actionResult, String referer, String defaultSucceessUrl) {
+        String url;
+        PageSwitchMode pageSwitchMode = PageSwitchMode.REDIRECT;
+        //手动返回url
+        if (actionResult.contains(SYMBOL.COLON)) {
+            Pair<String, String> switchModeAndUrl = Pair.split(actionResult, SYMBOL.COLON);
+            pageSwitchMode = PageSwitchMode.valueOf(switchModeAndUrl.getFirst().toUpperCase());
+            url = switchModeAndUrl.getSecond();
+        } else {
+            url = actionResult;
+        }
+        url = assembleUrl(referer, defaultSucceessUrl, url, pageSwitchMode);
+        switch (pageSwitchMode) {
+            case FORWARD:
+                return ViewWithModel.forward(url);
+            case REDIRECT:
+                return ViewWithModel.redirect(url);
+            case TRANSIT:
+                return ViewWithModel.transit(url);
+            default:
+                return ViewWithModel.forward(url);
+        }
+    }
+
+    private String assembleUrl(String referer, String defaultSucceessUrl, String url, PageSwitchMode pageSwitchMode) {
+        if (StringUtility.isNullOrEmpty(url)) {
+            url = referer;
+        }
+
+        if (StringUtility.isNullOrEmpty(url)) {
+            return null;
+        }
+
+        if (CONSTANT.SUCCESS.equals(url)) {
+            url = defaultSucceessUrl;
+        }
+
+        if (StringUtility.isNullOrEmpty(url)) {
+            return null;
+        }
+        //index-->/index
+        if (!url.startsWith(CONSTANT.HTTP_PROTOCOL) && !url.startsWith(CONSTANT.HTTPS_PROTOCOL) && !url.startsWith(SYMBOL.SLASH)) {
+            url = SYMBOL.SLASH + url;
+        }
+        // /index-->/index.jsp
+        if (!url.contains(SYMBOL.DOT)) {
+            String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION);
+            if (StringUtility.isNullOrEmpty(extension)) {
+                extension = EXTENSION.JSP;
+            }
+            url = url + extension;
+        }
+
+        String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
+        if (!StringUtility.isNullOrEmpty(transitUrl) && PageSwitchMode.TRANSIT.equals(pageSwitchMode)) {
+            url = transitUrl + "|" + url;
+        }
+
+        Object urlParameters = ContextHolder.getInstance().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
+        if (urlParameters != null) {
+            List<Object> listParameters = (List<Object>) urlParameters;
+            for (int i = 0; i < listParameters.size(); i++) {
+                if (listParameters.get(i) != null) {
+                    url = url.replace(SYMBOL.DOLLAR, SYMBOL.AND).replace(
+                            "{" + i + "}", listParameters.get(i).toString());
+                }
+            }
+        }
+        return url;
+    }
+
     @Override
     public void resolve(ServletInvocableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
-        HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
-        ViewWithModel viewWithModel;
+                        HttpServletRequest request,
+                        HttpServletResponse response) throws IOException, ServletException {
+        String referer = servletUtility.referer(request);
+        ViewWithModel viewWithModel = null;
+
+        String url = null;
         if (returnValue instanceof String) {
-            viewWithModel = ViewWithModel.parse((String) returnValue, servletUtility.referer(request), handlerExecutionChain.getSuccessUrl());
-        } else {
+            viewWithModel = this.parse((String) returnValue, servletUtility.referer(request), handlerExecutionChain.getSuccessUrl());
+            url = viewWithModel.getUrl();
+        } else if (returnValue instanceof ViewWithModel) {
             viewWithModel = (ViewWithModel) returnValue;
+            url = this.assembleUrl(referer, handlerExecutionChain.getSuccessUrl(), viewWithModel.getUrl(), viewWithModel.getSwitchMode());
         }
         //无返回值，直接返回 不处理
         if (viewWithModel == null) {
@@ -85,27 +173,23 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         String key = StringUtility.setFirstByteLowerCase(viewWithModel.getVo().getClass().getSimpleName());
         if (!StringUtility.isNullOrEmpty(viewWithModel.getFlashUrl())) {
             this.flash(request, viewWithModel.getFlashUrl(), key, viewWithModel.getVo());
+        } else if (PageSwitchMode.REDIRECT.equals(viewWithModel.getSwitchMode())) {
+            this.flash(request, viewWithModel.getUrl(), key, viewWithModel.getVo());
         } else {
             request.setAttribute(key, viewWithModel.getVo());
         }
 
-        String url = viewWithModel.getUrl();
-        //如果返回的没有替换
-        if (url.equals(ViewWithModel.SUCCESS)) {
-            url = handlerExecutionChain.getSuccessUrl();
-        }
-
-        //无返回url 如果jsp 直接返回
-        if (StringUtility.isNullOrEmpty(url)) {
+        if (url == null) {
             chain.doFilter(request, response);
             return;
         }
-
-        String message = "操作成功！";
-        ServletUtility servletUtility = ServletUtility.getInstance();
-        String referer = servletUtility.referer(request);
+        String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        String message = Config.getLanguageValue(CONFIG_KEY_LANGUAGE.TRANSIT_SUCCESS_MESSAGE);
         switch (viewWithModel.getSwitchMode()) {
             case REDIRECT:
+                if (rootPath != null && !url.startsWith(rootPath)) {
+                    url = rootPath + url;
+                }
                 response.sendRedirect(url);
                 break;
             case TRANSIT:
@@ -130,7 +214,6 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 break;
             case FORWARD:
                 //http://manage.sparrowzoo.com/login.jsp?http://manage.sparrowzoo.com/default.jsp?http://manage.sparrowzoo.com/administrator/my.jsp
-                String rootPath = Config.getValue(CONFIG.ROOT_PATH);
                 if (rootPath != null && url.startsWith(rootPath)) {
                     url = url.substring(rootPath.length());
                 }
@@ -143,8 +226,8 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
     @Override
     public void errorResolve(Throwable exception,
-        HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+                             HttpServletRequest request,
+                             HttpServletResponse response) throws IOException, ServletException {
 
         PageSwitchMode errorPageSwitch = PageSwitchMode.REDIRECT;
         String exceptionSwitchMode = Config.getValue(CONFIG.EXCEPTION_SWITCH_MODE);

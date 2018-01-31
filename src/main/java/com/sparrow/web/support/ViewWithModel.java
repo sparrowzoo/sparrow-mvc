@@ -17,17 +17,10 @@
 
 package com.sparrow.web.support;
 
-import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.CONSTANT;
-import com.sparrow.constant.EXTENSION;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
-import com.sparrow.support.ContextHolder;
 import com.sparrow.support.protocol.VO;
-import com.sparrow.utility.Config;
-import com.sparrow.utility.StringUtility;
-
-import java.util.List;
 
 /**
  * @author harry
@@ -41,12 +34,10 @@ public class ViewWithModel {
      */
     private String flashUrl;
 
-    public static final String SUCCESS = "success";
-
-    public ViewWithModel() {
+    private ViewWithModel() {
     }
 
-    public ViewWithModel(String url, PageSwitchMode switchMode) {
+    private ViewWithModel(String url, PageSwitchMode switchMode) {
         this(url, switchMode, null);
     }
 
@@ -62,27 +53,27 @@ public class ViewWithModel {
     }
 
     public static ViewWithModel forward(VO vo) {
-        return new ViewWithModel(SUCCESS, PageSwitchMode.FORWARD, vo);
+        return new ViewWithModel(CONSTANT.SUCCESS, PageSwitchMode.FORWARD, vo);
     }
 
     public static ViewWithModel transit(VO vo) {
-        return new ViewWithModel(SUCCESS, PageSwitchMode.TRANSIT, vo);
+        return new ViewWithModel(CONSTANT.SUCCESS, PageSwitchMode.TRANSIT, vo);
     }
 
     public static ViewWithModel redirect(VO vo) {
-        return new ViewWithModel(SUCCESS, PageSwitchMode.REDIRECT, vo);
+        return new ViewWithModel(CONSTANT.SUCCESS, PageSwitchMode.REDIRECT, vo);
     }
 
     public static ViewWithModel forward() {
-        return new ViewWithModel(SUCCESS, PageSwitchMode.FORWARD, null);
+        return new ViewWithModel(CONSTANT.SUCCESS, PageSwitchMode.FORWARD, null);
     }
 
     public static ViewWithModel transit() {
-        return new ViewWithModel(SUCCESS, PageSwitchMode.TRANSIT, null);
+        return new ViewWithModel(CONSTANT.SUCCESS, PageSwitchMode.TRANSIT, null);
     }
 
     public static ViewWithModel redirect() {
-        return new ViewWithModel(SUCCESS, PageSwitchMode.REDIRECT, null);
+        return new ViewWithModel(CONSTANT.SUCCESS, PageSwitchMode.REDIRECT, null);
     }
 
     public static ViewWithModel forward(String url) {
@@ -123,67 +114,5 @@ public class ViewWithModel {
 
     public String getFlashUrl() {
         return flashUrl;
-    }
-
-    /**
-     * 根据返回结果判断url
-     *
-     * @param actionResult 返回结果 direct:login direct:login.jsp direct:login|flash_url.jsp direct:success login login.jsp
-     * success
-     */
-
-    public static ViewWithModel parse(String actionResult, String referer, String defaultSucceessUrl) {
-        String url;
-        PageSwitchMode pageSwitchMode = PageSwitchMode.REDIRECT;
-        //手动返回url
-        if (actionResult.contains(SYMBOL.COLON)) {
-            Pair<String, String> switchModeAndUrl = Pair.split(actionResult, SYMBOL.COLON);
-            pageSwitchMode = PageSwitchMode.valueOf(switchModeAndUrl.getFirst().toUpperCase());
-            url = switchModeAndUrl.getSecond();
-        } else {
-            url = actionResult;
-        }
-
-        if (StringUtility.isNullOrEmpty(url)) {
-            url = referer;
-        }
-
-        if (StringUtility.isNullOrEmpty(url)) {
-            return null;
-        }
-
-        if (SUCCESS.equals(url)) {
-            url = defaultSucceessUrl;
-        }
-
-        //index-->/index
-        if (!url.startsWith(CONSTANT.HTTP_PROTOCOL) && !url.startsWith(CONSTANT.HTTPS_PROTOCOL) && !url.startsWith(SYMBOL.SLASH)) {
-            url = SYMBOL.SLASH + url;
-        }
-        // /index-->/index.jsp
-        if (!url.contains(SYMBOL.DOT)) {
-            String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION);
-            if (StringUtility.isNullOrEmpty(extension)) {
-                extension = EXTENSION.JSP;
-            }
-            url = url + extension;
-        }
-
-        String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
-        if (!StringUtility.isNullOrEmpty(transitUrl) && PageSwitchMode.TRANSIT.equals(pageSwitchMode)) {
-            url = transitUrl + "|" + url;
-        }
-
-        Object urlParameters = ContextHolder.getInstance().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
-        if (urlParameters != null) {
-            List<Object> listParameters = (List<Object>) urlParameters;
-            for (int i = 0; i < listParameters.size(); i++) {
-                if (listParameters.get(i) != null) {
-                    url = url.replace(SYMBOL.DOLLAR, SYMBOL.AND).replace(
-                        "{" + i + "}", listParameters.get(i).toString());
-                }
-            }
-        }
-        return new ViewWithModel(url, pageSwitchMode);
     }
 }

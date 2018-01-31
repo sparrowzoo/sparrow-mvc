@@ -40,7 +40,9 @@ public class ContextLoaderListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ApplicationContext.getContainer().init();
+        String beansXmlPath= servletContextEvent.getServletContext().getInitParameter("contextConfigLocation");
+        String systemConfig= servletContextEvent.getServletContext().getInitParameter("configLocation");
+        ApplicationContext.getContainer().init(beansXmlPath,systemConfig);
         String datasourceKey = Config.getValue(CONFIG.DATASOURCE_KEY);
         if (datasourceKey == null) {
             return;

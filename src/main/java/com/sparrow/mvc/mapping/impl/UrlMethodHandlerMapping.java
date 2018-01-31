@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class UrlMethodHandlerMapping implements HandlerMapping {
 
-    private Logger logger = LoggerFactory.getLogger(UrlMethodHandlerMapping.class);
+    private static Logger logger = LoggerFactory.getLogger(UrlMethodHandlerMapping.class);
 
     private ServletUtility servletUtility = ServletUtility.getInstance();
 

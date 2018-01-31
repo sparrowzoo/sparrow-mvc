@@ -54,11 +54,13 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
 
     @Override
     public Object handle(FilterChain chain, HttpServletRequest request, HttpServletResponse response,
-        Object handler) throws Exception {
+                         Object handler) throws Exception {
         ServletInvocableHandlerMethod invocableHandlerMethod = (ServletInvocableHandlerMethod) handler;
         invocableHandlerMethod.setHandlerMethodArgumentResolverComposite(argumentResolverComposite);
         //返回值处理handler 只会存在一个
-        this.returnValueResolverHandlerComposite.support(invocableHandlerMethod);
+        if (!this.returnValueResolverHandlerComposite.support(invocableHandlerMethod)) {
+            throw new RuntimeException("return value resolver handler not found");
+        }
         invocableHandlerMethod.setController(invocableHandlerMethod.getController());
         return invocableHandlerMethod.invokeAndHandle(chain, request, response);
     }
