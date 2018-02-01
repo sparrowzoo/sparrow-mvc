@@ -16,6 +16,7 @@ SPARROW-MVC 是SPARROW框架其中的一员，模拟SPRING MVC功能实现。
 - HTML服务器控件支持 包括grid view功能
 - 其它功能
 
+![MVC全类图](sparrow-mvc.png)
 以上是目前SPARROW MVC实现的大部分功能
 其他未涉及功能希望各位小伙伴可以多提意见，SPRING不给你实现的，我帮你们实现，只为你用得更爽。
 
