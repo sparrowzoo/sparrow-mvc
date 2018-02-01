@@ -115,7 +115,7 @@ public class DispatcherFilter implements Filter {
             if (invocableHandlerMethod == null) {
                 String actionKey = servletUtility.getActionKey(request);
                 String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
-                if (actionKey.endsWith(extension)) {
+                if (actionKey.endsWith(extension)||actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
                 } else {
                     RequestDispatcher dispatcher = request.getRequestDispatcher(actionKey + extension);
