@@ -5,6 +5,7 @@ import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.TypeConverter;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.orm.Parameter;
 import com.sparrow.support.Entity;
 import com.sparrow.utility.CollectionsUtility;
 import com.sparrow.utility.HtmlUtility;
@@ -18,11 +19,16 @@ import java.util.Map;
  * Created by harry on 2018/2/1.
  */
 class ParameterSupport {
+    private static ParameterSupport parameterSupport = new ParameterSupport();
 
-    public static Object argumentResolve(Container container, MethodParameter methodParameter, ServletInvocableHandlerMethod executionChain, Map<String,String[]> parameterMap) {
+    public static ParameterSupport getInstance() {
+        return parameterSupport;
+    }
+
+    public Object argumentResolve(Container container, MethodParameter methodParameter, ServletInvocableHandlerMethod executionChain, Map<String, String[]> parameterMap) {
         String parameterName = methodParameter.getParameterName();
         String[] parameters = null;
-        String parameter=null;
+        String parameter = null;
         if (Entity.class.isAssignableFrom(methodParameter.getParameterType())) {
             Object entity;
             try {
@@ -41,7 +47,7 @@ class ParameterSupport {
                 if (CollectionsUtility.isNullOrEmpty(parameters)) {
                     continue;
                 }
-                parameter=parameters[0];
+                parameter = parameters[0];
                 if (executionChain.isValidateRequest()) {
                     parameter = HtmlUtility.encode(parameter);
                 }
@@ -50,10 +56,10 @@ class ParameterSupport {
             return entity;
         }
         parameters = parameterMap.get(parameterName);
-        if(CollectionsUtility.isNullOrEmpty(parameters)){
+        if (CollectionsUtility.isNullOrEmpty(parameters)) {
             return null;
         }
-        parameter=parameters[0];
+        parameter = parameters[0];
         if (methodParameter.getParameterType().equals(String.class)) {
             if (CollectionsUtility.isNullOrEmpty(parameters)) {
                 return SYMBOL.EMPTY;

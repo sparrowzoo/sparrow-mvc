@@ -37,6 +37,9 @@ public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentR
 
     private Container container;
 
+    private ParameterSupport parameterSupport=ParameterSupport.getInstance();
+
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return true;
@@ -57,7 +60,7 @@ public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentR
                 pathParameterValueMap.put(pathParameterNameList.get(pathParameterValueMap.size()), array);
             }
         }
-        return ParameterSupport.argumentResolve(this.container, methodParameter, executionChain, pathParameterValueMap);
+        return this.parameterSupport.argumentResolve(this.container, methodParameter, executionChain, pathParameterValueMap);
     }
 
     @Override

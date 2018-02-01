@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 public class RequestParameterArgumentResolverImpl implements HandlerMethodArgumentResolver, ContainerAware {
 
     private Container container;
+    private ParameterSupport parameterSupport=ParameterSupport.getInstance();
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -40,7 +41,7 @@ public class RequestParameterArgumentResolverImpl implements HandlerMethodArgume
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ServletInvocableHandlerMethod executionChain,
         HttpServletRequest request) throws Exception {
-        return ParameterSupport.argumentResolve(this.container,methodParameter, executionChain, request.getParameterMap());
+        return parameterSupport.argumentResolve(this.container,methodParameter, executionChain, request.getParameterMap());
     }
     @Override
     public void aware(Container container, String beanName) {
