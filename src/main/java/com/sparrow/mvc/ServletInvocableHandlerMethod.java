@@ -53,9 +53,19 @@ public class ServletInvocableHandlerMethod {
      */
     private Method method;
     /**
-     * action url
+     * action 匹配url
      */
     private String actionName;
+
+    /**
+     * action regex 通过actionName 匹配获取
+     */
+    private String actionRegex;
+
+    /**
+     * path通过regex 匹配到的参数名称
+     */
+    private List<String> pathParameterNameList;
     /**
      * 权限验证
      */
@@ -250,5 +260,21 @@ public class ServletInvocableHandlerMethod {
 
     public void setMethodReturnValueResolverHandler(MethodReturnValueResolverHandler methodReturnValueResolverHandler) {
         this.methodReturnValueResolverHandler = methodReturnValueResolverHandler;
+    }
+
+    public String getActionRegex() {
+        return actionRegex;
+    }
+
+    public void setActionRegex(String actionRegex) {
+        this.actionRegex = actionRegex;
+    }
+
+    public List<String> getPathParameterNameList() {
+        return pathParameterNameList;
+    }
+
+    public void setPathParameterNameList(List<String> pathParameterNameList) {
+        this.pathParameterNameList = pathParameterNameList;
     }
 }

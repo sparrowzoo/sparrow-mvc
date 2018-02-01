@@ -28,7 +28,6 @@ public class MethodParameter {
     private final int parameterIndex;
     private volatile Class<?> parameterType;
     private volatile String parameterName;
-    private volatile Annotation[] parameterAnnotations;
     private Class<?>[] interfaces;
 
     public MethodParameter(Method method, int parameterIndex, Class<?> parameterType, String parameterName,
@@ -37,7 +36,6 @@ public class MethodParameter {
         this.parameterIndex = parameterIndex;
         this.parameterType = parameterType;
         this.parameterName = parameterName;
-        this.parameterAnnotations = parameterAnnotations;
         if (this.parameterType != null) {
             this.interfaces = this.parameterType.getInterfaces();
         }
@@ -69,14 +67,6 @@ public class MethodParameter {
 
     public void setParameterName(String parameterName) {
         this.parameterName = parameterName;
-    }
-
-    public Annotation[] getParameterAnnotations() {
-        return parameterAnnotations;
-    }
-
-    public void setParameterAnnotations(Annotation[] parameterAnnotations) {
-        this.parameterAnnotations = parameterAnnotations;
     }
 
     public Class<?>[] getInterfaces() {

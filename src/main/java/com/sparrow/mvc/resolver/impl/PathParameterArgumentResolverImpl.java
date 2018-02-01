@@ -21,14 +21,19 @@ import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
+import com.sparrow.support.web.ServletUtility;
+import com.sparrow.utility.RegexUtility;
 import com.sparrow.web.support.MethodParameter;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author harry
  */
-public class RequestParameterArgumentResolverImpl implements HandlerMethodArgumentResolver, ContainerAware {
+public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentResolver, ContainerAware {
 
     private Container container;
 
@@ -39,11 +44,24 @@ public class RequestParameterArgumentResolverImpl implements HandlerMethodArgume
 
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ServletInvocableHandlerMethod executionChain,
-        HttpServletRequest request) throws Exception {
-        return ParameterSupport.argumentResolve(this.container,methodParameter, executionChain, request.getParameterMap());
+                                  HttpServletRequest request) throws Exception {
+        List<String> pathParameterNameList = executionChain.getPathParameterNameList();
+        Map<String, String[]> pathParameterValueMap = new HashMap<String, String[]>(pathParameterNameList.size());
+        String currentPath = ServletUtility.getInstance().getActionKey(request);
+
+
+        List<List<String>> lists = RegexUtility.multiGroups(currentPath, executionChain.getActionRegex());
+        for (List<String> list : lists) {
+            for (String parameter : list) {
+                String[] array = new String[]{parameter};
+                pathParameterValueMap.put(pathParameterNameList.get(pathParameterValueMap.size()), array);
+            }
+        }
+        return ParameterSupport.argumentResolve(this.container, methodParameter, executionChain, pathParameterValueMap);
     }
+
     @Override
     public void aware(Container container, String beanName) {
-        this.container=container;
+        this.container = container;
     }
 }

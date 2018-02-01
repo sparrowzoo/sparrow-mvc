@@ -21,6 +21,7 @@ import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.mvc.resolver.impl.HandlerMethodArgumentResolverComposite;
+import com.sparrow.mvc.resolver.impl.PathParameterArgumentResolverImpl;
 import com.sparrow.mvc.resolver.impl.RequestParameterArgumentResolverImpl;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.mvc.result.impl.JsonMethodReturnValueResolverHandlerImpl;
@@ -77,7 +78,9 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
         this.argumentResolverComposite = new HandlerMethodArgumentResolverComposite();
         List<HandlerMethodArgumentResolver> handlerMethodArgumentResolvers = new ArrayList<HandlerMethodArgumentResolver>();
         HandlerMethodArgumentResolver argumentResolver = new RequestParameterArgumentResolverImpl();
+        HandlerMethodArgumentResolver parameterArgumentResolver=new PathParameterArgumentResolverImpl();
         handlerMethodArgumentResolvers.add(argumentResolver);
+        handlerMethodArgumentResolvers.add(parameterArgumentResolver);
         this.argumentResolverComposite.addResolvers(handlerMethodArgumentResolvers);
     }
 
