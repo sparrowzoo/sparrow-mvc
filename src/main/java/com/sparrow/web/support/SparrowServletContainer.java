@@ -19,8 +19,7 @@ package com.sparrow.web.support;
 
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.servlet.impl.AbstractServletContainer;
-import com.sparrow.support.ConnectionContextHolder;
-import com.sparrow.support.HttpContext;
+import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.protocol.pager.PagerResult;
 
 import javax.servlet.http.HttpServletRequest;

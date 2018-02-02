@@ -36,11 +36,6 @@
         </dependency>
         <dependency>
             <groupId>com.sparrow</groupId>
-            <artifactId>sparrow-context</artifactId>
-            <version>${sparrow_context_version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sparrow</groupId>
             <artifactId>sparrow-data-source</artifactId>
             <version>${sparrow_data_source_version}</version>
         </dependency>
