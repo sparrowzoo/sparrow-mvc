@@ -43,12 +43,5 @@ public class ContextLoaderListener implements ServletContextListener {
         String beansXmlPath= servletContextEvent.getServletContext().getInitParameter("contextConfigLocation");
         String systemConfig= servletContextEvent.getServletContext().getInitParameter("configLocation");
         ApplicationContext.getContainer().init(beansXmlPath,systemConfig);
-        String datasourceKey = Config.getValue(CONFIG.DATASOURCE_KEY);
-        if (datasourceKey == null) {
-            return;
-        }
-        for (String key : datasourceKey.split(SYMBOL.COMMA)) {
-            DataSourceFactory.getInstance().getDatasourceConfig(key);
-        }
     }
 }

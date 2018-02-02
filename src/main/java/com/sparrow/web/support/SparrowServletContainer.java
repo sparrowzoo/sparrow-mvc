@@ -19,7 +19,7 @@ package com.sparrow.web.support;
 
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.servlet.impl.AbstractServletContainer;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
 import com.sparrow.support.HttpContext;
 import com.sparrow.support.protocol.pager.PagerResult;
 
@@ -36,6 +36,7 @@ import java.util.List;
  */
 public class SparrowServletContainer extends AbstractServletContainer {
 
+    private HttpContext httpContext= HttpContext.getContext();
     @Override
     public HttpServletRequest getRequest() {
         return HttpContext.getContext().getRequest();
@@ -51,13 +52,13 @@ public class SparrowServletContainer extends AbstractServletContainer {
     }
 
     public <T> void grid(String gridView, List<T> list, PagerResult pagerSearch) {
-        ContextHolder.getInstance().put(gridView + ".dataSource", list);
+        httpContext.put(gridView + ".dataSource", list);
         if (pagerSearch != null) {
-            ContextHolder.getInstance().put(gridView + ".recordCount",
+            httpContext.put(gridView + ".recordCount",
                 pagerSearch.getRecordCount());
-            ContextHolder.getInstance().put("spanRecordCount.innerHTML",
+            httpContext.put("spanRecordCount.innerHTML",
                 pagerSearch.getRecordCount());
-            ContextHolder.getInstance().put(gridView + ".pageSize",
+            httpContext.put(gridView + ".pageSize",
                 pagerSearch.getPageSize());
         }
     }
@@ -84,15 +85,15 @@ public class SparrowServletContainer extends AbstractServletContainer {
 
     @Override
     public void clear() {
-        ContextHolder.getInstance().remove();
+        httpContext.remove();
     }
 
     @Override
     public <T> T get(String key) {
-        return (T) ContextHolder.getInstance().get(key);
+        return (T) httpContext.get(key);
     }
 
     public void putURLParameter(Object... parameters) {
-        ContextHolder.getInstance().put(CONSTANT.ACTION_RESULT_URL_PARAMETERS, Arrays.asList(parameters));
+        httpContext.put(CONSTANT.ACTION_RESULT_URL_PARAMETERS, Arrays.asList(parameters));
     }
 }

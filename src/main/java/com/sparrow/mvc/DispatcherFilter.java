@@ -37,7 +37,7 @@ import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.adapter.impl.MethodControllerHandlerAdapter;
 import com.sparrow.mvc.mapping.HandlerMapping;
 import com.sparrow.mvc.mapping.impl.UrlMethodHandlerMapping;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
 import com.sparrow.support.HttpContext;
 import com.sparrow.support.Login;
 import com.sparrow.support.LoginDialog;
@@ -72,8 +72,6 @@ public class DispatcherFilter implements Filter {
 
     private static Logger logger = LoggerFactory.getLogger(DispatcherFilter.class);
 
-    private ServletUtility servletUtility = ServletUtility.getInstance();
-
     private SparrowServletUtility sparrowServletUtility = SparrowServletUtility.getInstance();
 
     private FilterConfig config;
@@ -89,6 +87,8 @@ public class DispatcherFilter implements Filter {
     private Container container;
 
     private CookieUtility cookieUtility;
+
+    private ConnectionContextHolder connectionContextHolder;
 
     @Override
     public void destroy() {
@@ -113,7 +113,7 @@ public class DispatcherFilter implements Filter {
             }
             this.initAttribute(httpRequest, httpResponse);
             if (invocableHandlerMethod == null) {
-                String actionKey = servletUtility.getActionKey(request);
+                String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
                 String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
                 if (actionKey.endsWith(extension)||actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
@@ -151,7 +151,7 @@ public class DispatcherFilter implements Filter {
                 logger.error("exception resolve error", ignore);
             }
         }
-        ContextHolder.getInstance().removeAll();
+        this.connectionContextHolder.removeAll();
     }
 
     private void renderJs(ServletRequest request, ServletResponse response,
@@ -207,7 +207,7 @@ public class DispatcherFilter implements Filter {
         }
         Map<String, Object> interceptorList = ApplicationContext.getContainer().getBeanMap(CONTAINER.INTERCEPTOR);
         List<HandlerInterceptor> handlerInterceptorList = new ArrayList<HandlerInterceptor>();
-        if (!servletUtility.include(request) && interceptorList != null) {
+        if (!sparrowServletUtility.getServletUtility().include(request) && interceptorList != null) {
             for (Object interceptor : interceptorList.values()) {
                 handlerInterceptorList.add((HandlerInterceptor) interceptor);
             }
@@ -242,11 +242,11 @@ public class DispatcherFilter implements Filter {
         //初始化 response
         HttpContext.getContext().setResponse(response);
 
-        if (servletUtility.include(request)) {
+        if (sparrowServletUtility.getServletUtility().include(request)) {
             return;
         }
-        String actionKey = servletUtility.getActionKey(request);
-        logger.debug("PARAMETERS:" + servletUtility.getAllParameter(request));
+        String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
+        logger.debug("PARAMETERS:" + sparrowServletUtility.getServletUtility().getAllParameter(request));
         logger.debug("ACTION KEY:" + actionKey);
         request.setAttribute(CONSTANT.REQUEST_ACTION_CURRENT_FORUM, request.getParameter("forumCode"));
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
@@ -266,7 +266,7 @@ public class DispatcherFilter implements Filter {
                 || !internationalization.contains(language)) {
                 language = Config.getValue(CONFIG.LANGUAGE);
             }
-            ContextHolder.getInstance().put(CONSTANT.REQUEST_LANGUAGE, language);
+            HttpContext.getContext().put(CONSTANT.REQUEST_LANGUAGE, language);
         }
         //设置资源根路径
         request.setAttribute(CONFIG.RESOURCE,
@@ -308,7 +308,7 @@ public class DispatcherFilter implements Filter {
 
     private boolean validateUser(
         HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, BusinessException {
-        if (servletUtility.include(httpRequest)) {
+        if (sparrowServletUtility.getServletUtility().include(httpRequest)) {
             return true;
         }
         ServletInvocableHandlerMethod handlerExecutionChain = null;
@@ -349,7 +349,7 @@ public class DispatcherFilter implements Filter {
                 String defaultMenuPage = rootPath + Config.getValue(CONFIG.DEFAULT_MENU_PAGE);
                 String redirectUrl = httpRequest.getRequestURL().toString();
                 if (redirectUrl.endsWith(EXTENSION.DO) || redirectUrl.endsWith(EXTENSION.JSON)) {
-                    redirectUrl = servletUtility.referer(httpRequest);
+                    redirectUrl = sparrowServletUtility.getServletUtility().referer(httpRequest);
                 }
                 if (redirectUrl != null && redirectUrl.equals(defaultMenuPage)) {
                     redirectUrl = SYMBOL.EMPTY;
@@ -368,7 +368,7 @@ public class DispatcherFilter implements Filter {
             loginUrl = rootPath + loginUrl;
             if (!handlerExecutionChain.isJson()) {
                 if (isInFrame) {
-                    ContextHolder.getInstance().execute(String.format("window.parent.location.href='%1$s'", loginUrl));
+                    HttpContext.getContext().execute(String.format("window.parent.location.href='%1$s'", loginUrl));
                 } else {
                     httpResponse.sendRedirect(loginUrl);
                 }
@@ -386,8 +386,8 @@ public class DispatcherFilter implements Filter {
             return true;
         }
 
-        PrivilegeSupport privilegeService = ApplicationContext.getContainer().getBean(
-            SYS_OBJECT_NAME.PRIVILEGE_SERVER);
+        PrivilegeSupport privilegeService = this.container.getBean(
+            SYS_OBJECT_NAME.PRIVILEGE_SERVICE);
         String forumCode = httpRequest.getParameter("forumCode");
 
         if (!privilegeService.accessible(
@@ -397,7 +397,7 @@ public class DispatcherFilter implements Filter {
             this.sparrowServletUtility.moveAttribute(httpRequest);
             return false;
         }
-        ContextHolder.getInstance().put(CONSTANT.REQUEST_USER_ID, user.getUserId());
+        HttpContext.getContext().put(CONSTANT.REQUEST_USER_ID, user.getUserId());
         return true;
     }
 
@@ -430,11 +430,8 @@ public class DispatcherFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
         this.config = config;
         this.container = ApplicationContext.getContainer();
-        String cookieUtilityKey = config.getInitParameter("cookieUtility");
-        if (StringUtility.isNullOrEmpty(cookieUtilityKey)) {
-            cookieUtilityKey = "cookieUtility";
-        }
-        this.cookieUtility = this.container.getBean(cookieUtilityKey);
+        this.cookieUtility = this.container.getBean(SYS_OBJECT_NAME.COOKIE_UTILITY);
+        this.connectionContextHolder=this.container.getBean(SYS_OBJECT_NAME.CONNECTION_CONTEXT_HOLDER);
         this.initStrategies();
     }
 

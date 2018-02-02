@@ -23,8 +23,9 @@ import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.exception.BusinessException;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
 import com.sparrow.support.Entity;
+import com.sparrow.support.HttpContext;
 import com.sparrow.support.protocol.Result;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -65,7 +66,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
         try {
             response.getWriter().write(JsonFactory.getProvider().toString((Entity) returnValue));
         } finally {
-            ContextHolder.getInstance().remove();
+            HttpContext.getContext().remove();
         }
     }
 }

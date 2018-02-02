@@ -19,7 +19,8 @@ package com.sparrow.utility.web;
 
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.core.Pair;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
+import com.sparrow.support.HttpContext;
 import com.sparrow.support.web.ServletUtility;
 
 import javax.servlet.ServletRequest;
@@ -35,13 +36,17 @@ public class SparrowServletUtility {
 
     private ServletUtility servletUtility = ServletUtility.getInstance();
 
+    public ServletUtility getServletUtility() {
+        return servletUtility;
+    }
+
     public static SparrowServletUtility getInstance() {
         return INSTANCE;
     }
 
     public void moveAttribute(ServletRequest request) {
         String actionKey = servletUtility.getActionKey(request);
-        Map<String, Object> map = ContextHolder.getInstance().getHolder();
+        Map<String, Object> map = HttpContext.getContext().getHolder();
         for (String key : map.keySet()) {
             Object value = map.get(key);
             //Alert js 兼容
@@ -51,13 +56,13 @@ public class SparrowServletUtility {
                 request.setAttribute(key, value);
             }
         }
-        ContextHolder.getInstance().remove();
+        HttpContext.getContext().remove();
     }
 
     public void flash(HttpServletRequest request, String sourceUrl) {
-        Map<String, Object> values = ContextHolder.getInstance().getHolder();
+        Map<String, Object> values = HttpContext.getContext().getHolder();
         Pair<String, Map<String, Object>> sessionMap = Pair.create(sourceUrl, values);
         request.getSession().setAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY, sessionMap);
-        ContextHolder.getInstance().remove();
+        HttpContext.getContext().remove();
     }
 }

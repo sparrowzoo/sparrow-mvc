@@ -19,7 +19,8 @@ package com.sparrow.mvc.ui;
 
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.CONSTANT;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
+import com.sparrow.support.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
@@ -46,7 +47,7 @@ public class Internationalization extends TagSupport {
     public int doStartTag() throws JspException {
         int returnValue = TagSupport.SKIP_BODY;
         try {
-            String language = (String) ContextHolder.getInstance().get(CONSTANT.REQUEST_LANGUAGE);
+            String language = (String) HttpContext.getContext().get(CONSTANT.REQUEST_LANGUAGE);
             if (StringUtility.isNullOrEmpty(language)) {
                 language = Config.getValue(CONFIG.LANGUAGE);
             }

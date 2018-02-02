@@ -21,7 +21,8 @@ import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.cg.MethodAccessor;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
+import com.sparrow.support.HttpContext;
 import com.sparrow.utility.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,7 +172,7 @@ public class WebControl extends TagSupport {
         if (requestValue != null) {
             return requestValue.toString();
         }
-        requestValue = ContextHolder.getInstance().get(name);
+        requestValue = HttpContext.getContext().get(name);
         if (requestValue != null) {
             if (!this.isInput()) {
                 this.pageContext.getRequest().setAttribute(this.getId() + ".cssClass", "error");
@@ -188,7 +189,7 @@ public class WebControl extends TagSupport {
                 return requestValue.toString();
             }
 
-            requestValue = ContextHolder.getInstance().get(propertyName);
+            requestValue = HttpContext.getContext().get(propertyName);
 
             if (requestValue != null) {
                 try {

@@ -23,7 +23,8 @@ import com.sparrow.core.Pair;
 import com.sparrow.exception.BusinessException;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
+import com.sparrow.support.HttpContext;
 import com.sparrow.support.protocol.Result;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.Config;
@@ -57,13 +58,13 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
     }
 
     private void flash(HttpServletRequest request, String flashUrl, String key, Object o) {
-        Map<String, Object> values = ContextHolder.getInstance().getHolder();
+        Map<String, Object> values = HttpContext.getContext().getHolder();
         if (o != null) {
             values.put(key, o);
         }
         Pair<String, Map<String, Object>> sessionMap = Pair.create(flashUrl, values);
         request.getSession().setAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY, sessionMap);
-        ContextHolder.getInstance().remove();
+        HttpContext.getContext().remove();
     }
 
     /**
@@ -126,7 +127,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             url = url + extension;
         }
 
-        Object urlParameters = ContextHolder.getInstance().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
+        Object urlParameters = HttpContext.getContext().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
         if (urlParameters != null) {
             List<Object> listParameters = (List<Object>) urlParameters;
             for (int i = 0; i < listParameters.size(); i++) {

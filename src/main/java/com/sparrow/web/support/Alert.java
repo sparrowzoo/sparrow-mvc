@@ -20,8 +20,9 @@ package com.sparrow.web.support;
 import com.sparrow.constant.CONFIG_KEY_LANGUAGE;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.enums.ALERT_TYPE;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
 import com.sparrow.support.Entity;
+import com.sparrow.support.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
@@ -88,6 +89,6 @@ public class Alert implements Entity {
     }
 
     private void alert() {
-        ContextHolder.getInstance().execute("$.alert(" + JsonFactory.getProvider().toString(this) + ");");
+        HttpContext.getContext().execute("$.alert(" + JsonFactory.getProvider().toString(this) + ");");
     }
 }

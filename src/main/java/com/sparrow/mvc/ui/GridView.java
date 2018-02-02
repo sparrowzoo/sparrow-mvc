@@ -24,7 +24,8 @@ import com.sparrow.cg.MethodAccessor;
 import com.sparrow.mvc.ui.grid.CellAttribute;
 import com.sparrow.mvc.ui.grid.Head;
 import com.sparrow.support.Entity;
-import com.sparrow.support.ContextHolder;
+import com.sparrow.support.ConnectionContextHolder;
+import com.sparrow.support.HttpContext;
 import com.sparrow.support.protocol.pager.PagerResult;
 import com.sparrow.support.protocol.pager.PagerSearch;
 import com.sparrow.utility.Config;
@@ -106,7 +107,7 @@ public class GridView extends WebControl {
         String key = this.getId() + ".dataSource";
         Object ors = super.pageContext.getRequest().getAttribute(key);
         if (ors == null) {
-            ors = ContextHolder.getInstance().get(key);
+            ors = HttpContext.getContext().get(key);
         }
         if (ors != null) {
             List<Entity> dataSource = (List<Entity>) ors;
@@ -224,7 +225,7 @@ public class GridView extends WebControl {
             this.getId() + ".recordCount";
         Object recordCount = super.pageContext.getRequest().getAttribute(key);
         if (recordCount == null) {
-            recordCount = ContextHolder.getInstance().get(key);
+            recordCount = HttpContext.getContext().get(key);
         }
         if (recordCount != null) {
             this.recordCount = Long.valueOf(recordCount.toString());
@@ -237,7 +238,7 @@ public class GridView extends WebControl {
             this.getId() + ".pageSize";
         Object requestPageSize = this.pageContext.getRequest().getAttribute(key);
         if (requestPageSize == null) {
-            requestPageSize = ContextHolder.getInstance().get(key);
+            requestPageSize =HttpContext.getContext().get(key);
         }
         if (requestPageSize != null) {
             this.pageSize = Integer.valueOf(requestPageSize.toString());
@@ -287,7 +288,7 @@ public class GridView extends WebControl {
         Object requestPageFormat = this.pageContext.getRequest().getAttribute(
             key);
         if (requestPageFormat == null) {
-            requestPageFormat = ContextHolder.getInstance().get(key);
+            requestPageFormat = HttpContext.getContext().get(key);
         }
         if (requestPageFormat != null) {
             this.pageFormat = requestPageFormat.toString();
