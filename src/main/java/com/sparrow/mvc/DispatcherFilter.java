@@ -37,7 +37,7 @@ import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.adapter.impl.MethodControllerHandlerAdapter;
 import com.sparrow.mvc.mapping.HandlerMapping;
 import com.sparrow.mvc.mapping.impl.UrlMethodHandlerMapping;
-import com.sparrow.datasource.ConnectionContextHolder;
+import com.sparrow.datasource.ConnectionContextHolderImpl;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.Login;
 import com.sparrow.support.LoginDialog;
@@ -87,7 +87,7 @@ public class DispatcherFilter implements Filter {
 
     private CookieUtility cookieUtility;
 
-    private ConnectionContextHolder connectionContextHolder;
+    private ConnectionContextHolderImpl connectionContextHolder;
 
     @Override
     public void destroy() {

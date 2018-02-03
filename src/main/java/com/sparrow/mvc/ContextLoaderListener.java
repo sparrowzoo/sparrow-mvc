@@ -17,13 +17,7 @@
 
 package com.sparrow.mvc;
 
-import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.magic.SYMBOL;
-import com.sparrow.constant.SYS_OBJECT_NAME;
 import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.datasource.DataSourceFactory;
-import com.sparrow.support.Initializer;
-import com.sparrow.utility.Config;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
