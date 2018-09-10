@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.sparrow</groupId>
-        <artifactId>sparrow-super</artifactId>
+        <artifactId>sparrow-bom</artifactId>
         <version>1.0</version>
     </parent>
     <artifactId>sparrow-mvc</artifactId>
@@ -29,12 +29,10 @@
         <dependency>
             <groupId>com.sparrow</groupId>
             <artifactId>sparrow-data-source</artifactId>
-            <version>${sparrow_data_source_version}</version>
         </dependency>
         <dependency>
             <groupId>com.sparrow</groupId>
             <artifactId>sparrow-orm</artifactId>
-            <version>${sparrow_orm_version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>
@@ -44,14 +42,10 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet_api_version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <version>${jsp_api_version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
