@@ -24,8 +24,9 @@ import com.sparrow.cg.MethodAccessor;
 import com.sparrow.mvc.ui.grid.CellAttribute;
 import com.sparrow.mvc.ui.grid.Head;
 import com.sparrow.support.Entity;
+import com.sparrow.support.protocol.pager.SparrowPagerResult;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.support.protocol.pager.PagerResult;
+import com.sparrow.support.protocol.pager.SimplePagerResult;
 import com.sparrow.support.protocol.pager.PagerSearch;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
@@ -166,10 +167,12 @@ public class GridView extends WebControl {
 
                 if (this.isShowPage()) {
 
-                    PagerSearch pager = new PagerSearch(this.getCurrentPageIndex(), this.pageSize, this.pageFormat, this.pageFormat, false);
-                    PagerResult result = new PagerResult(pager, this.getRecordCount());
+                    SparrowPagerResult<Entity> result = new SparrowPagerResult<Entity>(this.getCurrentPageIndex(),this.pageSize,this.getRecordCount(),this.getDataSource());
+                    result.setPageFormat(this.pageFormat);
+                    result.setIndexPageFormat(this.pageFormat);
+                    result.setSimple(false);
                     writeHTML.append(String.format("%1$s<tr>%2$s<td colspan=\"%3$s\">%2$s\r\n%4$s</td></tr>",
-                        indent1, indent2, cellList.size(), result.html()));
+                        indent1, indent2, cellList.size(), result.getHtml()));
 
                 }
             }

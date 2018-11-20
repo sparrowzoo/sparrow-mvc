@@ -20,7 +20,7 @@ package com.sparrow.web.support;
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.servlet.impl.AbstractServletContainer;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.support.protocol.pager.PagerResult;
+import com.sparrow.support.protocol.pager.SimplePagerResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +50,7 @@ public class SparrowServletContainer extends AbstractServletContainer {
         this.grid(gridView, list, null);
     }
 
-    public <T> void grid(String gridView, List<T> list, PagerResult pagerSearch) {
+    public <T> void grid(String gridView, List<T> list, SimplePagerResult pagerSearch) {
         httpContext.put(gridView + ".dataSource", list);
         if (pagerSearch != null) {
             httpContext.put(gridView + ".recordCount",
