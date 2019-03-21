@@ -18,9 +18,9 @@
 package com.sparrow.web.support;
 
 import com.sparrow.constant.CONSTANT;
+import com.sparrow.protocol.pager.SimplePagerResult;
 import com.sparrow.servlet.impl.AbstractServletContainer;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.support.protocol.pager.SimplePagerResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -20,7 +20,7 @@ package com.sparrow.web.support;
 import com.sparrow.constant.CONFIG_KEY_LANGUAGE;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.enums.ALERT_TYPE;
-import com.sparrow.support.Entity;
+import com.sparrow.protocol.Entity;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;

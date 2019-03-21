@@ -17,11 +17,11 @@
 
 package com.sparrow.mvc.ui.grid;
 
+import com.sparrow.cg.MethodAccessor;
 import com.sparrow.constant.magic.DIGIT;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.StrategyFactory;
-import com.sparrow.cg.MethodAccessor;
-import com.sparrow.support.Entity;
+import com.sparrow.protocol.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +83,7 @@ public class CellAttribute {
             }
         }
         return String.format("%4$s<td width=\"%2$s\" align=\"%3$s\">%1$s</td>\r\n",
-            htmlLabel.toString(), this.getWidth(), this.getAlign(), indent);
+                htmlLabel.toString(), this.getWidth(), this.getAlign(), indent);
     }
 
     /**

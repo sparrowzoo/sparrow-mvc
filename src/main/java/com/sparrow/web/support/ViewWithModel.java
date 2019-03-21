@@ -20,9 +20,7 @@ package com.sparrow.web.support;
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.EXTENSION;
-import com.sparrow.constant.magic.SYMBOL;
-import com.sparrow.core.Pair;
-import com.sparrow.support.protocol.VO;
+import com.sparrow.protocol.VO;
 import com.sparrow.utility.Config;
 
 /**
@@ -49,7 +47,7 @@ public class ViewWithModel {
         this.url = url;
         this.switchMode = switchMode;
         String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
-        if (this.url.endsWith(extension)||!switchMode.equals(PageSwitchMode.FORWARD)) {
+        if (this.url.endsWith(extension) || !switchMode.equals(PageSwitchMode.FORWARD)) {
             this.flashUrl = url;
         }
     }

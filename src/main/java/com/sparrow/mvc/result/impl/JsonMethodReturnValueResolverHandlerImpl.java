@@ -20,17 +20,18 @@ package com.sparrow.mvc.result.impl;
 import com.sparrow.constant.EXTENSION;
 import com.sparrow.constant.SPARROW_ERROR;
 import com.sparrow.core.spi.JsonFactory;
-import com.sparrow.exception.BusinessException;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
-import com.sparrow.support.Entity;
+import com.sparrow.protocol.BusinessException;
+import com.sparrow.protocol.Entity;
+import com.sparrow.protocol.Result;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.support.protocol.Result;
-import java.io.IOException;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author harry

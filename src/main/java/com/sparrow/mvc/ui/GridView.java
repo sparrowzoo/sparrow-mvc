@@ -17,17 +17,15 @@
 
 package com.sparrow.mvc.ui;
 
+import com.sparrow.cg.MethodAccessor;
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.magic.DIGIT;
 import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.cg.MethodAccessor;
 import com.sparrow.mvc.ui.grid.CellAttribute;
 import com.sparrow.mvc.ui.grid.Head;
-import com.sparrow.support.Entity;
-import com.sparrow.support.protocol.pager.SparrowPagerResult;
+import com.sparrow.protocol.Entity;
+import com.sparrow.support.pager.SparrowPagerResult;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.support.protocol.pager.SimplePagerResult;
-import com.sparrow.support.protocol.pager.PagerSearch;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import org.slf4j.Logger;
