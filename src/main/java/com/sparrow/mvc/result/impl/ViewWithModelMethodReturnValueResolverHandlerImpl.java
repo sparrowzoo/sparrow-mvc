@@ -70,7 +70,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
      * 根据返回结果判断url
      *
      * @param actionResult direct:login direct:login.jsp direct:login|flash_url.jsp direct:success login login.jsp
-     * success
+     *                     success
      */
     private ViewWithModel parse(String actionResult, String referer, String defaultSucceessUrl) {
         String url;
@@ -132,7 +132,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             for (int i = 0; i < listParameters.size(); i++) {
                 if (listParameters.get(i) != null) {
                     url = url.replace(SYMBOL.DOLLAR, SYMBOL.AND).replace(
-                        "{" + i + "}", listParameters.get(i).toString());
+                            "{" + i + "}", listParameters.get(i).toString());
                 }
             }
         }
@@ -141,8 +141,8 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
     @Override
     public void resolve(ServletInvocableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
-        HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+                        HttpServletRequest request,
+                        HttpServletResponse response) throws IOException, ServletException {
         String referer = servletUtility.referer(request);
         ViewWithModel viewWithModel = null;
 
@@ -191,7 +191,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 } else {
                     String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
                     if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
-                        transitUrl = rootPath+ transitUrl;
+                        transitUrl = rootPath + transitUrl;
                     }
                     response.sendRedirect(transitUrl + "?" + url);
                 }
@@ -210,8 +210,8 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
     @Override
     public void errorResolve(Throwable exception,
-        HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+                             HttpServletRequest request,
+                             HttpServletResponse response) throws IOException, ServletException {
 
         PageSwitchMode errorPageSwitch = PageSwitchMode.REDIRECT;
         String exceptionSwitchMode = Config.getValue(CONFIG.EXCEPTION_SWITCH_MODE);
@@ -226,6 +226,8 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             businessException = new BusinessException(SPARROW_ERROR.SYSTEM_SERVER_ERROR);
         }
         Result result = Result.FAIL(businessException);
+        //todo set error msg
+        //result.setError();
         String url = Config.getValue(CONFIG.ERROR_URL);
 
         if (StringUtility.isNullOrEmpty(url)) {

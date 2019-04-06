@@ -56,6 +56,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
             return;
         }
         Result result = Result.FAIL(new BusinessException(SPARROW_ERROR.SYSTEM_SERVER_ERROR));
+        //result.setError();
         response.getWriter().write(JsonFactory.getProvider().toString(result));
     }
 

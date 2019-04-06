@@ -28,20 +28,14 @@
     <uri>http://www.sparrowzoo.com/el</uri>
     <!-- 定义第一个函数 -->
     <function>
-        <!-- 定义第一个函数：reverse -->
         <name>i18n</name>
-        <!-- 定义函数处理类 -->
         <function-class>com.sparrow.utility.Config</function-class>
-        <!-- 定义函数的对应方法 -->
         <function-signature>java.lang.String getLanguageValue(java.lang.String)</function-signature>
     </function>
 
     <function>
-        <!-- 定义第一个函数：reverse -->
         <name>i18n_index</name>
-        <!-- 定义函数处理类 -->
         <function-class>com.sparrow.utility.Config</function-class>
-        <!-- 定义函数的对应方法 -->
         <function-signature>java.lang.String getLanguageValue(java.lang.String,java.lang.Integer)</function-signature>
     </function>
 
