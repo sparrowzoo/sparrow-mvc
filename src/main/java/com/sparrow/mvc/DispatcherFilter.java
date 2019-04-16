@@ -32,8 +32,9 @@ import com.sparrow.mvc.adapter.impl.MethodControllerHandlerAdapter;
 import com.sparrow.mvc.mapping.HandlerMapping;
 import com.sparrow.mvc.mapping.impl.UrlMethodHandlerMapping;
 import com.sparrow.protocol.BusinessException;
+import com.sparrow.protocol.LoginDTO;
 import com.sparrow.protocol.Result;
-import com.sparrow.support.Login;
+import com.sparrow.support.LoginParser;
 import com.sparrow.support.LoginDialog;
 import com.sparrow.support.PrivilegeSupport;
 import com.sparrow.support.web.CookieUtility;
@@ -312,7 +313,7 @@ public class DispatcherFilter implements Filter {
         }
 
         String actionName = handlerExecutionChain.getActionName();
-        Login user = this.cookieUtility.getUser(httpRequest);
+        LoginDTO user = this.cookieUtility.getUser(httpRequest);
         httpRequest.setAttribute(USER.ID, user.getUserId());
         httpRequest.setAttribute(USER.LOGIN_NAME, user.getUserName());
         if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.NO_LOGIN.ordinal()) {
