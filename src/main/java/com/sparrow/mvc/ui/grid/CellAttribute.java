@@ -18,8 +18,8 @@
 package com.sparrow.mvc.ui.grid;
 
 import com.sparrow.cg.MethodAccessor;
-import com.sparrow.constant.magic.DIGIT;
-import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.protocol.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.core.StrategyFactory;
 import com.sparrow.protocol.Entity;
 import org.slf4j.Logger;

@@ -18,7 +18,9 @@
 package com.sparrow.mvc.result.impl;
 
 import com.sparrow.constant.*;
-import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.protocol.constant.CONSTANT;
+import com.sparrow.protocol.constant.EXTENSION;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
@@ -29,8 +31,8 @@ import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import com.sparrow.web.support.Alert;
-import com.sparrow.web.support.PageSwitchMode;
-import com.sparrow.web.support.ViewWithModel;
+import com.sparrow.protocol.mvn.PageSwitchMode;
+import com.sparrow.protocol.mvn.ViewWithModel;
 
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;

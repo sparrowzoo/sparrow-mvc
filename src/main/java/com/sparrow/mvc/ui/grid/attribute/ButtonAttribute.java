@@ -18,7 +18,7 @@
 package com.sparrow.mvc.ui.grid.attribute;
 
 import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.mvc.ui.grid.BaseAttribute;
 import com.sparrow.utility.Config;
 

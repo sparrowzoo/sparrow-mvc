@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.ui.grid.impl;
 
-import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.mvc.ui.grid.FieldParser;
 import com.sparrow.mvc.ui.grid.attribute.TextAttribute;
 import com.sparrow.utility.StringUtility;

@@ -17,7 +17,7 @@
 
 package com.sparrow.utility.web;
 
-import com.sparrow.constant.CONSTANT;
+import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.core.Pair;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.web.ServletUtility;

@@ -17,8 +17,8 @@
 
 package com.sparrow.mvc.ui.grid;
 
-import com.sparrow.constant.magic.DIGIT;
-import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.protocol.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.utility.DateTimeUtility;
 import com.sparrow.utility.EnumUtility;
 import com.sparrow.utility.StringUtility;

@@ -18,8 +18,10 @@
 package com.sparrow.mvc;
 
 import com.sparrow.constant.*;
-import com.sparrow.constant.magic.DIGIT;
-import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.protocol.constant.CONSTANT;
+import com.sparrow.protocol.constant.EXTENSION;
+import com.sparrow.protocol.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.Pair;
 import com.sparrow.core.spi.ApplicationContext;

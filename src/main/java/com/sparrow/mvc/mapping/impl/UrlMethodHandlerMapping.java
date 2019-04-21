@@ -18,9 +18,9 @@
 package com.sparrow.mvc.mapping.impl;
 
 import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.CONSTANT;
-import com.sparrow.constant.EXTENSION;
-import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.protocol.constant.CONSTANT;
+import com.sparrow.protocol.constant.EXTENSION;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.Pair;
 import com.sparrow.core.spi.ApplicationContext;

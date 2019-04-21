@@ -19,7 +19,7 @@ package com.sparrow.mvc.ui;
 
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.mvc.ui.grid.CellAttribute;
 import com.sparrow.mvc.ui.grid.Head;

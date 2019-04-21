@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc;
 
-import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.mvc.resolver.impl.HandlerMethodArgumentResolverComposite;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.web.support.MethodParameter;

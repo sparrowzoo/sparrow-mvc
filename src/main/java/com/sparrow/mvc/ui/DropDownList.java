@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.utility.EnumUtility;
 import com.sparrow.utility.StringUtility;
 import java.io.IOException;

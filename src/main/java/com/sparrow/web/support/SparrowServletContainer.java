@@ -17,7 +17,7 @@
 
 package com.sparrow.web.support;
 
-import com.sparrow.constant.CONSTANT;
+import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.pager.SimplePagerResult;
 import com.sparrow.servlet.impl.AbstractServletContainer;
 import com.sparrow.support.web.HttpContext;

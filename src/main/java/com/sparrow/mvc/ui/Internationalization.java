@@ -18,7 +18,7 @@
 package com.sparrow.mvc.ui;
 
 import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.CONSTANT;
+import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;

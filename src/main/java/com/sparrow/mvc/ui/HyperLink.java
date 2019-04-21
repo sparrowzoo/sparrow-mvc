@@ -17,8 +17,8 @@
 
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.magic.LETTER;
-import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.protocol.constant.magic.LETTER;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.utility.StringUtility;
 
 /**
