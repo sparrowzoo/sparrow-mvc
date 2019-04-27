@@ -105,10 +105,12 @@ public class DispatcherFilter implements Filter {
             if (invocableHandlerMethod == null) {
                 String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
                 String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
+
                 if (actionKey.endsWith(extension)||actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
                 } else {
-                    RequestDispatcher dispatcher = request.getRequestDispatcher(actionKey + extension);
+                    String pagePrefix=Config.getValue(CONFIG.DEFAULT_PAGE_PREFIX,"/template");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher(pagePrefix+actionKey + extension);
                     dispatcher.forward(request, response);
                 }
             } else {
