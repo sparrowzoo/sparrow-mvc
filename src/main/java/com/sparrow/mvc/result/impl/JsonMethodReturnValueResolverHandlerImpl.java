@@ -17,13 +17,12 @@
 
 package com.sparrow.mvc.result.impl;
 
-import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.constant.SPARROW_ERROR;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.protocol.BusinessException;
-import com.sparrow.protocol.Entity;
+import com.sparrow.protocol.POJO;
 import com.sparrow.protocol.Result;
 import com.sparrow.protocol.constant.EXTENSION;
 import com.sparrow.support.web.HttpContext;
@@ -66,7 +65,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
         HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
         try {
-            response.getWriter().write(JsonFactory.getProvider().toString((Entity) returnValue));
+            response.getWriter().write(JsonFactory.getProvider().toString((POJO) returnValue));
         } finally {
             HttpContext.getContext().remove();
         }

@@ -20,7 +20,7 @@ package com.sparrow.web.support;
 import com.sparrow.constant.CONFIG_KEY_LANGUAGE;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.enums.ALERT_TYPE;
-import com.sparrow.protocol.Entity;
+import com.sparrow.protocol.POJO;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
@@ -30,7 +30,7 @@ import com.sparrow.utility.StringUtility;
  *
  * @author harry
  */
-public class Alert implements Entity {
+public class Alert implements POJO {
 
     public static void smile(String msg) {
         new Alert(msg, ALERT_TYPE.SMILE, null, null, null).alert();

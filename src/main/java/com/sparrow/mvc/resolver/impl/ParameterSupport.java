@@ -5,7 +5,7 @@ import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.TypeConverter;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
-import com.sparrow.protocol.Entity;
+import com.sparrow.protocol.POJO;
 import com.sparrow.utility.CollectionsUtility;
 import com.sparrow.utility.HtmlUtility;
 import com.sparrow.utility.StringUtility;
@@ -28,7 +28,7 @@ class ParameterSupport {
         String parameterName = methodParameter.getParameterName();
         String[] parameters = null;
         String parameter = null;
-        if (Entity.class.isAssignableFrom(methodParameter.getParameterType())) {
+        if (POJO.class.isAssignableFrom(methodParameter.getParameterType())) {
             Object entity;
             try {
                 entity = methodParameter.getParameterType().newInstance();

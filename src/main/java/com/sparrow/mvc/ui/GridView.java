@@ -23,7 +23,7 @@ import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.mvc.ui.grid.CellAttribute;
 import com.sparrow.mvc.ui.grid.Head;
-import com.sparrow.protocol.Entity;
+import com.sparrow.protocol.POJO;
 import com.sparrow.support.pager.SparrowPagerResult;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.Config;
@@ -101,14 +101,14 @@ public class GridView extends WebControl {
      *
      * @return
      */
-    public List<Entity> getDataSource() {
+    public List<POJO> getDataSource() {
         String key = this.getId() + ".dataSource";
         Object ors = super.pageContext.getRequest().getAttribute(key);
         if (ors == null) {
             ors = HttpContext.getContext().get(key);
         }
         if (ors != null) {
-            List<Entity> dataSource = (List<Entity>) ors;
+            List<POJO> dataSource = (List<POJO>) ors;
             return dataSource;
         } else {
             return null;
@@ -143,7 +143,7 @@ public class GridView extends WebControl {
                 if (this.getDataSource().size() > DIGIT.ZERO) {
                     MethodAccessor methodAccessor = ApplicationContext.getContainer().getProxyBean(this.getDataSource().get(DIGIT.ZERO).getClass());
                     for (int recordIndex = DIGIT.ZERO; recordIndex < this.getDataSource().size(); recordIndex++) {
-                        Entity entity = this.getDataSource().get(recordIndex);
+                        POJO entity = this.getDataSource().get(recordIndex);
                         String alternating = this
                             .isUseAlternatingRowStyle() && (recordIndex % DIGIT.TOW == DIGIT.ZERO) ? " alternating"
                             : "";
@@ -165,7 +165,7 @@ public class GridView extends WebControl {
 
                 if (this.isShowPage()) {
 
-                    SparrowPagerResult<Entity> result = new SparrowPagerResult<Entity>(this.getCurrentPageIndex(),this.pageSize,this.getRecordCount(),this.getDataSource());
+                    SparrowPagerResult<POJO> result = new SparrowPagerResult<POJO>(this.getCurrentPageIndex(),this.pageSize,this.getRecordCount(),this.getDataSource());
                     result.setPageFormat(this.pageFormat);
                     result.setIndexPageFormat(this.pageFormat);
                     result.setSimple(false);

@@ -21,7 +21,7 @@ import com.sparrow.cg.MethodAccessor;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.core.StrategyFactory;
-import com.sparrow.protocol.Entity;
+import com.sparrow.protocol.POJO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public class CellAttribute {
         return align;
     }
 
-    public String toString(Entity entity, String indent, MethodAccessor methodAccessor) {
+    public String toString(POJO entity, String indent, MethodAccessor methodAccessor) {
         StringBuilder htmlLabel = new StringBuilder();
         for (String fieldAttribute : this.fieldAttributeArray) {
             List<String> valuesList = new ArrayList<String>();
