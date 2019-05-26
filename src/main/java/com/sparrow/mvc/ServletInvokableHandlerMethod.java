@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * @author harry
  */
-public class ServletInvocableHandlerMethod {
+public class ServletInvokableHandlerMethod {
     /**
      * 登录类型
      */

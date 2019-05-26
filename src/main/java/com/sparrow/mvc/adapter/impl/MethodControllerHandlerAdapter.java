@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.adapter.impl;
 
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.mvc.resolver.impl.HandlerMethodArgumentResolverComposite;
@@ -50,13 +50,13 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
 
     @Override
     public boolean supports(Object handler) {
-        return handler instanceof ServletInvocableHandlerMethod;
+        return handler instanceof ServletInvokableHandlerMethod;
     }
 
     @Override
     public Object handle(FilterChain chain, HttpServletRequest request, HttpServletResponse response,
                          Object handler) throws Exception {
-        ServletInvocableHandlerMethod invocableHandlerMethod = (ServletInvocableHandlerMethod) handler;
+        ServletInvokableHandlerMethod invocableHandlerMethod = (ServletInvokableHandlerMethod) handler;
         invocableHandlerMethod.setHandlerMethodArgumentResolverComposite(argumentResolverComposite);
         //返回值处理handler 只会存在一个
         if (!this.returnValueResolverHandlerComposite.support(invocableHandlerMethod)) {

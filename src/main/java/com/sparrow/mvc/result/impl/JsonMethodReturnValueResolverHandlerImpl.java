@@ -19,7 +19,7 @@ package com.sparrow.mvc.result.impl;
 
 import com.sparrow.constant.SPARROW_ERROR;
 import com.sparrow.core.spi.JsonFactory;
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.POJO;
@@ -42,7 +42,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
     }
 
     @Override
-    public boolean support(ServletInvocableHandlerMethod executionChain) {
+    public boolean support(ServletInvokableHandlerMethod executionChain) {
         return executionChain.getActionName().endsWith(EXTENSION.JSON);
     }
 
@@ -61,7 +61,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
     }
 
     @Override
-    public void resolve(ServletInvocableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
+    public void resolve(ServletInvokableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
         HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
         try {

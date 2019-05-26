@@ -19,10 +19,9 @@ package com.sparrow.mvc.result.impl;
 
 import com.sparrow.constant.*;
 import com.sparrow.protocol.constant.CONSTANT;
-import com.sparrow.protocol.constant.EXTENSION;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.Result;
@@ -54,7 +53,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
     }
 
     @Override
-    public boolean support(ServletInvocableHandlerMethod executionChain) {
+    public boolean support(ServletInvokableHandlerMethod executionChain) {
         return executionChain.getReturnType().equals(ViewWithModel.class) || executionChain.getReturnType().equals(String.class);
     }
 
@@ -119,13 +118,9 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             url = SYMBOL.SLASH + url;
         }
 
-        // /index-->/index.jsp
+        // /index-->template/index.jsp
         if (PageSwitchMode.FORWARD.equals(pageSwitchMode) && !url.contains(SYMBOL.DOT)) {
-            String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION);
-            if (StringUtility.isNullOrEmpty(extension)) {
-                extension = EXTENSION.JSP;
-            }
-            url = url + extension;
+            url=servletUtility.getDispatcherUrl(url);
         }
 
         Object urlParameters = HttpContext.getContext().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
@@ -142,7 +137,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
     }
 
     @Override
-    public void resolve(ServletInvocableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
+    public void resolve(ServletInvokableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
                         HttpServletRequest request,
                         HttpServletResponse response) throws IOException, ServletException {
         String referer = servletUtility.referer(request);

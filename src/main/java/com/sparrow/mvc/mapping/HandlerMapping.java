@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.mapping;
 
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,5 +27,5 @@ import javax.servlet.http.HttpServletRequest;
  * @author harry
  */
 public interface HandlerMapping {
-    ServletInvocableHandlerMethod getHandler(HttpServletRequest request) throws Exception;
+    ServletInvokableHandlerMethod getHandler(HttpServletRequest request) throws Exception;
 }

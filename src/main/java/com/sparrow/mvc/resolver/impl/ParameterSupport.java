@@ -4,7 +4,7 @@ import com.sparrow.cg.MethodAccessor;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.TypeConverter;
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.protocol.POJO;
 import com.sparrow.utility.CollectionsUtility;
 import com.sparrow.utility.HtmlUtility;
@@ -24,7 +24,7 @@ class ParameterSupport {
         return parameterSupport;
     }
 
-    public Object argumentResolve(Container container, MethodParameter methodParameter, ServletInvocableHandlerMethod executionChain, Map<String, String[]> parameterMap) {
+    public Object argumentResolve(Container container, MethodParameter methodParameter, ServletInvokableHandlerMethod executionChain, Map<String, String[]> parameterMap) {
         String parameterName = methodParameter.getParameterName();
         String[] parameters = null;
         String parameter = null;

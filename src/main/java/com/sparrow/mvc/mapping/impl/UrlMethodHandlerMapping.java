@@ -24,13 +24,17 @@ import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.Pair;
 import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.RequestParameters;
 import com.sparrow.mvc.mapping.HandlerMapping;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.*;
+import com.sparrow.xml.DefaultDocumentLoader;
+import com.sparrow.xml.DocumentLoader;
+import com.sparrow.xml.DtdSchemaResolverAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -50,9 +54,9 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
 
     private ServletUtility servletUtility = ServletUtility.getInstance();
 
-    private Map<String, ServletInvocableHandlerMethod> mapping = new HashMap<String, ServletInvocableHandlerMethod>();
+    private Map<String, ServletInvokableHandlerMethod> mapping = new HashMap<String, ServletInvokableHandlerMethod>();
 
-    private Map<String, ServletInvocableHandlerMethod> dynamicMapping = new HashMap<String, ServletInvocableHandlerMethod>();
+    private Map<String, ServletInvokableHandlerMethod> dynamicMapping = new HashMap<String, ServletInvokableHandlerMethod>();
 
     public UrlMethodHandlerMapping() {
         this.init();
@@ -60,23 +64,31 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
 
     private void init() {
         Container container = ApplicationContext.getContainer();
+        DocumentLoader documentLoader=new DefaultDocumentLoader();
+
         String xmlConfig = Config.getValue(CONFIG.MVC_CONFIG);
         if (StringUtility.isNullOrEmpty(xmlConfig)) {
             xmlConfig = "/controller.xml";
         }
+        Document document;
+        try {
+            document=documentLoader.loadDocument(xmlConfig,false);
+        } catch (Exception e) {
+            logger.error("document load error",e);
+            return;
+        }
         List<Element> actionElementList;
         try {
-            actionElementList = Xml.getElementsByTagName(Xml.getXmlDocumentByPath(xmlConfig, "mvc.dtd"),
-                    "action");
+            actionElementList = Xml.getElementsByTagName(document, "action");
             for (Element actionElement : actionElementList) {
-                ServletInvocableHandlerMethod invocableHandlerMethod = new ServletInvocableHandlerMethod();
+                ServletInvokableHandlerMethod invokableHandlerMethod = new ServletInvokableHandlerMethod();
                 String actionName = actionElement.getAttribute("name");
                 String beanName = ((Element) actionElement.getParentNode())
                         .getAttribute("name");
 
-                invocableHandlerMethod.setActionName(actionName);
-                invocableHandlerMethod.setJson(actionName.endsWith(EXTENSION.JSON));
-                invocableHandlerMethod.setValidatePrivilege(Boolean.valueOf(actionElement
+                invokableHandlerMethod.setActionName(actionName);
+                invokableHandlerMethod.setJson(actionName.endsWith(EXTENSION.JSON));
+                invokableHandlerMethod.setValidatePrivilege(Boolean.valueOf(actionElement
                         .getAttribute("validatePrivilege")));
                 String loginType = actionElement.getAttribute("login");
                 String validateRequest = actionElement.getAttribute("validateRequest");
@@ -85,8 +97,8 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                 }
                 int intLoginType = StringUtility.isNullOrEmpty(loginType) ? 0
                         : Integer.valueOf(loginType);
-                invocableHandlerMethod.setValidateRequest(Boolean.valueOf(validateRequest));
-                invocableHandlerMethod.setLoginType(intLoginType);
+                invokableHandlerMethod.setValidateRequest(Boolean.valueOf(validateRequest));
+                invokableHandlerMethod.setLoginType(intLoginType);
                 String actionMethodName = actionElement.getAttribute("method");
                 Map<String, Method> actionMethodMap = container.getControllerMethod(beanName);
                 if (actionMethodMap == null) {
@@ -106,10 +118,10 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                     for (String parameter : names) {
                         parameterNameList.add(parameter.trim());
                     }
-                    invocableHandlerMethod.setParameterNameList(parameterNameList);
+                    invokableHandlerMethod.setParameterNameList(parameterNameList);
                 }
-                invocableHandlerMethod.setMethod(method);
-                invocableHandlerMethod.setController(container.getBean(beanName));
+                invokableHandlerMethod.setMethod(method);
+                invokableHandlerMethod.setController(container.getBean(beanName));
                 NodeList resultList = actionElement.getChildNodes();
                 for (int i = 0; i < resultList.getLength(); i++) {
                     if (resultList.item(i).getNodeType() != 1) {
@@ -118,22 +130,22 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                     Element resultElement = (Element) resultList.item(i);
                     String resultName = resultElement.getAttribute("name");
                     if (CONSTANT.ERROR.equalsIgnoreCase(resultName.trim())) {
-                        invocableHandlerMethod.setErrorUrl(resultElement
+                        invokableHandlerMethod.setErrorUrl(resultElement
                                 .getTextContent().trim());
                     } else if (CONSTANT.SUCCESS.equalsIgnoreCase(resultName.trim())) {
-                        invocableHandlerMethod.setSuccessUrl(resultElement
+                        invokableHandlerMethod.setSuccessUrl(resultElement
                                 .getTextContent().trim());
                     }
                 }
 
                 if (actionName.contains(SYMBOL.BIG_LEFT_PARENTHESIS) && actionName.contains(SYMBOL.BIG_RIGHT_PARENTHESIS)) {
                     Pair<String, List<String>> pathParameters = RegexUtility.getActionRegex(actionName);
-                    invocableHandlerMethod.setActionRegex(pathParameters.getFirst());
-                    invocableHandlerMethod.setPathParameterNameList(pathParameters.getSecond());
-                    dynamicMapping.put(pathParameters.getFirst(), invocableHandlerMethod);
+                    invokableHandlerMethod.setActionRegex(pathParameters.getFirst());
+                    invokableHandlerMethod.setPathParameterNameList(pathParameters.getSecond());
+                    dynamicMapping.put(pathParameters.getFirst(), invokableHandlerMethod);
                 } else {
                     mapping.put(actionName,
-                            invocableHandlerMethod);
+                            invokableHandlerMethod);
                 }
             }
         } catch (Exception e) {
@@ -142,9 +154,9 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
     }
 
     @Override
-    public ServletInvocableHandlerMethod getHandler(HttpServletRequest request) throws Exception {
+    public ServletInvokableHandlerMethod getHandler(HttpServletRequest request) throws Exception {
         String actionKey = servletUtility.getActionKey(request);
-        ServletInvocableHandlerMethod servletInvocableHandlerMethod= this.mapping.get(actionKey);
+        ServletInvokableHandlerMethod servletInvocableHandlerMethod= this.mapping.get(actionKey);
         if(servletInvocableHandlerMethod!=null){
             return servletInvocableHandlerMethod;
         }

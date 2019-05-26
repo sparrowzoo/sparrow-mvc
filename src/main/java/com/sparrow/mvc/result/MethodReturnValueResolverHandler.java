@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.result;
 
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,11 +28,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author harry
  */
 public interface MethodReturnValueResolverHandler {
-    void resolve(ServletInvocableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
+    void resolve(ServletInvokableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
         HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException;
 
-    boolean support(ServletInvocableHandlerMethod handlerExecutionChain);
+    boolean support(ServletInvokableHandlerMethod handlerExecutionChain);
 
     void errorResolve(Throwable exception, HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException;

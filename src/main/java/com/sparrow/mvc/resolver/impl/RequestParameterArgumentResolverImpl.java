@@ -19,7 +19,7 @@ package com.sparrow.mvc.resolver.impl;
 
 import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.web.support.MethodParameter;
 
@@ -39,7 +39,7 @@ public class RequestParameterArgumentResolverImpl implements HandlerMethodArgume
     }
 
     @Override
-    public Object resolveArgument(MethodParameter methodParameter, ServletInvocableHandlerMethod executionChain,
+    public Object resolveArgument(MethodParameter methodParameter, ServletInvokableHandlerMethod executionChain,
         HttpServletRequest request) throws Exception {
         return parameterSupport.argumentResolve(this.container,methodParameter, executionChain, request.getParameterMap());
     }

@@ -17,11 +17,10 @@
 
 package com.sparrow.mvc.resolver.impl;
 
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.web.support.MethodParameter;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ServletInvocableHandlerMethod executionChain,
+    public Object resolveArgument(MethodParameter parameter, ServletInvokableHandlerMethod executionChain,
                                   HttpServletRequest request) throws Exception {
         HandlerMethodArgumentResolver resolver = this.argumentResolverCache.get(parameter);
         if (resolver != null) {

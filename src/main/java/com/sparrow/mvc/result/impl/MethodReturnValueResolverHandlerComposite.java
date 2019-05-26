@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.result.impl;
 
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class MethodReturnValueResolverHandlerComposite implements MethodReturnVa
     }
 
     @Override
-    public boolean support(ServletInvocableHandlerMethod executionChain) {
+    public boolean support(ServletInvokableHandlerMethod executionChain) {
         for (MethodReturnValueResolverHandler resolverHandler : this.resolverHandlers) {
             if (resolverHandler.support(executionChain)) {
                 executionChain.setMethodReturnValueResolverHandler(resolverHandler);
@@ -60,7 +60,7 @@ public class MethodReturnValueResolverHandlerComposite implements MethodReturnVa
     }
 
     @Override
-    public void resolve(ServletInvocableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
+    public void resolve(ServletInvokableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
         HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
         for (MethodReturnValueResolverHandler resolverHandler : this.resolverHandlers) {

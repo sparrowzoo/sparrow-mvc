@@ -28,7 +28,6 @@ import com.sparrow.core.Pair;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.datasource.ConnectionContextHolderImpl;
-import com.sparrow.enums.CONTAINER;
 import com.sparrow.enums.LOGIN_TYPE;
 import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.adapter.impl.MethodControllerHandlerAdapter;
@@ -54,7 +53,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,40 +96,39 @@ public class DispatcherFilter implements Filter {
         if (preHandler(httpRequest, httpResponse)) {
             return;
         }
-        ServletInvocableHandlerMethod invocableHandlerMethod = null;
+        ServletInvokableHandlerMethod invokableHandlerMethod = null;
         try {
-            invocableHandlerMethod = this.getHandler(httpRequest);
+            invokableHandlerMethod = this.getHandler(httpRequest);
             if (!this.validateUser(httpRequest, httpResponse)) {
                 return;
             }
             this.initAttribute(httpRequest, httpResponse);
-            if (invocableHandlerMethod == null) {
+            if (invokableHandlerMethod == null) {
                 String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
                 String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
-
-                if (actionKey.endsWith(extension)||actionKey.endsWith(EXTENSION.JSON)) {
+                if (actionKey.endsWith(extension) || actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
                 } else {
-                    String pagePrefix=Config.getValue(CONFIG.DEFAULT_PAGE_PREFIX,"/template");
-                    RequestDispatcher dispatcher = request.getRequestDispatcher(pagePrefix+actionKey + extension);
+                    String dispacherUrl = sparrowServletUtility.getServletUtility().getDispatcherUrl(actionKey);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher(dispacherUrl);
                     dispatcher.forward(request, response);
                 }
             } else {
-                HandlerAdapter adapter = this.getHandlerAdapter(invocableHandlerMethod);
-                adapter.handle(chain, httpRequest, httpResponse, invocableHandlerMethod);
+                HandlerAdapter adapter = this.getHandlerAdapter(invokableHandlerMethod);
+                adapter.handle(chain, httpRequest, httpResponse, invokableHandlerMethod);
             }
             this.postHandler(httpRequest, httpResponse);
         } catch (Exception e) {
-            errorHandler(httpRequest, httpResponse, invocableHandlerMethod, e);
+            errorHandler(httpRequest, httpResponse, invokableHandlerMethod, e);
         } finally {
             //页面渲染完成之后执行
-            renderJs(request, response, invocableHandlerMethod);
+            renderJs(request, response, invokableHandlerMethod);
             afterCompletion(httpRequest, httpResponse);
         }
     }
 
     private void errorHandler(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-        ServletInvocableHandlerMethod invocableHandlerMethod, Exception e) {
+        ServletInvokableHandlerMethod invocableHandlerMethod, Exception e) {
         Throwable target = e;
         if (e.getCause() == null) {
             logger.error("e.getCause==null", e);
@@ -150,7 +147,7 @@ public class DispatcherFilter implements Filter {
     }
 
     private void renderJs(ServletRequest request, ServletResponse response,
-        ServletInvocableHandlerMethod invocableHandlerMethod) {
+        ServletInvokableHandlerMethod invocableHandlerMethod) {
         if (invocableHandlerMethod != null && invocableHandlerMethod.getActionName().endsWith(EXTENSION.JSP)) {
             String key = CONSTANT.ACTION_RESULT_JAVASCRIPT + SYMBOL.UNDERLINE + invocableHandlerMethod.getActionName();
             if (request.getAttribute(key) != null) {
@@ -218,9 +215,9 @@ public class DispatcherFilter implements Filter {
         }
     }
 
-    private ServletInvocableHandlerMethod getHandler(HttpServletRequest request) throws Exception {
+    private ServletInvokableHandlerMethod getHandler(HttpServletRequest request) throws Exception {
         for (HandlerMapping handlerMapping : this.handlerMappings) {
-            ServletInvocableHandlerMethod invocableHandlerMethod = handlerMapping.getHandler(request);
+            ServletInvokableHandlerMethod invocableHandlerMethod = handlerMapping.getHandler(request);
             if (invocableHandlerMethod != null) {
                 return invocableHandlerMethod;
             }
@@ -314,7 +311,7 @@ public class DispatcherFilter implements Filter {
         if (sparrowServletUtility.getServletUtility().include(httpRequest)) {
             return true;
         }
-        ServletInvocableHandlerMethod handlerExecutionChain = null;
+        ServletInvokableHandlerMethod handlerExecutionChain = null;
         try {
             handlerExecutionChain = this.getHandler(httpRequest);
         } catch (Exception e) {
@@ -337,7 +334,6 @@ public class DispatcherFilter implements Filter {
         if (user.getUserId().equals(USER.VISITOR_ID)) {
             String rootPath = Config.getValue(CONFIG.ROOT_PATH);
             if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.MESSAGE.ordinal()) {
-                Map<String, Object> map = new HashMap<String, Object>();
                 Result result = new Result(SPARROW_ERROR.USER_NOT_LOGIN.getCode(), SPARROW_ERROR.USER_NOT_LOGIN.getMessage());
                 httpResponse.getWriter().write(JsonFactory.getProvider().toString(result));
                 return false;

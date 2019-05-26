@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.resolver;
 
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.web.support.MethodParameter;
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +28,7 @@ public interface HandlerMethodArgumentResolver {
 
     boolean supportsParameter(MethodParameter parameter);
 
-    Object resolveArgument(MethodParameter parameter, ServletInvocableHandlerMethod executionChain,
+    Object resolveArgument(MethodParameter parameter, ServletInvokableHandlerMethod executionChain,
         HttpServletRequest request) throws Exception;
 
 }

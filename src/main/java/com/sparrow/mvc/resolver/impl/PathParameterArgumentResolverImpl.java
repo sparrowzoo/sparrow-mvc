@@ -19,7 +19,7 @@ package com.sparrow.mvc.resolver.impl;
 
 import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
-import com.sparrow.mvc.ServletInvocableHandlerMethod;
+import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.RegexUtility;
@@ -46,7 +46,7 @@ public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentR
     }
 
     @Override
-    public Object resolveArgument(MethodParameter methodParameter, ServletInvocableHandlerMethod executionChain,
+    public Object resolveArgument(MethodParameter methodParameter, ServletInvokableHandlerMethod executionChain,
                                   HttpServletRequest request) throws Exception {
         List<String> pathParameterNameList = executionChain.getPathParameterNameList();
         Map<String, String[]> pathParameterValueMap = new HashMap<String, String[]>(pathParameterNameList.size());
