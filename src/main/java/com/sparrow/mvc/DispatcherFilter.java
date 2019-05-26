@@ -18,6 +18,7 @@
 package com.sparrow.mvc;
 
 import com.sparrow.constant.*;
+import com.sparrow.container.FactoryBean;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.EXTENSION;
 import com.sparrow.protocol.constant.magic.DIGIT;
@@ -36,6 +37,7 @@ import com.sparrow.mvc.mapping.impl.UrlMethodHandlerMapping;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.LoginToken;
 import com.sparrow.protocol.Result;
+import com.sparrow.protocol.mvn.HandlerInterceptor;
 import com.sparrow.support.LoginDialog;
 import com.sparrow.support.PrivilegeSupport;
 import com.sparrow.support.web.CookieUtility;
@@ -43,6 +45,7 @@ import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import com.sparrow.utility.web.SparrowServletUtility;
+import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +93,7 @@ public class DispatcherFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        this.handlerInterceptorList = initInterceptors(request);
+        this.initInterceptors();
 
         if (preHandler(httpRequest, httpResponse)) {
             return;
@@ -193,18 +196,26 @@ public class DispatcherFilter implements Filter {
         return false;
     }
 
-    private List<HandlerInterceptor> initInterceptors(ServletRequest request) {
+    private void initInterceptors() {
         if (this.handlerInterceptorList != null) {
-            return this.handlerInterceptorList;
+            return;
         }
-        Map<String, Object> interceptorList = ApplicationContext.getContainer().getBeanMap(CONTAINER.INTERCEPTOR);
-        List<HandlerInterceptor> handlerInterceptorList = new ArrayList<HandlerInterceptor>();
-        if (!sparrowServletUtility.getServletUtility().include(request) && interceptorList != null) {
-            for (Object interceptor : interceptorList.values()) {
-                handlerInterceptorList.add((HandlerInterceptor) interceptor);
+        synchronized (this) {
+            if (this.handlerInterceptorList != null) {
+                return;
             }
+
+            FactoryBean<HandlerInterceptor> handlerInterceptorRegister = container.getInterceptorRegister();
+
+            Iterator<String> iterator = handlerInterceptorRegister.keyIterator();
+            List<HandlerInterceptor> handlerInterceptorList = new ArrayList<HandlerInterceptor>();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                handlerInterceptorList.add(handlerInterceptorRegister.getObject(key));
+
+            }
+            this.handlerInterceptorList = handlerInterceptorList;
         }
-        return handlerInterceptorList;
     }
 
     private ServletInvocableHandlerMethod getHandler(HttpServletRequest request) throws Exception {
