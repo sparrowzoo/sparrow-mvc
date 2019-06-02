@@ -195,7 +195,11 @@ public class ServletInvokableHandlerMethod {
         }
         MethodParameter[] result = new MethodParameter[count];
         for (int i = 0; i < count; i++) {
-            result[i] = new MethodParameter(method, i, parameterClass[i], parameterNameList.get(i));
+            String parameterName=null;
+            if(parameterNameList.size()>i){
+                parameterName=parameterNameList.get(i);
+            }
+            result[i] = new MethodParameter(method, i, parameterClass[i], parameterName);
         }
         return result;
     }
