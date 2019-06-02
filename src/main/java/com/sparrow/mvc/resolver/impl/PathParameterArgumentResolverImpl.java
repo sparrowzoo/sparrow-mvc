@@ -24,6 +24,8 @@ import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.RegexUtility;
 import com.sparrow.web.support.MethodParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -34,6 +36,8 @@ import java.util.Map;
  * @author harry
  */
 public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentResolver, ContainerAware {
+
+    private Logger logger= LoggerFactory.getLogger(PathParameterArgumentResolverImpl.class);
 
     private Container container;
 
@@ -48,7 +52,12 @@ public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ServletInvokableHandlerMethod executionChain,
                                   HttpServletRequest request) throws Exception {
+
         List<String> pathParameterNameList = executionChain.getPathParameterNameList();
+        if(pathParameterNameList==null){
+            logger.warn("path parameter name list is null");
+            return null;
+        }
         Map<String, String[]> pathParameterValueMap = new HashMap<String, String[]>(pathParameterNameList.size());
         String currentPath = ServletUtility.getInstance().getActionKey(request);
 

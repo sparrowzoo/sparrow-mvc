@@ -84,7 +84,7 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                 ServletInvokableHandlerMethod invokableHandlerMethod = new ServletInvokableHandlerMethod();
                 String actionName = actionElement.getAttribute("name");
                 String beanName = ((Element) actionElement.getParentNode())
-                        .getAttribute("name");
+                        .getAttribute("id");
 
                 invokableHandlerMethod.setActionName(actionName);
                 invokableHandlerMethod.setJson(actionName.endsWith(EXTENSION.JSON));

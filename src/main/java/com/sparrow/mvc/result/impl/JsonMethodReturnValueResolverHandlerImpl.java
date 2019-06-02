@@ -64,6 +64,9 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
     public void resolve(ServletInvokableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
         HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
+        if(returnValue==null){
+            return;
+        }
         try {
             response.getWriter().write(JsonFactory.getProvider().toString((POJO) returnValue));
         } finally {
