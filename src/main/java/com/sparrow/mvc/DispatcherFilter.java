@@ -73,6 +73,8 @@ public class DispatcherFilter implements Filter {
 
     private List<HandlerInterceptor> handlerInterceptorList;
 
+    private String[] exceptUrl;
+
     //private List<HandlerExceptionResolver> handlerExceptionResolvers;
 
     private Container container;
@@ -91,7 +93,20 @@ public class DispatcherFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
+
+        if(StringUtility.existInArray(this.exceptUrl,actionKey)){
+            try {
+                chain.doFilter(request, response);
+            } catch (Exception e) {
+                logger.error("filte error",e);
+            }
+            return;
+        }
         this.initInterceptors();
+
+
 
         if (preHandler(httpRequest, httpResponse)) {
             return;
@@ -104,7 +119,6 @@ public class DispatcherFilter implements Filter {
             }
             this.initAttribute(httpRequest, httpResponse);
             if (invokableHandlerMethod == null) {
-                String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
                 String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
                 if (actionKey.endsWith(extension) || actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
@@ -431,6 +445,10 @@ public class DispatcherFilter implements Filter {
         this.container = ApplicationContext.getContainer();
         this.cookieUtility = this.container.getBean(SYS_OBJECT_NAME.COOKIE_UTILITY);
         this.connectionContextHolder=this.container.getBean(SYS_OBJECT_NAME.CONNECTION_CONTEXT_HOLDER);
+        String exceptUrl= config.getInitParameter("except_url");
+        if(!StringUtility.isNullOrEmpty(exceptUrl)){
+            this.exceptUrl=exceptUrl.split(",");
+        }
         this.initStrategies();
     }
 
