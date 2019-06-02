@@ -72,15 +72,17 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
             return resolver.resolveArgument(parameter, executionChain, request);
         }
         //先从request resolver
+        Object result=null;
         for (HandlerMethodArgumentResolver methodArgumentResolver : this.argumentResolvers) {
             if (methodArgumentResolver.supportsParameter(parameter)) {
-                Object result = methodArgumentResolver.resolveArgument(parameter, executionChain, request);
+                result= methodArgumentResolver.resolveArgument(parameter, executionChain, request);
                 if (result != null) {
                     this.argumentResolverCache.put(parameter, methodArgumentResolver);
                     return result;
                 }
             }
         }
+        logger.warn("[{}] can't parse please check parameter name is correct",parameter.getParameterName());
         return null;
     }
 }

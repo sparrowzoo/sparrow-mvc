@@ -202,13 +202,13 @@ public class ServletInvokableHandlerMethod {
 
     public Object invokeAndHandle(FilterChain chain, HttpServletRequest request,
         HttpServletResponse response) throws Exception {
-        Object[] args = getMethodArgumentValues(request);
+        Object[] args = getMethodArgumentValues(request,response);
         Object returnValue = this.method.invoke(this.controller, args);
         methodReturnValueResolverHandler.resolve(this, returnValue, chain, request, response);
         return returnValue;
     }
 
-    private Object[] getMethodArgumentValues(HttpServletRequest request) throws Exception {
+    private Object[] getMethodArgumentValues(HttpServletRequest request,HttpServletResponse response) throws Exception {
         MethodParameter[] parameters = this.methodParameters;
         if (this.methodParameters == null || this.methodParameters.length == 0) {
             return null;
@@ -216,6 +216,14 @@ public class ServletInvokableHandlerMethod {
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             MethodParameter parameter = parameters[i];
+            if(parameter.getParameterType().equals(HttpServletRequest.class)){
+                args[i]=request;
+                continue;
+            }
+            if(parameter.getParameterType().equals(HttpServletResponse.class)){
+                args[i]=response;
+                continue;
+            }
             if (this.handlerMethodArgumentResolverComposite.supportsParameter(parameter)) {
                 args[i] = this.handlerMethodArgumentResolverComposite.resolveArgument(
                     parameter, this, request);
