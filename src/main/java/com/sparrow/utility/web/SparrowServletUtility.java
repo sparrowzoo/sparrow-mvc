@@ -44,16 +44,10 @@ public class SparrowServletUtility {
     }
 
     public void moveAttribute(ServletRequest request) {
-        String actionKey = servletUtility.getActionKey(request);
         Map<String, Object> map = HttpContext.getContext().getHolder();
         for (String key : map.keySet()) {
             Object value = map.get(key);
-            //Alert js 兼容
-            if (key.equals(CONSTANT.ACTION_RESULT_JAVASCRIPT)) {
-                request.setAttribute(key + "_" + actionKey, value);
-            } else {
-                request.setAttribute(key, value);
-            }
+            request.setAttribute(key, value);
         }
         HttpContext.getContext().remove();
     }

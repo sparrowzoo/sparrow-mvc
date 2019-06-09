@@ -17,30 +17,30 @@
 
 package com.sparrow.mvc.result.impl;
 
-import com.sparrow.constant.*;
-import com.sparrow.protocol.constant.CONSTANT;
-import com.sparrow.protocol.constant.magic.SYMBOL;
+import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.CONFIG_KEY_LANGUAGE;
+import com.sparrow.constant.SPARROW_ERROR;
 import com.sparrow.core.Pair;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.Result;
+import com.sparrow.protocol.constant.CONSTANT;
+import com.sparrow.protocol.constant.magic.SYMBOL;
+import com.sparrow.protocol.mvn.PageSwitchMode;
+import com.sparrow.protocol.mvn.ViewWithModel;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
-import com.sparrow.web.support.Alert;
-import com.sparrow.protocol.mvn.PageSwitchMode;
-import com.sparrow.protocol.mvn.ViewWithModel;
-
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author harry
@@ -120,7 +120,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
         // /index-->template/index.jsp
         if (PageSwitchMode.FORWARD.equals(pageSwitchMode) && !url.contains(SYMBOL.DOT)) {
-            url=servletUtility.getDispatcherUrl(url);
+            url=servletUtility.assembleActualUrl(url);
         }
 
         Object urlParameters = HttpContext.getContext().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
@@ -177,21 +177,12 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 response.sendRedirect(url);
                 break;
             case TRANSIT:
-                String transitType = Config.getValue(CONFIG.TRANSIT_TYPE);
-                if (!StringUtility.isNullOrEmpty(transitType) && "alert".equalsIgnoreCase(transitType)) {
-                    if (StringUtility.isNullOrEmpty(url) || StringUtility.matchUrl(referer, url)) {
-                        Alert.smile(message);
-                    } else {
-                        Alert.wait(message, url);
-                    }
-                    response.sendRedirect(referer);
-                } else {
+
                     String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
                     if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
                         transitUrl = rootPath + transitUrl;
                     }
                     response.sendRedirect(transitUrl + "?" + url);
-                }
                 break;
             case FORWARD:
                 //http://manage.sparrowzoo.com/login.jsp?http://manage.sparrowzoo.com/default.jsp?http://manage.sparrowzoo.com/administrator/my.jsp
@@ -213,7 +204,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         PageSwitchMode errorPageSwitch = PageSwitchMode.REDIRECT;
         String exceptionSwitchMode = Config.getValue(CONFIG.EXCEPTION_SWITCH_MODE);
         if (!StringUtility.isNullOrEmpty(exceptionSwitchMode)) {
-            errorPageSwitch = PageSwitchMode.valueOf(exceptionSwitchMode);
+            errorPageSwitch = PageSwitchMode.valueOf(exceptionSwitchMode.toUpperCase());
         }
         BusinessException businessException = null;
         //业务异常
@@ -225,44 +216,34 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         Result result = Result.FAIL(businessException);
         //todo set error msg
         //result.setError();
-        String url = Config.getValue(CONFIG.ERROR_URL);
 
-        if (StringUtility.isNullOrEmpty(url)) {
-            url = "/500.jsp";
-        }
-        this.flash(request, url, CONSTANT.EXCEPTION_RESULT, result);
+        String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        String referer = servletUtility.referer(request);
+        String relativeReferer=referer.substring(rootPath.length()+1);
+        String flashUrl;
         switch (errorPageSwitch) {
             case REDIRECT:
+                String url = Config.getValue(CONFIG.ERROR_URL);
+                if (StringUtility.isNullOrEmpty(url)) {
+                    url = "500";
+                }
+                flashUrl=servletUtility.assembleActualUrl(url);
+                this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
                 response.sendRedirect(url);
                 break;
             case FORWARD:
-                String rootPath = Config.getValue(CONFIG.ROOT_PATH);
-                if (url.startsWith(rootPath)) {
-                    url = url.substring(rootPath.length());
-                }
-                RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-                dispatcher.forward(request, response);
+                flashUrl=servletUtility.assembleActualUrl(relativeReferer);
+                this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
+                response.sendRedirect(relativeReferer);
                 break;
             case TRANSIT:
-                String transitType = Config.getValue(CONFIG.TRANSIT_TYPE);
-                String referer = servletUtility.referer(request);
-                if (!StringUtility.isNullOrEmpty(transitType)) {
-                    //to 策略模式修改
-                    if ("alert".equalsIgnoreCase(transitType)) {
-                        if (StringUtility.isNullOrEmpty(url) || StringUtility.matchUrl(referer, url)) {
-                            Alert.smile(result.getError());
-                        } else {
-                            Alert.wait(result.getError(), url);
-                        }
-                        response.sendRedirect(referer);
-                    }
-                } else {
-                    String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
-                    if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
-                        transitUrl = Config.getValue(CONFIG.ROOT_PATH) + transitUrl;
-                    }
-                    response.sendRedirect(transitUrl + "?" + url);
+                flashUrl=servletUtility.assembleActualUrl(relativeReferer);
+                this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
+                String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
+                if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
+                    transitUrl = Config.getValue(CONFIG.ROOT_PATH) + transitUrl;
                 }
+                response.sendRedirect(transitUrl + "?" + relativeReferer);
             default:
         }
     }

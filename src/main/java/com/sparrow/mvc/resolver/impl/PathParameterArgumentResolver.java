@@ -19,10 +19,15 @@ package com.sparrow.mvc.resolver.impl;
 
 import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
+import com.sparrow.core.TypeConverter;
+import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.support.web.ServletUtility;
+import com.sparrow.utility.HtmlUtility;
 import com.sparrow.utility.RegexUtility;
+import com.sparrow.utility.StringUtility;
 import com.sparrow.web.support.MethodParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +40,11 @@ import java.util.Map;
 /**
  * @author harry
  */
-public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentResolver, ContainerAware {
+public class PathParameterArgumentResolver implements HandlerMethodArgumentResolver, ContainerAware {
 
-    private Logger logger= LoggerFactory.getLogger(PathParameterArgumentResolverImpl.class);
+    private Logger logger= LoggerFactory.getLogger(PathParameterArgumentResolver.class);
 
-    private Container container;
-
-    private ParameterSupport parameterSupport=ParameterSupport.getInstance();
-
+    private Container container= ApplicationContext.getContainer();
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -58,18 +60,29 @@ public class PathParameterArgumentResolverImpl implements HandlerMethodArgumentR
             logger.warn("path parameter name list is null");
             return null;
         }
-        Map<String, String[]> pathParameterValueMap = new HashMap<String, String[]>(pathParameterNameList.size());
+        Map<String, String> pathParameterValueMap = new HashMap<String, String>(pathParameterNameList.size());
+        //actual url
         String currentPath = ServletUtility.getInstance().getActionKey(request);
 
 
         List<List<String>> lists = RegexUtility.multiGroups(currentPath, executionChain.getActionRegex());
         for (List<String> list : lists) {
             for (String parameter : list) {
-                String[] array = new String[]{parameter};
-                pathParameterValueMap.put(pathParameterNameList.get(pathParameterValueMap.size()), array);
+                pathParameterValueMap.put(pathParameterNameList.get(pathParameterValueMap.size()), parameter);
             }
         }
-        return this.parameterSupport.argumentResolve(this.container, methodParameter, executionChain, pathParameterValueMap);
+
+        String parameter = pathParameterValueMap.get(methodParameter.getParameterName());
+        if (methodParameter.getParameterType().equals(String.class)) {
+            if (StringUtility.isNullOrEmpty(parameter)) {
+                return SYMBOL.EMPTY;
+            }
+            if (executionChain.isValidateRequest()) {
+                parameter = HtmlUtility.encode(parameter);
+            }
+            return parameter;
+        }
+        return new TypeConverter(methodParameter.getParameterName(), methodParameter.getParameterType()).convert(parameter);
     }
 
     @Override

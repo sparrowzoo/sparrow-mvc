@@ -100,7 +100,7 @@ public class DispatcherFilter implements Filter {
             try {
                 chain.doFilter(request, response);
             } catch (Exception e) {
-                logger.error("filte error",e);
+                logger.error("filter error",e);
             }
             return;
         }
@@ -123,7 +123,7 @@ public class DispatcherFilter implements Filter {
                 if (actionKey.endsWith(extension) || actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
                 } else {
-                    String dispacherUrl = sparrowServletUtility.getServletUtility().getDispatcherUrl(actionKey);
+                    String dispacherUrl = sparrowServletUtility.getServletUtility().assembleActualUrl(actionKey);
                     RequestDispatcher dispatcher = request.getRequestDispatcher(dispacherUrl);
                     dispatcher.forward(request, response);
                 }
@@ -136,7 +136,6 @@ public class DispatcherFilter implements Filter {
             errorHandler(httpRequest, httpResponse, invokableHandlerMethod, e);
         } finally {
             //页面渲染完成之后执行
-            renderJs(request, response, invokableHandlerMethod);
             afterCompletion(httpRequest, httpResponse);
         }
     }
@@ -158,20 +157,6 @@ public class DispatcherFilter implements Filter {
             }
         }
         this.connectionContextHolder.removeAll();
-    }
-
-    private void renderJs(ServletRequest request, ServletResponse response,
-        ServletInvokableHandlerMethod invocableHandlerMethod) {
-        if (invocableHandlerMethod != null && invocableHandlerMethod.getActionName().endsWith(EXTENSION.JSP)) {
-            String key = CONSTANT.ACTION_RESULT_JAVASCRIPT + SYMBOL.UNDERLINE + invocableHandlerMethod.getActionName();
-            if (request.getAttribute(key) != null) {
-                try {
-                    response.getWriter().write(request.getAttribute(key).toString());
-                } catch (IOException e) {
-                    logger.error("response writer error", e);
-                }
-            }
-        }
     }
 
     private void afterCompletion(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
@@ -309,13 +294,25 @@ public class DispatcherFilter implements Filter {
         if (sessionPair == null) {
             return;
         }
-        if (StringUtility.matchUrl(sessionPair.getFirst(), actionKey)||StringUtility.matchUrl(sessionPair.getFirst(),request.getQueryString())) {
+
+        String transitActualUrl="";
+        if(!StringUtility.isNullOrEmpty(request.getQueryString())){
+            transitActualUrl=sparrowServletUtility.getServletUtility().assembleActualUrl(request.getQueryString());
+        }
+
+        if (StringUtility.matchUrl(sessionPair.getFirst(), actionKey)||StringUtility.matchUrl(sessionPair.getFirst(),transitActualUrl)) {
             Map<String, Object> values = sessionPair.getSecond();
             for (String key : values.keySet()) {
                 request.setAttribute(key, values.get(key));
             }
             return;
         }
+        String directActualUrl=sparrowServletUtility.getServletUtility().assembleActualUrl(actionKey);
+        if(StringUtility.matchUrl(sessionPair.getFirst(),directActualUrl)){
+            return;
+        }
+
+
         //url换掉时，则session 被清空 （非include）
         request.getSession().removeAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY);
     }

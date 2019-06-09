@@ -19,19 +19,21 @@ package com.sparrow.mvc.resolver.impl;
 
 import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
+import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.web.support.MethodParameter;
-
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author harry
  */
-public class RequestParameterArgumentResolverImpl implements HandlerMethodArgumentResolver, ContainerAware {
+public class RequestAttributeArgumentResolver implements HandlerMethodArgumentResolver, ContainerAware {
 
-    private Container container;
-    private ParameterSupport parameterSupport=ParameterSupport.getInstance();
+    private Container container= ApplicationContext.getContainer();
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -41,7 +43,15 @@ public class RequestParameterArgumentResolverImpl implements HandlerMethodArgume
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ServletInvokableHandlerMethod executionChain,
         HttpServletRequest request) throws Exception {
-        return parameterSupport.argumentResolve(this.container,methodParameter, executionChain, request.getParameterMap());
+
+        Object arg= request.getAttribute(methodParameter.getParameterName());
+        if(arg==null){
+            return null;
+        }
+        if(arg.getClass().equals(methodParameter.getParameterType())){
+           return arg;
+        }
+        return null;
     }
     @Override
     public void aware(Container container, String beanName) {

@@ -68,7 +68,8 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
             return;
         }
         try {
-            response.getWriter().write(JsonFactory.getProvider().toString((POJO) returnValue));
+            Result result=new Result(returnValue);
+            response.getWriter().write(JsonFactory.getProvider().toString(result));
         } finally {
             HttpContext.getContext().remove();
         }
