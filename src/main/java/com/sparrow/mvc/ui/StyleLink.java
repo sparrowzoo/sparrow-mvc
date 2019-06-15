@@ -58,7 +58,7 @@ public class StyleLink extends TagSupport {
 
         if (href.contains("$website")) {
             href = href.replace("$website",
-                Config.getValue(CONFIG.IMAGE_WEBSITE));
+                Config.getValue(CONFIG.WEBSITE));
         }
         writeHTML += href;
         writeHTML += "?v=" + Config.getValue(CONFIG.RESOURCE_VERSION)
