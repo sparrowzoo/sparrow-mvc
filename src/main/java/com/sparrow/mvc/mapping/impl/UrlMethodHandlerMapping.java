@@ -113,7 +113,7 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                 RequestParameters
                         requestParameters = method.getAnnotation(RequestParameters.class);
                 if (requestParameters != null) {
-                    String[] names = requestParameters.names().split(SYMBOL.COMMA);
+                    String[] names = requestParameters.value().split(SYMBOL.COMMA);
                     List<String> parameterNameList = new ArrayList<String>(names.length);
                     for (String parameter : names) {
                         parameterNameList.add(parameter.trim());
