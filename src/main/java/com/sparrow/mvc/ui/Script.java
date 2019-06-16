@@ -30,6 +30,7 @@ import com.sparrow.utility.StringUtility;
 @SuppressWarnings("serial")
 public class Script extends TagSupport {
     private String src;
+    private Boolean asyn=false;
 
     public String getSrc() {
         return src;
@@ -37,6 +38,14 @@ public class Script extends TagSupport {
 
     public void setSrc(String src) {
         this.src = src;
+    }
+
+    public Boolean getAsyn() {
+        return asyn;
+    }
+
+    public void setAsyn(Boolean asyn) {
+        this.asyn = asyn;
     }
 
     @Override
@@ -52,7 +61,12 @@ public class Script extends TagSupport {
             this.setSrc(this.getSrc().replace("$language", language.toString()));
         }
 
-        writeHTML = "<script language=\"javascript\" type=\"text/javascript\"  src=\"";
+
+        writeHTML = "<script language=\"javascript\" type=\"text/javascript\"";
+        if(this.asyn) {
+            writeHTML += " defer asyn=\"true\" ";
+        }
+        writeHTML+="  src=\"";
         String src = this.getSrc();
         if (src.contains("$resource")) {
             src = src.replace("$resource",
@@ -69,6 +83,8 @@ public class Script extends TagSupport {
         }
 
         writeHTML += src;
+
+
         writeHTML += "?v=" + Config.getValue(CONFIG.RESOURCE_VERSION)
             + "\"></script>";
 
