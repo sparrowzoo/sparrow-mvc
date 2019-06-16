@@ -337,7 +337,7 @@ public class DispatcherFilter implements Filter {
         String actionName = handlerExecutionChain.getActionName();
         LoginToken user = this.cookieUtility.getUser(httpRequest);
         httpRequest.setAttribute(USER.ID, user.getUserId());
-        httpRequest.setAttribute(USER.LOGIN_NAME, user.getUserName());
+        httpRequest.setAttribute(USER.LOGIN_TOKEN,user);
         if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.NO_LOGIN.ordinal()) {
             return true;
         }

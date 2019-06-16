@@ -34,6 +34,12 @@ import java.util.List;
 public class ServletInvokableHandlerMethod {
     /**
      * 登录类型
+     *  0:不需要登录
+     * 1:正常登录
+     * 2:框架内登录 default.jsp内登录
+     * 3:管理员登录
+     * 4:对话框登录
+     * 5:json 提示
      */
     private int loginType = DIGIT.ZERO;
     /**

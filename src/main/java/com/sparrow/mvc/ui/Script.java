@@ -79,7 +79,7 @@ public class Script extends TagSupport {
         }
 
         if (src.contains("$website")) {
-            src = src.replace("$website", Config.getValue(CONFIG.IMAGE_WEBSITE));
+            src = src.replace("$website", Config.getValue(CONFIG.WEBSITE));
         }
 
         writeHTML += src;
