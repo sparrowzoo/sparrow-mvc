@@ -25,6 +25,7 @@ import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.POJO;
 import com.sparrow.protocol.Result;
 import com.sparrow.protocol.constant.EXTENSION;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.support.web.HttpContext;
 
 import javax.servlet.FilterChain;
@@ -65,7 +66,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
         HttpServletRequest request,
         HttpServletResponse response) throws IOException, ServletException {
         if(returnValue==null){
-            return;
+            returnValue= SYMBOL.EMPTY;
         }
         try {
             Result result=new Result(returnValue);
