@@ -18,16 +18,12 @@
 package com.sparrow.mvc;
 
 import com.sparrow.constant.*;
-import com.sparrow.container.FactoryBean;
-import com.sparrow.protocol.constant.CONSTANT;
-import com.sparrow.protocol.constant.EXTENSION;
-import com.sparrow.protocol.constant.magic.DIGIT;
-import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
+import com.sparrow.container.FactoryBean;
 import com.sparrow.core.Pair;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.core.spi.JsonFactory;
-import com.sparrow.datasource.ConnectionContextHolderImpl;
+import com.sparrow.datasource.ConnectionContextHolder;
 import com.sparrow.enums.LOGIN_TYPE;
 import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.adapter.impl.MethodControllerHandlerAdapter;
@@ -36,6 +32,10 @@ import com.sparrow.mvc.mapping.impl.UrlMethodHandlerMapping;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.LoginToken;
 import com.sparrow.protocol.Result;
+import com.sparrow.protocol.constant.CONSTANT;
+import com.sparrow.protocol.constant.EXTENSION;
+import com.sparrow.protocol.constant.magic.DIGIT;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.protocol.mvn.HandlerInterceptor;
 import com.sparrow.support.LoginDialog;
 import com.sparrow.support.PrivilegeSupport;
@@ -44,7 +44,6 @@ import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import com.sparrow.utility.web.SparrowServletUtility;
-import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +81,7 @@ public class DispatcherFilter implements Filter {
 
     private CookieUtility cookieUtility;
 
-    private ConnectionContextHolderImpl connectionContextHolder;
+    private ConnectionContextHolder connectionContextHolder;
 
     @Override
     public void destroy() {
@@ -156,7 +156,9 @@ public class DispatcherFilter implements Filter {
                 logger.error("exception resolve error", ignore);
             }
         }
-        this.connectionContextHolder.removeAll();
+        if(this.connectionContextHolder!=null) {
+            this.connectionContextHolder.removeAll();
+        }
     }
 
     private void afterCompletion(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
