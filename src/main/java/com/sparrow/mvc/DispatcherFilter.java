@@ -273,6 +273,8 @@ public class DispatcherFilter implements Filter {
         request.setAttribute(CONFIG.RESOURCE,
             Config.getValue(CONFIG.RESOURCE));
 
+        request.setAttribute(CONFIG.UPLOAD_PATH,Config.getValue(CONFIG.UPLOAD_PATH));
+
         //设置图片域
         request.setAttribute(CONFIG.IMAGE_WEBSITE, Config.getValue(CONFIG.IMAGE_WEBSITE));
 
