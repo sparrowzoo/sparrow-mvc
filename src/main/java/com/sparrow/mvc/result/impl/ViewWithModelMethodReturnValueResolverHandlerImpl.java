@@ -33,6 +33,7 @@ import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +71,16 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
     /**
      * 根据返回结果判断url
      *
-     * @param actionResult direct:login direct:login.jsp direct:login|flash_url.jsp direct:success login login.jsp
+     * @param actionResult direct:login
+     *                     <p>
+     *                     direct:login.jsp
+     *                     <p>
+     *                     direct:login|flash_url.jsp
+     *                     <p>
+     *                     direct:success login login.jsp
      *                     success
      */
-    private ViewWithModel parse(String actionResult, String referer, String defaultSucceessUrl) {
+    private ViewWithModel parse(String actionResult, String referer, String defaultSuccessUrl) {
         String url;
         PageSwitchMode pageSwitchMode = PageSwitchMode.REDIRECT;
         //手动返回url
@@ -84,7 +91,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         } else {
             url = actionResult;
         }
-        url = assembleUrl(referer, defaultSucceessUrl, url, pageSwitchMode);
+        url = assembleUrl(referer, defaultSuccessUrl, url, pageSwitchMode);
         switch (pageSwitchMode) {
             case FORWARD:
                 return ViewWithModel.forward(url);
@@ -120,7 +127,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
         // /index-->template/index.jsp
         if (PageSwitchMode.FORWARD.equals(pageSwitchMode) && !url.contains(SYMBOL.DOT)) {
-            url=servletUtility.assembleActualUrl(url);
+            url = servletUtility.assembleActualUrl(url);
         }
 
         Object urlParameters = HttpContext.getContext().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
@@ -177,15 +184,13 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 response.sendRedirect(url);
                 break;
             case TRANSIT:
-
-                    String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
-                    if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
-                        transitUrl = rootPath + transitUrl;
-                    }
-                    response.sendRedirect(transitUrl + "?" + url);
+                String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
+                if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
+                    transitUrl = rootPath + transitUrl;
+                }
+                response.sendRedirect(transitUrl + "?" + url);
                 break;
             case FORWARD:
-                //http://manage.sparrowzoo.com/login.jsp?http://manage.sparrowzoo.com/default.jsp?http://manage.sparrowzoo.com/administrator/my.jsp
                 if (rootPath != null && url.startsWith(rootPath)) {
                     url = url.substring(rootPath.length());
                 }
@@ -219,7 +224,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
 
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
         String referer = servletUtility.referer(request);
-        String relativeReferer=referer.substring(rootPath.length()+1);
+        String relativeReferer = referer.substring(rootPath.length() + 1);
         String flashUrl;
         switch (errorPageSwitch) {
             case REDIRECT:
@@ -227,17 +232,17 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 if (StringUtility.isNullOrEmpty(url)) {
                     url = "500";
                 }
-                flashUrl=servletUtility.assembleActualUrl(url);
+                flashUrl = servletUtility.assembleActualUrl(url);
                 this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
                 response.sendRedirect(url);
                 break;
             case FORWARD:
-                flashUrl=servletUtility.assembleActualUrl(relativeReferer);
+                flashUrl = servletUtility.assembleActualUrl(relativeReferer);
                 this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
                 response.sendRedirect(relativeReferer);
                 break;
             case TRANSIT:
-                flashUrl=servletUtility.assembleActualUrl(relativeReferer);
+                flashUrl = servletUtility.assembleActualUrl(relativeReferer);
                 this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
                 String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
                 if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
