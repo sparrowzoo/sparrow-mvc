@@ -95,8 +95,8 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
         List<MethodReturnValueResolverHandler> methodReturnValueResolverHandlers = new ArrayList<MethodReturnValueResolverHandler>();
         MethodReturnValueResolverHandler viewWithModelMethodReturnValueResolverHandler = new ViewWithModelMethodReturnValueResolverHandlerImpl();
         MethodReturnValueResolverHandler jsonMethodReturnValueResolverHandler = new JsonMethodReturnValueResolverHandlerImpl();
-        methodReturnValueResolverHandlers.add(viewWithModelMethodReturnValueResolverHandler);
         methodReturnValueResolverHandlers.add(jsonMethodReturnValueResolverHandler);
+        methodReturnValueResolverHandlers.add(viewWithModelMethodReturnValueResolverHandler);
         this.returnValueResolverHandlerComposite.addResolvers(methodReturnValueResolverHandlers);
     }
 }

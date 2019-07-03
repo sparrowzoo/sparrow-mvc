@@ -77,7 +77,11 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
      *                     <p>
      *                     direct:login|flash_url.jsp
      *                     <p>
-     *                     direct:success login login.jsp
+     *                     direct:success
+     *                     <p>
+     *                     login
+     *                     <p>
+     *                     login.jsp
      *                     success
      */
     private ViewWithModel parse(String actionResult, String referer, String defaultSuccessUrl) {
