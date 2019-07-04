@@ -64,7 +64,7 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
 
     private void init() {
         Container container = ApplicationContext.getContainer();
-        DocumentLoader documentLoader=new DefaultDocumentLoader();
+        DocumentLoader documentLoader = new DefaultDocumentLoader();
 
         String xmlConfig = Config.getValue(CONFIG.MVC_CONFIG);
         if (StringUtility.isNullOrEmpty(xmlConfig)) {
@@ -72,9 +72,9 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
         }
         Document document;
         try {
-            document=documentLoader.loadDocument(xmlConfig,false);
+            document = documentLoader.loadDocument(xmlConfig, false);
         } catch (Exception e) {
-            logger.error("document load error",e);
+            logger.error("document load error", e);
             return;
         }
         List<Element> actionElementList;
@@ -138,6 +138,13 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                     }
                 }
 
+                if (invokableHandlerMethod.getSuccessUrl() == null) {
+                    if (!invokableHandlerMethod.getActionName().contains(".")) {
+                        String dispatcherUrl = servletUtility.assembleActualUrl(invokableHandlerMethod.getActionName());
+                        invokableHandlerMethod.setSuccessUrl(dispatcherUrl);
+                    }
+                }
+
                 if (actionName.contains(SYMBOL.BIG_LEFT_PARENTHESIS) && actionName.contains(SYMBOL.BIG_RIGHT_PARENTHESIS)) {
                     Pair<String, List<String>> pathParameters = RegexUtility.getActionRegex(actionName);
                     invokableHandlerMethod.setActionRegex(pathParameters.getFirst());
@@ -156,12 +163,12 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
     @Override
     public ServletInvokableHandlerMethod getHandler(HttpServletRequest request) throws Exception {
         String actionKey = servletUtility.getActionKey(request);
-        ServletInvokableHandlerMethod servletInvocableHandlerMethod= this.mapping.get(actionKey);
-        if(servletInvocableHandlerMethod!=null){
+        ServletInvokableHandlerMethod servletInvocableHandlerMethod = this.mapping.get(actionKey);
+        if (servletInvocableHandlerMethod != null) {
             return servletInvocableHandlerMethod;
         }
-        for(String regex:this.dynamicMapping.keySet()){
-            if(RegexUtility.matches(actionKey,regex)){
+        for (String regex : this.dynamicMapping.keySet()) {
+            if (RegexUtility.matches(actionKey, regex)) {
                 return this.dynamicMapping.get(regex);
             }
         }

@@ -123,8 +123,8 @@ public class DispatcherFilter implements Filter {
                 if (actionKey.endsWith(extension) || actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
                 } else {
-                    String dispacherUrl = sparrowServletUtility.getServletUtility().assembleActualUrl(actionKey);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher(dispacherUrl);
+                    String dispatcherUrl = sparrowServletUtility.getServletUtility().assembleActualUrl(actionKey);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher(dispatcherUrl);
                     dispatcher.forward(request, response);
                 }
             } else {

@@ -162,22 +162,25 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             viewWithModel = (ViewWithModel) returnValue;
             url = this.assembleUrl(referer, handlerExecutionChain.getSuccessUrl(), viewWithModel.getUrl(), viewWithModel.getSwitchMode());
         }
+
         //无返回值，直接返回 不处理
         if (viewWithModel == null) {
             chain.doFilter(request, response);
             return;
         }
-
-        String key = StringUtility.setFirstByteLowerCase(viewWithModel.getVo().getClass().getSimpleName());
-        if (!StringUtility.isNullOrEmpty(viewWithModel.getFlashUrl())) {
-            this.flash(request, viewWithModel.getFlashUrl(), key, viewWithModel.getVo());
-        }
-        request.setAttribute(key, viewWithModel.getVo());
-
         if (url == null) {
             chain.doFilter(request, response);
             return;
         }
+
+        if(viewWithModel.getVo()!=null) {
+            String key = StringUtility.setFirstByteLowerCase(viewWithModel.getVo().getClass().getSimpleName());
+            if (!StringUtility.isNullOrEmpty(viewWithModel.getFlashUrl())) {
+                this.flash(request, viewWithModel.getFlashUrl(), key, viewWithModel.getVo());
+            }
+            request.setAttribute(key, viewWithModel.getVo());
+        }
+
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
         String message = Config.getLanguageValue(CONFIG_KEY_LANGUAGE.TRANSIT_SUCCESS_MESSAGE);
         switch (viewWithModel.getSwitchMode()) {
