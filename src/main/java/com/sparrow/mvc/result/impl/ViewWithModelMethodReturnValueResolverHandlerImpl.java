@@ -18,7 +18,6 @@
 package com.sparrow.mvc.result.impl;
 
 import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.CONFIG_KEY_LANGUAGE;
 import com.sparrow.constant.SPARROW_ERROR;
 import com.sparrow.core.Pair;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
@@ -64,7 +63,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             values.put(key, o);
         }
         Pair<String, Map<String, Object>> sessionMap = Pair.create(flashUrl, values);
-        request.getSession().setAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY, sessionMap);
+        request.getSession().setAttribute(CONSTANT.FLASH_KEY, sessionMap);
         HttpContext.getContext().remove();
     }
 
@@ -173,16 +172,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             return;
         }
 
-        if(viewWithModel.getVo()!=null) {
-            String key = StringUtility.setFirstByteLowerCase(viewWithModel.getVo().getClass().getSimpleName());
-            if (!StringUtility.isNullOrEmpty(viewWithModel.getFlashUrl())) {
-                this.flash(request, viewWithModel.getFlashUrl(), key, viewWithModel.getVo());
-            }
-            request.setAttribute(key, viewWithModel.getVo());
-        }
-
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
-        String message = Config.getLanguageValue(CONFIG_KEY_LANGUAGE.TRANSIT_SUCCESS_MESSAGE);
         switch (viewWithModel.getSwitchMode()) {
             case REDIRECT:
                 if (rootPath != null && !url.startsWith(rootPath)) {
@@ -191,7 +181,9 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 response.sendRedirect(url);
                 break;
             case TRANSIT:
-                String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
+                String flashUrl = servletUtility.assembleActualUrl(referer);
+                this.flash(request, flashUrl, CONSTANT.FLASH_SUCCESS_RESULT, viewWithModel.getVo());
+                String transitUrl = Config.getValue(CONFIG.SUCCESS_TRANSIT_URL);
                 if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
                     transitUrl = rootPath + transitUrl;
                 }
@@ -240,17 +232,17 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                     url = "500";
                 }
                 flashUrl = servletUtility.assembleActualUrl(url);
-                this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
+                this.flash(request, flashUrl, CONSTANT.FLASH_EXCEPTION_RESULT, result);
                 response.sendRedirect(url);
                 break;
             case FORWARD:
                 flashUrl = servletUtility.assembleActualUrl(relativeReferer);
-                this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
+                this.flash(request, flashUrl, CONSTANT.FLASH_EXCEPTION_RESULT, result);
                 response.sendRedirect(relativeReferer);
                 break;
             case TRANSIT:
                 flashUrl = servletUtility.assembleActualUrl(relativeReferer);
-                this.flash(request, flashUrl, CONSTANT.EXCEPTION_RESULT, result);
+                this.flash(request, flashUrl, CONSTANT.FLASH_EXCEPTION_RESULT, result);
                 String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
                 if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
                     transitUrl = Config.getValue(CONFIG.ROOT_PATH) + transitUrl;

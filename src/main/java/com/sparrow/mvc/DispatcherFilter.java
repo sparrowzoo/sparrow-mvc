@@ -89,23 +89,22 @@ public class DispatcherFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
-        FilterChain chain) {
+                         FilterChain chain) {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
 
-        if(StringUtility.existInArray(this.exceptUrl,actionKey)){
+        if (StringUtility.existInArray(this.exceptUrl, actionKey)) {
             try {
                 chain.doFilter(request, response);
             } catch (Exception e) {
-                logger.error("filter error",e);
+                logger.error("filter error", e);
             }
             return;
         }
         this.initInterceptors();
-
 
 
         if (preHandler(httpRequest, httpResponse)) {
@@ -141,7 +140,7 @@ public class DispatcherFilter implements Filter {
     }
 
     private void errorHandler(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-        ServletInvokableHandlerMethod invocableHandlerMethod, Exception e) {
+                              ServletInvokableHandlerMethod invocableHandlerMethod, Exception e) {
         Throwable target = e;
         if (e.getCause() == null) {
             logger.error("e.getCause==null", e);
@@ -156,7 +155,7 @@ public class DispatcherFilter implements Filter {
                 logger.error("exception resolve error", ignore);
             }
         }
-        if(this.connectionContextHolder!=null) {
+        if (this.connectionContextHolder != null) {
             this.connectionContextHolder.removeAll();
         }
     }
@@ -233,11 +232,11 @@ public class DispatcherFilter implements Filter {
             }
         }
         throw new ServletException("No adapter for handler [" + handler +
-            "]: The DispatcherServlet configuration needs to include a HandlerAdapter that supports this handler");
+                "]: The DispatcherServlet configuration needs to include a HandlerAdapter that supports this handler");
     }
 
     private void initAttribute(HttpServletRequest request,
-        HttpServletResponse response) {
+                               HttpServletResponse response) {
         //初始化 request
         HttpContext.getContext().setRequest(request);
         //初始化 response
@@ -254,75 +253,75 @@ public class DispatcherFilter implements Filter {
         if (!StringUtility.isNullOrEmpty(rootPath)) {
             request.setAttribute(CONFIG.ROOT_PATH, rootPath);
             request.setAttribute(CONFIG.WEBSITE,
-                Config.getValue(CONFIG.WEBSITE));
+                    Config.getValue(CONFIG.WEBSITE));
         }
 
         //国际化
         String internationalization = Config
-            .getValue(CONFIG.INTERNATIONALIZATION);
+                .getValue(CONFIG.INTERNATIONALIZATION);
         if (internationalization != null) {
             //设置当前请求语言
             String language = request.getParameter(CONFIG.LANGUAGE);
             if (language == null
-                || !internationalization.contains(language)) {
+                    || !internationalization.contains(language)) {
                 language = Config.getValue(CONFIG.LANGUAGE);
             }
             HttpContext.getContext().put(CONSTANT.REQUEST_LANGUAGE, language);
         }
         //设置资源根路径
         request.setAttribute(CONFIG.RESOURCE,
-            Config.getValue(CONFIG.RESOURCE));
+                Config.getValue(CONFIG.RESOURCE));
 
-        request.setAttribute(CONFIG.UPLOAD_PATH,Config.getValue(CONFIG.UPLOAD_PATH));
+        request.setAttribute(CONFIG.UPLOAD_PATH, Config.getValue(CONFIG.UPLOAD_PATH));
 
         //设置图片域
         request.setAttribute(CONFIG.IMAGE_WEBSITE, Config.getValue(CONFIG.IMAGE_WEBSITE));
 
         String configWebsiteName = Config.getLanguageValue(
-            CONFIG_KEY_LANGUAGE.WEBSITE_NAME, Config.getValue(CONFIG.LANGUAGE));
+                CONFIG_KEY_LANGUAGE.WEBSITE_NAME, Config.getValue(CONFIG.LANGUAGE));
         request.setAttribute(CONFIG_KEY_LANGUAGE.WEBSITE_NAME, configWebsiteName);
 
         if (configWebsiteName != null) {
             String currentWebsiteName = cookieUtility.get(request.getCookies(),
-                CONFIG_KEY_LANGUAGE.WEBSITE_NAME);
+                    CONFIG_KEY_LANGUAGE.WEBSITE_NAME);
             if (!configWebsiteName.equals(currentWebsiteName)) {
                 cookieUtility.set(response, CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
-                    configWebsiteName, DIGIT.ALL);
+                        configWebsiteName, DIGIT.ALL);
             }
         }
         if (request.getQueryString() != null) {
             request.setAttribute("previous_url", request.getQueryString());
         }
 
-        Pair<String, Map<String, Object>> sessionPair = (Pair<String, Map<String, Object>>) request.getSession().getAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY);
+        Pair<String, Map<String, Object>> sessionPair = (Pair<String, Map<String, Object>>) request.getSession().getAttribute(CONSTANT.FLASH_KEY);
         if (sessionPair == null) {
             return;
         }
 
-        String transitActualUrl="";
-        if(!StringUtility.isNullOrEmpty(request.getQueryString())){
-            transitActualUrl=sparrowServletUtility.getServletUtility().assembleActualUrl(request.getQueryString());
-        }
-
-        if (StringUtility.matchUrl(sessionPair.getFirst(), actionKey)||StringUtility.matchUrl(sessionPair.getFirst(),transitActualUrl)) {
+        /**
+         * flash key -->action-url
+         *
+         * direct mode
+         * action url-->action-url or action-url.jsp
+         *
+         *
+         * transit mode
+         * transit url-->
+         * transit-url?action_url or action_url
+         */
+        if (StringUtility.matchUrl(sessionPair.getFirst(), actionKey) || StringUtility.matchUrl(sessionPair.getFirst(), request.getQueryString())) {
             Map<String, Object> values = sessionPair.getSecond();
             for (String key : values.keySet()) {
                 request.setAttribute(key, values.get(key));
             }
             return;
         }
-        String directActualUrl=sparrowServletUtility.getServletUtility().assembleActualUrl(actionKey);
-        if(StringUtility.matchUrl(sessionPair.getFirst(),directActualUrl)){
-            return;
-        }
-
-
         //url换掉时，则session 被清空 （非include）
-        request.getSession().removeAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY);
+        request.getSession().removeAttribute(CONSTANT.FLASH_KEY);
     }
 
     private boolean validateUser(
-        HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, BusinessException {
+            HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, BusinessException {
         if (sparrowServletUtility.getServletUtility().include(httpRequest)) {
             return true;
         }
@@ -341,7 +340,7 @@ public class DispatcherFilter implements Filter {
         String actionName = handlerExecutionChain.getActionName();
         LoginToken user = this.cookieUtility.getUser(httpRequest);
         httpRequest.setAttribute(USER.ID, user.getUserId());
-        httpRequest.setAttribute(USER.LOGIN_TOKEN,user);
+        httpRequest.setAttribute(USER.LOGIN_TOKEN, user);
         if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.NO_LOGIN.ordinal()) {
             return true;
         }
@@ -355,9 +354,9 @@ public class DispatcherFilter implements Filter {
             }
 
             String loginUrl = Config.getValue(CONFIG.LOGIN_TYPE_KEY
-                .get(handlerExecutionChain.getLoginType()));
+                    .get(handlerExecutionChain.getLoginType()));
             boolean isInFrame = handlerExecutionChain.getLoginType() == LOGIN_TYPE.LOGIN_IFRAME
-                .ordinal();
+                    .ordinal();
             if (!StringUtility.isNullOrEmpty(loginUrl)) {
                 String defaultSystemPage = rootPath + Config.getValue(CONFIG.DEFAULT_SYSTEM_INDEX);
                 String defaultMenuPage = rootPath + Config.getValue(CONFIG.DEFAULT_MENU_PAGE);
@@ -401,12 +400,12 @@ public class DispatcherFilter implements Filter {
         }
 
         PrivilegeSupport privilegeService = this.container.getBean(
-            SYS_OBJECT_NAME.PRIVILEGE_SERVICE);
+                SYS_OBJECT_NAME.PRIVILEGE_SERVICE);
         String forumCode = httpRequest.getParameter("forumCode");
 
         if (!privilegeService.accessible(
-            cookieUtility.getUser(httpRequest).getUserId(), actionName,
-            forumCode)) {
+                cookieUtility.getUser(httpRequest).getUserId(), actionName,
+                forumCode)) {
             httpResponse.getWriter().write(CONSTANT.ACCESS_DENIED);
             this.sparrowServletUtility.moveAttribute(httpRequest);
             return false;
@@ -441,14 +440,14 @@ public class DispatcherFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig config) throws ServletException {
+    public void init(FilterConfig config) {
         this.config = config;
         this.container = ApplicationContext.getContainer();
         this.cookieUtility = this.container.getBean(SYS_OBJECT_NAME.COOKIE_UTILITY);
-        this.connectionContextHolder=this.container.getBean(SYS_OBJECT_NAME.CONNECTION_CONTEXT_HOLDER);
-        String exceptUrl= config.getInitParameter("except_url");
-        if(!StringUtility.isNullOrEmpty(exceptUrl)){
-            this.exceptUrl=exceptUrl.split(",");
+        this.connectionContextHolder = this.container.getBean(SYS_OBJECT_NAME.CONNECTION_CONTEXT_HOLDER);
+        String exceptUrl = config.getInitParameter("except_url");
+        if (!StringUtility.isNullOrEmpty(exceptUrl)) {
+            this.exceptUrl = exceptUrl.split(",");
         }
         this.initStrategies();
     }

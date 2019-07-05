@@ -55,7 +55,7 @@ public class SparrowServletUtility {
     public void flash(HttpServletRequest request, String sourceUrl) {
         Map<String, Object> values = HttpContext.getContext().getHolder();
         Pair<String, Map<String, Object>> sessionMap = Pair.create(sourceUrl, values);
-        request.getSession().setAttribute(CONSTANT.ACTION_RESULT_FLASH_KEY, sessionMap);
+        request.getSession().setAttribute(CONSTANT.FLASH_KEY, sessionMap);
         HttpContext.getContext().remove();
     }
 }
