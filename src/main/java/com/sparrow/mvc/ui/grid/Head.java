@@ -67,7 +67,7 @@ public class Head {
     public String toString() {
         if (this.checkBox) {
             return String.format(
-                "<th style=\"text-align:center;\"><input id=\"%1$s_checkall\" onclick=\"gridView.allCheckClick(this);\" type=\"checkbox\"/></th>",
+                "<th style=\"text-align:center;\"><input id=\"%1$sCheckAll\" onclick=\"$.gridView.allCheckClick(this);\" type=\"checkbox\"/></th>",
                 this.gridId
             );
         } else {

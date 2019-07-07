@@ -44,7 +44,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class GridView extends WebControl {
-    Logger logger = LoggerFactory.getLogger(GridView.class);
+    private static  Logger logger = LoggerFactory.getLogger(GridView.class);
     private String emptyString = "没有符合条件的记录。";
     /**
      * tab缩进数
@@ -163,7 +163,7 @@ public class GridView extends WebControl {
 
                 if (this.isShowPage()) {
 
-                    SparrowPagerResult<POJO> result = new SparrowPagerResult<POJO>(this.getCurrentPageIndex(),this.pageSize,this.getRecordCount(),this.getDataSource());
+                    SparrowPagerResult<POJO> result = new SparrowPagerResult<POJO>(this.pageSize,this.getCurrentPageIndex(),this.getRecordCount(),this.getDataSource());
                     result.setPageFormat(this.pageFormat);
                     result.setIndexPageFormat(this.pageFormat);
                     result.setSimple(false);
@@ -251,10 +251,10 @@ public class GridView extends WebControl {
      */
     public int getCurrentPageIndex() {
         int pageIndex = DIGIT.ONE;
-        Object ocurrentPageIndex = this.pageContext.getRequest().getParameter(
+        Object currentPageIndex = this.pageContext.getRequest().getParameter(
             "currentPageIndex");
-        if (ocurrentPageIndex != null) {
-            pageIndex = Integer.valueOf(ocurrentPageIndex.toString().trim());
+        if (!StringUtility.isNullOrEmpty(currentPageIndex)) {
+            pageIndex = Integer.valueOf(currentPageIndex.toString().trim());
         }
         return pageIndex;
     }
@@ -291,7 +291,7 @@ public class GridView extends WebControl {
         if (requestPageFormat != null) {
             this.pageFormat = requestPageFormat.toString();
         } else if (!StringUtility.isNullOrEmpty(this.pageFormat)) {
-            this.pageFormat = this.pageFormat.replace("$rootPath",
+            this.pageFormat = this.pageFormat.replace("$root_path",
                 Config.getValue(CONFIG.ROOT_PATH));
         }
         return this.pageFormat;
