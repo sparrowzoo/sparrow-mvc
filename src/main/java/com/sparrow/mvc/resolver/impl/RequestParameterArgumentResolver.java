@@ -26,6 +26,7 @@ import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.protocol.POJO;
 import com.sparrow.protocol.constant.magic.SYMBOL;
+import com.sparrow.utility.ClassUtility;
 import com.sparrow.utility.CollectionsUtility;
 import com.sparrow.utility.HtmlUtility;
 import com.sparrow.utility.StringUtility;
@@ -67,7 +68,12 @@ public class RequestParameterArgumentResolver implements HandlerMethodArgumentRe
                 String parameterName4Request = StringUtility.setFirstByteLowerCase(field.getName());
                 parameter = request.getParameter(parameterName4Request);
 
-                if (StringUtility.isNullOrEmpty(parameter)) {
+                if(parameter==null) {
+                    String entityName = ClassUtility.getEntityNameByClass(methodParameter.getParameterType());
+                    parameter = request.getParameter(entityName + "." + parameterName4Request);
+                }
+
+                if (parameter==null) {
                     continue;
                 }
                 if (executionChain.isValidateRequest() && field.getType().equals(String.class)) {

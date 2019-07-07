@@ -17,6 +17,7 @@
 
 package com.sparrow.mvc.ui;
 
+import com.sparrow.cg.PropertyNamer;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.core.spi.ApplicationContext;
@@ -35,7 +36,7 @@ public class WebControl extends TagSupport {
     protected static Logger logger = LoggerFactory.getLogger(WebControl.class);
     private String id;
     private String name;
-    private String cssClass = SYMBOL.EMPTY;
+    protected String cssClass = SYMBOL.EMPTY;
     private String cssText = SYMBOL.EMPTY;
     private String events = SYMBOL.EMPTY;
     private String title = SYMBOL.EMPTY;
@@ -184,19 +185,17 @@ public class WebControl extends TagSupport {
             String propertyName = modelArray[0];
             requestValue = this.pageContext.getRequest().getAttribute(
                 propertyName);
-            if (requestValue != null) {
-                return requestValue.toString();
-            }
 
-            requestValue = HttpContext.getContext().get(propertyName);
+            if(requestValue==null) {
+                requestValue = HttpContext.getContext().get(propertyName);
+            }
 
             if (requestValue != null) {
                 try {
                     MethodAccessor methodAccessor = ApplicationContext.getContainer()
                         .getProxyBean(
                             requestValue.getClass());
-                    String getMethodName = "get"
-                        + StringUtility.setFirstByteUpperCase(modelArray[1]);
+                    String getMethodName = PropertyNamer.getter(modelArray[1]);
                     requestValue = methodAccessor.get(requestValue,
                         getMethodName);
                     if (requestValue != null) {
@@ -224,7 +223,8 @@ public class WebControl extends TagSupport {
     }
 
     public void drawTable(StringBuilder writeHTML) {
-        writeHTML.append("<table cellpadding=\"4\" cellspacing=\"0\"");
+
+        writeHTML.append("<table class='pure-table'");
         writeHTML.append(String.format(" id=\"%1$s\"", this.getId()));
         writeHTML.append(this.getCssClass());
         writeHTML.append(this.getCssText());

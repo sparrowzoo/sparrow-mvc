@@ -17,6 +17,7 @@
 
 package com.sparrow.mvc.ui;
 
+import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.HtmlUtility;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
@@ -51,8 +52,12 @@ public abstract class AbstractJWebBodyControl extends WebControl {
         int returnValue = TagSupport.SKIP_BODY;
         StringBuilder writeHTML = new StringBuilder();
 
+        String htmlId=this.getId() + ".innerHTML";
         Object innerHTML = this.pageContext.getRequest().getAttribute(
-            this.getId() + ".innerHTML");
+            htmlId);
+        if(innerHTML==null){
+            innerHTML= HttpContext.getContext().get(htmlId);
+        }
         if (innerHTML == null) {
             innerHTML = this.pageContext.getRequest().getAttribute(
                 this.getId() + ".value");

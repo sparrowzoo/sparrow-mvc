@@ -28,9 +28,6 @@ public class TextBox extends AbstractJWebInputControl {
     @Override
     public String setTagNameAndGetTagAttributes() {
         super.setType("text");
-        if (StringUtility.isNullOrEmpty(this.getCssClass())) {
-            super.setCssClass("input");
-        }
         return SYMBOL.EMPTY;
     }
 }

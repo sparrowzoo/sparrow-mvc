@@ -53,7 +53,7 @@ public class Head {
         String indent1 = StringUtility.getIndent(indent + DIGIT.ONE);
         String indent2 = StringUtility.getIndent(indent + DIGIT.TOW);
         StringBuilder html = new StringBuilder(indent1);
-        html.append("<tr class=\"head-row\">");
+        html.append("<tr>");
         for (String head : headTitle) {
             html.append(indent2);
             html.append(new Head(head, gridId).toString());

@@ -86,7 +86,7 @@ public class GridView extends WebControl {
     /**
      * 分页链接字符格式
      */
-    private String pageFormat = "javascript:page.action($pageIndex);";
+    private String pageFormat = "javascript:$.page.action($pageIndex);";
     /**
      * 是否使用鼠标悬停事件
      */
@@ -120,18 +120,16 @@ public class GridView extends WebControl {
         if (Boolean.FALSE.toString().equalsIgnoreCase(this.getVisible())) {
             return TagSupport.SKIP_BODY;
         }
+
         StringBuilder writeHTML = new StringBuilder();
-        writeHTML.append("<table style=\"width:100%;\" cellpadding=\"4\" cellspacing=\"0\"");
-        writeHTML.append(String.format(" id=\"%1$s\"", this.getId()));
-        writeHTML.append(this.getCssClass());
-        writeHTML.append(this.getCssText());
-        writeHTML.append(this.getTitle());
-        writeHTML.append(this.getEvents());
-        writeHTML.append(">");
-        writeHTML.append("<tbody>");
+       this.drawTable(writeHTML);
+
         if (this.isShowHead()) {
+            writeHTML.append("<thead>");
             writeHTML.append(Head.parse(this.getHeadTitles(), this.getId(), this.indent()));
+            writeHTML.append("</thead>");
         }
+        writeHTML.append("<tbody>");
         try {
             if (this.getDataSource() != null) {
                 String indent1 = StringUtility.getIndent(this
@@ -145,10 +143,10 @@ public class GridView extends WebControl {
                     for (int recordIndex = DIGIT.ZERO; recordIndex < this.getDataSource().size(); recordIndex++) {
                         POJO entity = this.getDataSource().get(recordIndex);
                         String alternating = this
-                            .isUseAlternatingRowStyle() && (recordIndex % DIGIT.TOW == DIGIT.ZERO) ? " alternating"
+                            .isUseAlternatingRowStyle() && (recordIndex % DIGIT.TOW == DIGIT.ZERO) ? " class='pure-table-odd'"
                             : "";
                         writeHTML.append(indent1);
-                        writeHTML.append(String.format("<tr class=\"data-row%1$s\">", alternating));
+                        writeHTML.append(String.format("<tr%s>", alternating));
                         for (CellAttribute cell : cellList) {
                             writeHTML.append(cell.toString(entity, indent2, methodAccessor));
                         }

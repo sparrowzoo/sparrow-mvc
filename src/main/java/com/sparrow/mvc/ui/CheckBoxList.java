@@ -49,6 +49,10 @@ public class CheckBoxList extends WebControl {
     private boolean isShowTable = true;
     private int col = DIGIT.THREE;
     private Object[] selectedValue;
+    /**
+     * com.sparrow.enums.Status:10:true
+     * enums:maxCount:isShowName
+     */
     private String enums;
 
     public void setValueText(String valueText) {
