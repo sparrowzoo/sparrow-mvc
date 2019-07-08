@@ -28,6 +28,6 @@ public class CheckBoxFieldParserImpl implements FieldParser {
     @Override
     public String parse(String[] config, List<String> valueList) {
         CheckBoxAttribute checkBoxAttribute = new CheckBoxAttribute(config);
-        return String.format("<input id=\"%1$s\" onclick=\"gridView.recordCheckClick(this,'%2$s_checkall');\" type=\"checkbox\" name=\"%2$s\"/>", valueList.get(0), checkBoxAttribute.getGridViewId());
+        return String.format("<input id=\"%1$s\" onclick=\"$.gridView.recordCheckClick(this,'%2$sCheckAll');\" type=\"checkbox\" name=\"%2$s\"/>", valueList.get(0), checkBoxAttribute.getGridViewId());
     }
 }

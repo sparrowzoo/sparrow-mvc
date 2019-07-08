@@ -24,18 +24,21 @@ import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.Result;
+import com.sparrow.protocol.VO;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.protocol.mvn.PageSwitchMode;
 import com.sparrow.protocol.mvn.ViewWithModel;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.web.ServletUtility;
+import com.sparrow.utility.ClassUtility;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -80,8 +83,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
      *                     <p>
      *                     login
      *                     <p>
-     *                     login.jsp
-     *                     success
+     *                     login.jsp success
      */
     private ViewWithModel parse(String actionResult, String referer, String defaultSuccessUrl) {
         String url;
@@ -173,15 +175,19 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         }
 
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        String flashUrl;
         switch (viewWithModel.getSwitchMode()) {
+
             case REDIRECT:
                 if (rootPath != null && !url.startsWith(rootPath)) {
                     url = rootPath + url;
                 }
+                flashUrl = servletUtility.assembleActualUrl(url);
+                this.flash(request, flashUrl, CONSTANT.FLASH_SUCCESS_RESULT, viewWithModel.getVo());
                 response.sendRedirect(url);
                 break;
             case TRANSIT:
-                String flashUrl = servletUtility.assembleActualUrl(referer);
+                flashUrl = servletUtility.assembleActualUrl(referer);
                 this.flash(request, flashUrl, CONSTANT.FLASH_SUCCESS_RESULT, viewWithModel.getVo());
                 String transitUrl = Config.getValue(CONFIG.SUCCESS_TRANSIT_URL);
                 if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
@@ -192,6 +198,10 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             case FORWARD:
                 if (rootPath != null && url.startsWith(rootPath)) {
                     url = url.substring(rootPath.length());
+                }
+                VO data = viewWithModel.getVo();
+                if (data != null) {
+                    request.setAttribute(ClassUtility.getEntityNameByClass(data.getClass()), data);
                 }
                 RequestDispatcher dispatcher = request.getRequestDispatcher(url);
                 dispatcher.forward(request, response);
@@ -226,19 +236,15 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         String relativeReferer = referer.substring(rootPath.length() + 1);
         String flashUrl;
         switch (errorPageSwitch) {
+            case FORWARD:
             case REDIRECT:
                 String url = Config.getValue(CONFIG.ERROR_URL);
                 if (StringUtility.isNullOrEmpty(url)) {
-                    url = "500";
+                    url = "/500";
                 }
                 flashUrl = servletUtility.assembleActualUrl(url);
                 this.flash(request, flashUrl, CONSTANT.FLASH_EXCEPTION_RESULT, result);
                 response.sendRedirect(url);
-                break;
-            case FORWARD:
-                flashUrl = servletUtility.assembleActualUrl(relativeReferer);
-                this.flash(request, flashUrl, CONSTANT.FLASH_EXCEPTION_RESULT, result);
-                response.sendRedirect(relativeReferer);
                 break;
             case TRANSIT:
                 flashUrl = servletUtility.assembleActualUrl(relativeReferer);

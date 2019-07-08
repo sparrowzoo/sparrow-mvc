@@ -69,7 +69,7 @@ public class BaseAttribute {
             } else if (text.startsWith("enum:")) {
                 text = text.substring(DIGIT.FIVE);
                 if (!text.contains(SYMBOL.DOT)) {
-                    text = "com.sparrow.enums." + text;
+                    text = "com.sparrow.protocol.enums." + text;
                 }
                 text = EnumUtility.getMap(text).get(valueList.get(DIGIT.ZERO));
             } else if (valueList.size() > DIGIT.ZERO) {

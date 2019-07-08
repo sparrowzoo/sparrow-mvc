@@ -90,7 +90,7 @@ public class DispatcherFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain chain) {
+        FilterChain chain) {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -106,7 +106,6 @@ public class DispatcherFilter implements Filter {
             return;
         }
         this.initInterceptors();
-
 
         if (preHandler(httpRequest, httpResponse)) {
             return;
@@ -141,7 +140,7 @@ public class DispatcherFilter implements Filter {
     }
 
     private void errorHandler(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-                              ServletInvokableHandlerMethod invocableHandlerMethod, Exception e) {
+        ServletInvokableHandlerMethod invocableHandlerMethod, Exception e) {
         Throwable target = e;
         if (e.getCause() == null) {
             logger.error("e.getCause==null", e);
@@ -233,11 +232,11 @@ public class DispatcherFilter implements Filter {
             }
         }
         throw new ServletException("No adapter for handler [" + handler +
-                "]: The DispatcherServlet configuration needs to include a HandlerAdapter that supports this handler");
+            "]: The DispatcherServlet configuration needs to include a HandlerAdapter that supports this handler");
     }
 
     private void initAttribute(HttpServletRequest request,
-                               HttpServletResponse response) {
+        HttpServletResponse response) {
         //初始化 request
         HttpContext.getContext().setRequest(request);
         //初始化 response
@@ -254,24 +253,24 @@ public class DispatcherFilter implements Filter {
         if (!StringUtility.isNullOrEmpty(rootPath)) {
             request.setAttribute(CONFIG.ROOT_PATH, rootPath);
             request.setAttribute(CONFIG.WEBSITE,
-                    Config.getValue(CONFIG.WEBSITE));
+                Config.getValue(CONFIG.WEBSITE));
         }
 
         //国际化
         String internationalization = Config
-                .getValue(CONFIG.INTERNATIONALIZATION);
+            .getValue(CONFIG.INTERNATIONALIZATION);
         if (internationalization != null) {
             //设置当前请求语言
             String language = request.getParameter(CONFIG.LANGUAGE);
             if (language == null
-                    || !internationalization.contains(language)) {
+                || !internationalization.contains(language)) {
                 language = Config.getValue(CONFIG.LANGUAGE);
             }
             HttpContext.getContext().put(CONSTANT.REQUEST_LANGUAGE, language);
         }
         //设置资源根路径
         request.setAttribute(CONFIG.RESOURCE,
-                Config.getValue(CONFIG.RESOURCE));
+            Config.getValue(CONFIG.RESOURCE));
 
         request.setAttribute(CONFIG.UPLOAD_PATH, Config.getValue(CONFIG.UPLOAD_PATH));
 
@@ -279,15 +278,15 @@ public class DispatcherFilter implements Filter {
         request.setAttribute(CONFIG.IMAGE_WEBSITE, Config.getValue(CONFIG.IMAGE_WEBSITE));
 
         String configWebsiteName = Config.getLanguageValue(
-                CONFIG_KEY_LANGUAGE.WEBSITE_NAME, Config.getValue(CONFIG.LANGUAGE));
+            CONFIG_KEY_LANGUAGE.WEBSITE_NAME, Config.getValue(CONFIG.LANGUAGE));
         request.setAttribute(CONFIG_KEY_LANGUAGE.WEBSITE_NAME, configWebsiteName);
 
         if (configWebsiteName != null) {
             String currentWebsiteName = cookieUtility.get(request.getCookies(),
-                    CONFIG_KEY_LANGUAGE.WEBSITE_NAME);
+                CONFIG_KEY_LANGUAGE.WEBSITE_NAME);
             if (!configWebsiteName.equals(currentWebsiteName)) {
                 cookieUtility.set(response, CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
-                        configWebsiteName, DIGIT.ALL);
+                    configWebsiteName, DIGIT.ALL);
             }
         }
         if (request.getQueryString() != null) {
@@ -299,18 +298,8 @@ public class DispatcherFilter implements Filter {
             return;
         }
 
-        /**
-         * flash key -->action-url
-         *
-         * direct mode
-         * action url-->action-url or action-url.jsp
-         *
-         *
-         * transit mode
-         * transit url-->
-         * transit-url?action_url or action_url
-         */
-        if (StringUtility.matchUrl(sessionPair.getFirst(), actionKey) || StringUtility.matchUrl(sessionPair.getFirst(), request.getQueryString())) {
+
+        if (this.matchUrl(sessionPair.getFirst(), actionKey, request)) {
             Map<String, Object> values = sessionPair.getSecond();
             for (String key : values.keySet()) {
                 request.setAttribute(key, values.get(key));
@@ -321,8 +310,48 @@ public class DispatcherFilter implements Filter {
         request.getSession().removeAttribute(CONSTANT.FLASH_KEY);
     }
 
+    /**
+     * flash key -->/template/action-url.jsp  final url
+     *
+     * direct mode
+     * action url-->action-url or /template/action-url.jsp
+     *
+     *
+     * transit mode
+     * transit url-->
+     * transit-url?action_url or /template/action_url.jsp
+     */
+    private boolean matchUrl(String flashKey, String actionKey, HttpServletRequest request) {
+        //redirect final jsp url
+        if (StringUtility.matchUrl(flashKey, actionKey)) {
+            return true;
+        }
+
+        //redirect action url
+        String actualUrl = sparrowServletUtility.getServletUtility().assembleActualUrl(actionKey);
+        if (StringUtility.matchUrl(flashKey, actualUrl)) {
+            return true;
+        }
+        //transit final jsp url
+        actionKey = request.getQueryString();
+        if(actionKey==null){
+            return false;
+        }
+        if (StringUtility.matchUrl(flashKey, actionKey)) {
+            return true;
+        }
+
+        //transit action url
+        String actualTransitUrl = sparrowServletUtility.getServletUtility().assembleActualUrl(actionKey);
+        if (StringUtility.matchUrl(flashKey, actualTransitUrl)) {
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean validateUser(
-            HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, BusinessException {
+        HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, BusinessException {
         if (sparrowServletUtility.getServletUtility().include(httpRequest)) {
             return true;
         }
@@ -355,9 +384,9 @@ public class DispatcherFilter implements Filter {
             }
 
             String loginUrl = Config.getValue(CONFIG.LOGIN_TYPE_KEY
-                    .get(handlerExecutionChain.getLoginType()));
+                .get(handlerExecutionChain.getLoginType()));
             boolean isInFrame = handlerExecutionChain.getLoginType() == LOGIN_TYPE.LOGIN_IFRAME
-                    .ordinal();
+                .ordinal();
             if (!StringUtility.isNullOrEmpty(loginUrl)) {
                 String defaultSystemPage = rootPath + Config.getValue(CONFIG.DEFAULT_SYSTEM_INDEX);
                 String defaultMenuPage = rootPath + Config.getValue(CONFIG.DEFAULT_MENU_PAGE);
@@ -401,12 +430,12 @@ public class DispatcherFilter implements Filter {
         }
 
         PrivilegeSupport privilegeService = this.container.getBean(
-                SYS_OBJECT_NAME.PRIVILEGE_SERVICE);
+            SYS_OBJECT_NAME.PRIVILEGE_SERVICE);
         String forumCode = httpRequest.getParameter("forumCode");
 
         if (!privilegeService.accessible(
-                cookieUtility.getUser(httpRequest).getUserId(), actionName,
-                forumCode)) {
+            cookieUtility.getUser(httpRequest).getUserId(), actionName,
+            forumCode)) {
             httpResponse.getWriter().write(CONSTANT.ACCESS_DENIED);
             this.sparrowServletUtility.moveAttribute(httpRequest);
             return false;

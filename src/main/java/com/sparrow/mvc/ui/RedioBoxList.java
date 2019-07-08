@@ -42,6 +42,10 @@ public class RedioBoxList extends WebControl {
     private String defaultSelectValue;
     private String valueText;
     private String indent = "0";
+    /**
+     * com.sparrow.enums.Status:10:true
+     * enums:maxCount:isShowName
+     */
     private String enums;
 
     public boolean isShowTable() {

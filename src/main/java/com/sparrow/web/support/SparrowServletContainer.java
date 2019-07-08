@@ -18,10 +18,11 @@
 package com.sparrow.web.support;
 
 import com.sparrow.protocol.constant.CONSTANT;
-import com.sparrow.protocol.pager.SimplePagerResult;
 import com.sparrow.servlet.impl.AbstractServletContainer;
+import com.sparrow.support.pager.SparrowPagerResult;
 import com.sparrow.support.web.HttpContext;
 
+import com.sparrow.utility.CollectionsUtility;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -35,7 +36,8 @@ import java.util.List;
  */
 public class SparrowServletContainer extends AbstractServletContainer {
 
-    private HttpContext httpContext= HttpContext.getContext();
+    private HttpContext httpContext = HttpContext.getContext();
+
     @Override
     public HttpServletRequest getRequest() {
         return HttpContext.getContext().getRequest();
@@ -47,19 +49,20 @@ public class SparrowServletContainer extends AbstractServletContainer {
     }
 
     public <T> void grid(String gridView, List<T> list) {
-        this.grid(gridView, list, null);
+        if (CollectionsUtility.isNullOrEmpty(list)) {
+            return;
+        }
+        this.grid(gridView, new SparrowPagerResult(1, list.size(), (long) list.size(), list));
     }
 
-    public <T> void grid(String gridView, List<T> list, SimplePagerResult pagerSearch) {
-        httpContext.put(gridView + ".dataSource", list);
-        if (pagerSearch != null) {
-            httpContext.put(gridView + ".recordCount",
-                pagerSearch.getRecordCount());
-            httpContext.put("spanRecordCount.innerHTML",
-                pagerSearch.getRecordCount());
-            httpContext.put(gridView + ".pageSize",
-                pagerSearch.getPageSize());
-        }
+    public <T> void grid(String gridView, SparrowPagerResult pagerSearch) {
+        httpContext.put(gridView + ".dataSource", pagerSearch.getList());
+        httpContext.put(gridView + ".recordCount",
+            pagerSearch.getRecordCount());
+        httpContext.put("spanRecordCount.innerHTML",
+            pagerSearch.getRecordCount());
+        httpContext.put(gridView + ".pageSize",
+            pagerSearch.getPageSize());
     }
 
     @Override
