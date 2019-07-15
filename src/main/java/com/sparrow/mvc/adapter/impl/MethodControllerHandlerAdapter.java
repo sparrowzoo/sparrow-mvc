@@ -28,6 +28,7 @@ import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.mvc.result.impl.JsonMethodReturnValueResolverHandlerImpl;
 import com.sparrow.mvc.result.impl.MethodReturnValueResolverHandlerComposite;
 import com.sparrow.mvc.result.impl.ViewWithModelMethodReturnValueResolverHandlerImpl;
+import com.sparrow.mvc.result.impl.VoidReturnValueResolverHandlerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +96,10 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
         List<MethodReturnValueResolverHandler> methodReturnValueResolverHandlers = new ArrayList<MethodReturnValueResolverHandler>();
         MethodReturnValueResolverHandler viewWithModelMethodReturnValueResolverHandler = new ViewWithModelMethodReturnValueResolverHandlerImpl();
         MethodReturnValueResolverHandler jsonMethodReturnValueResolverHandler = new JsonMethodReturnValueResolverHandlerImpl();
+        MethodReturnValueResolverHandler voidMethodReturnValueResolverHandler=new VoidReturnValueResolverHandlerImpl();
         methodReturnValueResolverHandlers.add(jsonMethodReturnValueResolverHandler);
         methodReturnValueResolverHandlers.add(viewWithModelMethodReturnValueResolverHandler);
+        methodReturnValueResolverHandlers.add(voidMethodReturnValueResolverHandler);
         this.returnValueResolverHandlerComposite.addResolvers(methodReturnValueResolverHandlers);
     }
 }
