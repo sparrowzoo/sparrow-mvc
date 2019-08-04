@@ -24,9 +24,11 @@ import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.StringUtility;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
@@ -42,6 +44,16 @@ public class WebControl extends TagSupport {
     private String title = SYMBOL.EMPTY;
     private String tagName;
     private String visible = Boolean.TRUE.toString();
+    private boolean isNameOfEnum;
+
+    public void setNameOfEnum(String enums) {
+        String enumsArray[] = enums.split(":");
+        if (enumsArray.length >= 3) {
+            this.isNameOfEnum = Boolean.valueOf(enumsArray[2]);
+        } else {
+            this.isNameOfEnum = false;
+        }
+    }
 
     public boolean isInput() {
         return true;
@@ -72,7 +84,7 @@ public class WebControl extends TagSupport {
     public String getCssClass() {
         String format = " class=\"%1$s\" ";
         Object css = this.pageContext.getRequest().getAttribute(
-            this.getId() + ".cssClass");
+                this.getId() + ".cssClass");
         if (css != null) {
             return String.format(format, css);
         }
@@ -95,10 +107,10 @@ public class WebControl extends TagSupport {
     public String getCssText() {
         String format = " style=\"%1$s\" ";
         Object requestCssText = this.pageContext.getRequest().getAttribute(
-            this.getId() + ".cssText");
+                this.getId() + ".cssText");
         if (requestCssText != null) {
             return String.format(format,
-                requestCssText.toString());
+                    requestCssText.toString());
 
         }
         if (!StringUtility.isNullOrEmpty(this.cssText)) {
@@ -113,7 +125,7 @@ public class WebControl extends TagSupport {
 
     public String getEvents() {
         Object requestEvents = this.pageContext.getRequest().getAttribute(
-            this.getId() + ".events");
+                this.getId() + ".events");
         if (requestEvents != null) {
             return requestEvents.toString();
         }
@@ -129,7 +141,7 @@ public class WebControl extends TagSupport {
 
     public String getTitle() {
         Object requestTitle = this.pageContext.getRequest().getAttribute(
-            this.getId() + ".title");
+                this.getId() + ".title");
         if (requestTitle != null) {
             return String.format(" title=\"%1$s\" ", requestTitle.toString());
         }
@@ -154,7 +166,7 @@ public class WebControl extends TagSupport {
     public String getVisible() {
         String result = this.visible;
         Object requestVisible = this.pageContext.getRequest().getAttribute(
-            this.getId() + ".visible");
+                this.getId() + ".visible");
 
         if (requestVisible != null) {
             result = requestVisible.toString();
@@ -184,21 +196,25 @@ public class WebControl extends TagSupport {
             String[] modelArray = this.getCtrlName().split("\\.");
             String propertyName = modelArray[0];
             requestValue = this.pageContext.getRequest().getAttribute(
-                propertyName);
+                    propertyName);
 
-            if(requestValue==null) {
+            if (requestValue == null) {
                 requestValue = HttpContext.getContext().get(propertyName);
             }
 
             if (requestValue != null) {
                 try {
                     MethodAccessor methodAccessor = ApplicationContext.getContainer()
-                        .getProxyBean(
-                            requestValue.getClass());
+                            .getProxyBean(
+                                    requestValue.getClass());
                     String getMethodName = PropertyNamer.getter(modelArray[1]);
                     requestValue = methodAccessor.get(requestValue,
-                        getMethodName);
+                            getMethodName);
                     if (requestValue != null) {
+                        if (requestValue instanceof Enum) {
+                            Enum en = (Enum) requestValue;
+                            return this.isNameOfEnum ? en.name() : en.ordinal() + "";
+                        }
                         return requestValue.toString();
                     }
                 } catch (Exception e) {
@@ -208,7 +224,7 @@ public class WebControl extends TagSupport {
             }
             //直接获取属性
             requestValue = this.pageContext.getRequest().getAttribute(
-                modelArray[1]);
+                    modelArray[1]);
             if (requestValue != null) {
                 return requestValue.toString();
             }
@@ -232,4 +248,6 @@ public class WebControl extends TagSupport {
         writeHTML.append(this.getEvents());
         writeHTML.append(">");
     }
+
+
 }

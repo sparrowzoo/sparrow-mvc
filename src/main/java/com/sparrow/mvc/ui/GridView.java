@@ -19,6 +19,7 @@ package com.sparrow.mvc.ui;
 
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.PAGER;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.mvc.ui.grid.CellAttribute;
@@ -86,7 +87,7 @@ public class GridView extends WebControl {
     /**
      * 分页链接字符格式
      */
-    private String pageFormat = "javascript:$.page.action($pageIndex);";
+    private String pageFormat = PAGER.ACTION_PAGE_FORMAT;
     /**
      * 是否使用鼠标悬停事件
      */

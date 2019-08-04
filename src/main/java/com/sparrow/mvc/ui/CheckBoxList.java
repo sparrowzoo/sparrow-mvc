@@ -209,6 +209,7 @@ public class CheckBoxList extends WebControl {
 
     public void setEnums(String enums) {
         this.enums = enums;
+        this.setNameOfEnum(enums);
     }
 
     public void setSelectedValue() {

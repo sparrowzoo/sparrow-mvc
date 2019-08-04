@@ -193,6 +193,7 @@ public class RedioBoxList extends WebControl {
 
     public void setEnums(String enums) {
         this.enums = enums;
+        this.setNameOfEnum(enums);
     }
 
     public String getSelectedValue() {
@@ -209,4 +210,5 @@ public class RedioBoxList extends WebControl {
         }
         return selectValue;
     }
+
 }

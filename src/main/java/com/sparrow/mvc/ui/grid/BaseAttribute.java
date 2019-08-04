@@ -68,9 +68,6 @@ public class BaseAttribute {
                 text = DateTimeUtility.getFormatTime(Timestamp.valueOf(valueList.get(DIGIT.ZERO)), text);
             } else if (text.startsWith("enum:")) {
                 text = text.substring(DIGIT.FIVE);
-                if (!text.contains(SYMBOL.DOT)) {
-                    text = "com.sparrow.protocol.enums." + text;
-                }
                 text = EnumUtility.getMap(text).get(valueList.get(DIGIT.ZERO));
             } else if (valueList.size() > DIGIT.ZERO) {
                 for (int i = DIGIT.ZERO; i < valueList.size(); i++) {
