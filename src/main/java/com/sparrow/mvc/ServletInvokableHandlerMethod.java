@@ -20,6 +20,7 @@ package com.sparrow.mvc;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.mvc.resolver.impl.HandlerMethodArgumentResolverComposite;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
+import com.sparrow.utility.CollectionsUtility;
 import com.sparrow.web.support.MethodParameter;
 
 import javax.servlet.FilterChain;
@@ -195,14 +196,10 @@ public class ServletInvokableHandlerMethod {
             return null;
         }
         int count = parameterClass.length;
-        List<String> parameterNameList = this.parameterNameList;
-        if (parameterNameList == null || parameterNameList.size() == 0) {
-            return null;
-        }
         MethodParameter[] result = new MethodParameter[count];
         for (int i = 0; i < count; i++) {
             String parameterName=null;
-            if(parameterNameList.size()>i){
+            if(!CollectionsUtility.isNullOrEmpty(parameterNameList)&&parameterNameList.size()>i){
                 parameterName=parameterNameList.get(i);
             }
             result[i] = new MethodParameter(method, i, parameterClass[i], parameterName);

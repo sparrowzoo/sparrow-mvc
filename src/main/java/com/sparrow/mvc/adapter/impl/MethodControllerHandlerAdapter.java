@@ -20,10 +20,7 @@ package com.sparrow.mvc.adapter.impl;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
-import com.sparrow.mvc.resolver.impl.HandlerMethodArgumentResolverComposite;
-import com.sparrow.mvc.resolver.impl.PathParameterArgumentResolver;
-import com.sparrow.mvc.resolver.impl.RequestAttributeArgumentResolver;
-import com.sparrow.mvc.resolver.impl.RequestParameterArgumentResolver;
+import com.sparrow.mvc.resolver.impl.*;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.mvc.result.impl.JsonMethodReturnValueResolverHandlerImpl;
 import com.sparrow.mvc.result.impl.MethodReturnValueResolverHandlerComposite;
@@ -79,12 +76,15 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
     private void initArgumentResolvers() {
         this.argumentResolverComposite = new HandlerMethodArgumentResolverComposite();
         List<HandlerMethodArgumentResolver> handlerMethodArgumentResolvers = new ArrayList<HandlerMethodArgumentResolver>();
-        HandlerMethodArgumentResolver argumentResolver = new RequestParameterArgumentResolver();
-        HandlerMethodArgumentResolver parameterArgumentResolver=new PathParameterArgumentResolver();
-        HandlerMethodArgumentResolver attributeArguemntResolver=new RequestAttributeArgumentResolver();
-        handlerMethodArgumentResolvers.add(argumentResolver);
-        handlerMethodArgumentResolvers.add(attributeArguemntResolver);
-        handlerMethodArgumentResolvers.add(parameterArgumentResolver);
+        HandlerMethodArgumentResolver requestParameterArgumentResolver = new RequestParameterArgumentResolver();
+        HandlerMethodArgumentResolver pathParameterArgumentResolver = new PathParameterArgumentResolver();
+        HandlerMethodArgumentResolver attributeArgumentResolver = new RequestAttributeArgumentResolver();
+        HandlerMethodArgumentResolver jsonBodyArgumentResolver = new JsonBodyArgumentResolver();
+
+        handlerMethodArgumentResolvers.add(jsonBodyArgumentResolver);
+        handlerMethodArgumentResolvers.add(requestParameterArgumentResolver);
+        handlerMethodArgumentResolvers.add(attributeArgumentResolver);
+        handlerMethodArgumentResolvers.add(pathParameterArgumentResolver);
         this.argumentResolverComposite.addResolvers(handlerMethodArgumentResolvers);
     }
 
@@ -96,7 +96,7 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
         List<MethodReturnValueResolverHandler> methodReturnValueResolverHandlers = new ArrayList<MethodReturnValueResolverHandler>();
         MethodReturnValueResolverHandler viewWithModelMethodReturnValueResolverHandler = new ViewWithModelMethodReturnValueResolverHandlerImpl();
         MethodReturnValueResolverHandler jsonMethodReturnValueResolverHandler = new JsonMethodReturnValueResolverHandlerImpl();
-        MethodReturnValueResolverHandler voidMethodReturnValueResolverHandler=new VoidReturnValueResolverHandlerImpl();
+        MethodReturnValueResolverHandler voidMethodReturnValueResolverHandler = new VoidReturnValueResolverHandlerImpl();
         methodReturnValueResolverHandlers.add(jsonMethodReturnValueResolverHandler);
         methodReturnValueResolverHandlers.add(viewWithModelMethodReturnValueResolverHandler);
         methodReturnValueResolverHandlers.add(voidMethodReturnValueResolverHandler);
