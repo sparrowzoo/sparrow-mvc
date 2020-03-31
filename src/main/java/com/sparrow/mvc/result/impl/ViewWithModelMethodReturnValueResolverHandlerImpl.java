@@ -20,6 +20,7 @@ package com.sparrow.mvc.result.impl;
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.SPARROW_ERROR;
 import com.sparrow.core.Pair;
+import com.sparrow.enums.LANGUAGE;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.protocol.BusinessException;
@@ -229,7 +230,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         }
         Result result = Result.FAIL(businessException);
         //todo set error msg
-        //result.setError();
+        result.setError(Config.getLanguageValue(result.getKey(),LANGUAGE.EN.name()));
 
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
         String referer = servletUtility.referer(request);
