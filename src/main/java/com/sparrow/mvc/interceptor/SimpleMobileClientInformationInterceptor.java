@@ -9,6 +9,11 @@ import com.sparrow.protocol.mvn.HandlerInterceptor;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.DeviceType;
+import eu.bitwalker.useragentutils.OperatingSystem;
+import eu.bitwalker.useragentutils.UserAgent;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,11 +42,7 @@ public class SimpleMobileClientInformationInterceptor implements HandlerIntercep
         clientInformation.setClientVersion(request.getHeader(CLIENT_INFORMATION.CLIENT_VERSION));
 
         clientInformation.setDevice(request.getHeader(CLIENT_INFORMATION.DEVICE));
-
-
         clientInformation.setDeviceId(request.getHeader(CLIENT_INFORMATION.DEVICE_ID));
-
-
         clientInformation.setDeviceModel(request.getHeader(CLIENT_INFORMATION.DEVICE_MODEL));
 
 
@@ -58,19 +59,11 @@ public class SimpleMobileClientInformationInterceptor implements HandlerIntercep
         }
 
         clientInformation.setOs(request.getHeader(CLIENT_INFORMATION.OS));
-
         clientInformation.setNetwork(request.getHeader(CLIENT_INFORMATION.NETWORK));
-        String platform = request.getHeader(CLIENT_INFORMATION.PLATFORM);
-        if (!StringUtility.isNullOrEmpty(platform)) {
-            clientInformation.setPlatform(PLATFORM.valueOf(platform));
-        }
-
-
         String startTime = request.getHeader(CLIENT_INFORMATION.START_TIME);
         if (!StringUtility.isNullOrEmpty(startTime)) {
             clientInformation.setStartTime(Long.valueOf(startTime));
         }
-
         String resumeTime = request.getHeader(CLIENT_INFORMATION.RESUME_TIME);
 
         if (!StringUtility.isNullOrEmpty(resumeTime)) {
@@ -78,6 +71,15 @@ public class SimpleMobileClientInformationInterceptor implements HandlerIntercep
         }
         clientInformation.setWebsite(rootPath);
         clientInformation.setUserAgent(request.getHeader(CLIENT_INFORMATION.USER_AGENT));
+        UserAgent userAgent = UserAgent.parseUserAgentString(clientInformation.getUserAgent());
+        OperatingSystem os = userAgent.getOperatingSystem();
+        Browser browser= userAgent.getBrowser();
+        if(os.getDeviceType().equals(DeviceType.COMPUTER)){
+            clientInformation.setOs(os.getGroup().getName());
+            clientInformation.setPlatform(PLATFORM.PC);
+            clientInformation.setDevice(browser.getName());
+        }
+
 
         String simulate=request.getHeader(CLIENT_INFORMATION.SIMULATE);
         if(!StringUtility.isNullOrEmpty(simulate)) {
