@@ -78,6 +78,7 @@ public class SimpleMobileClientInformationInterceptor implements HandlerIntercep
             clientInformation.setOs(os.getGroup().getName());
             clientInformation.setPlatform(PLATFORM.PC);
             clientInformation.setDevice(browser.getName());
+            clientInformation.setDeviceId(clientInformation.getIp());
         }
 
 

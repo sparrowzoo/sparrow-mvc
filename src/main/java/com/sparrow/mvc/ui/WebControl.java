@@ -23,13 +23,15 @@ import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.support.web.HttpContext;
+import com.sparrow.utility.QueryStringParser;
 import com.sparrow.utility.StringUtility;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
+import java.util.Map;
 
 /**
  * @author harry

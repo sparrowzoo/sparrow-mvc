@@ -366,13 +366,15 @@ public class DispatcherFilter implements Filter {
             return true;
         }
 
+        if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.NO_LOGIN.ordinal()) {
+            return true;
+        }
+
         String actionName = handlerExecutionChain.getActionName();
         LoginToken user = this.cookieUtility.getUser(httpRequest);
         httpRequest.setAttribute(USER.ID, user.getUserId());
         httpRequest.setAttribute(USER.LOGIN_TOKEN, user);
-        if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.NO_LOGIN.ordinal()) {
-            return true;
-        }
+
 
         if (user.getUserId().equals(USER.VISITOR_ID)) {
             String rootPath = Config.getValue(CONFIG.ROOT_PATH);
@@ -433,7 +435,7 @@ public class DispatcherFilter implements Filter {
         String forumCode = httpRequest.getParameter("forumCode");
 
         if (!privilegeService.accessible(
-            cookieUtility.getUser(httpRequest).getUserId(), actionName,
+            user.getUserId(), actionName,
             forumCode)) {
             httpResponse.getWriter().write(CONSTANT.ACCESS_DENIED);
             this.sparrowServletUtility.moveAttribute(httpRequest);
