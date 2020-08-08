@@ -37,8 +37,11 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,12 +74,21 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
             xmlConfig = "/controller.xml";
         }
         Document document;
+
         try {
             document = documentLoader.loadDocument(xmlConfig, false);
-        } catch (Exception e) {
-            logger.error("document load error", e);
+        } catch (IOException e) {
+            logger.warn("io exception maybe file not found", e);
+            return;
+        } catch (SAXException e) {
+            logger.error("xml sax exception", e);
+            return;
+        } catch (ParserConfigurationException e) {
+            logger.error("parser error", e);
             return;
         }
+
+
         List<Element> actionElementList;
         try {
             actionElementList = Xml.getElementsByTagName(document, "action");
