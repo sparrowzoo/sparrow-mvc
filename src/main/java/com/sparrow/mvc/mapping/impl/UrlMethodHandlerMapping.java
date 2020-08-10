@@ -78,7 +78,7 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
         try {
             document = documentLoader.loadDocument(xmlConfig, false);
         } catch (IOException e) {
-            logger.warn("io exception maybe file not found", e);
+            logger.warn("io exception maybe [{}]file not found",xmlConfig);
             return;
         } catch (SAXException e) {
             logger.error("xml sax exception", e);
