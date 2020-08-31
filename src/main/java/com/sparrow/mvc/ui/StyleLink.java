@@ -17,14 +17,13 @@
 
 package com.sparrow.mvc.ui;
 
-import java.io.IOException;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-
 import com.sparrow.constant.CONFIG;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+import java.io.IOException;
 
 /**
  * @author harry
@@ -44,25 +43,30 @@ public class StyleLink extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         int returnValue = TagSupport.SKIP_BODY;
-        String writeHTML = "";
-        writeHTML = "<link rel=\"stylesheet\" type=\"text/css\"  href=\"";
+        StringBuilder writeHTML = new StringBuilder();
+        writeHTML.append("<link rel=\"stylesheet\" type=\"text/css\"  href=\"");
         String href = this.getHref();
         if (href.contains("$resource")) {
             href = href.replace("$resource",
-                Config.getValue(CONFIG.RESOURCE));
+                    Config.getValue(CONFIG.RESOURCE));
         }
         if (href.contains("$rootPath")) {
             href = href.replace("$rootPath",
-                Config.getValue(CONFIG.ROOT_PATH));
+                    Config.getValue(CONFIG.ROOT_PATH));
         }
 
         if (href.contains("$website")) {
             href = href.replace("$website",
-                Config.getValue(CONFIG.WEBSITE));
+                    Config.getValue(CONFIG.WEBSITE));
         }
-        writeHTML += href;
-        writeHTML += "?v=" + Config.getValue(CONFIG.RESOURCE_VERSION)
-            + "\"";
+        writeHTML.append(href);
+        if (href.contains("?")) {
+            writeHTML.append("&");
+        } else {
+            writeHTML.append("?");
+        }
+        writeHTML.append("v=" + Config.getValue(CONFIG.RESOURCE_VERSION, "1.0")
+                + "\"");
         try {
             if (!StringUtility.isNullOrEmpty(writeHTML)) {
                 this.pageContext.getOut().print(writeHTML + "/>");
