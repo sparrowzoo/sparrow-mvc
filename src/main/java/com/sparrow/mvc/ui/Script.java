@@ -20,6 +20,7 @@ package com.sparrow.mvc.ui;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
 import com.sparrow.constant.CONFIG;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
@@ -30,7 +31,7 @@ import com.sparrow.utility.StringUtility;
 @SuppressWarnings("serial")
 public class Script extends TagSupport {
     private String src;
-    private Boolean asyn=false;
+    private Boolean asyn = false;
 
     public String getSrc() {
         return src;
@@ -51,10 +52,10 @@ public class Script extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         int returnValue = TagSupport.SKIP_BODY;
-        String writeHTML = "";
+        StringBuilder writeHTML = new StringBuilder();
         if (this.getSrc().contains("$language")) {
             Object language = this.pageContext.getSession().getAttribute(
-                "language");
+                    "language");
             if (language == null) {
                 language = Config.getValue(CONFIG.LANGUAGE);
             }
@@ -62,31 +63,36 @@ public class Script extends TagSupport {
         }
 
 
-        writeHTML = "<script language=\"javascript\" type=\"text/javascript\"";
-        if(this.asyn) {
-            writeHTML += " defer asyn=\"true\" ";
+        writeHTML.append("<script language=\"javascript\" type=\"text/javascript\"");
+        if (this.asyn) {
+            writeHTML.append(" defer asyn=\"true\" ");
         }
-        writeHTML+="  src=\"";
+        writeHTML.append("  src=\"");
         String src = this.getSrc();
         if (src.contains("$resource")) {
             src = src.replace("$resource",
-                Config.getValue(CONFIG.RESOURCE));
+                    Config.getValue(CONFIG.RESOURCE));
         }
 
         if (src.contains("$rootPath")) {
             src = src.replace("$rootPath",
-                Config.getValue(CONFIG.ROOT_PATH));
+                    Config.getValue(CONFIG.ROOT_PATH));
         }
 
         if (src.contains("$website")) {
             src = src.replace("$website", Config.getValue(CONFIG.WEBSITE));
         }
 
-        writeHTML += src;
+        writeHTML.append(src);
 
+        if (src.contains("?")) {
+            writeHTML.append("&");
+        } else {
+            writeHTML.append("?");
+        }
 
-        writeHTML += "?v=" + Config.getValue(CONFIG.RESOURCE_VERSION)
-            + "\"></script>";
+        writeHTML.append("v=" + Config.getValue(CONFIG.RESOURCE_VERSION, "1.0")
+                + "\"></script>");
 
         try {
             if (!StringUtility.isNullOrEmpty(writeHTML)) {
