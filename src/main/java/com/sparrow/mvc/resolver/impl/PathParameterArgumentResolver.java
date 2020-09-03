@@ -42,9 +42,9 @@ import java.util.Map;
  */
 public class PathParameterArgumentResolver implements HandlerMethodArgumentResolver, ContainerAware {
 
-    private Logger logger= LoggerFactory.getLogger(PathParameterArgumentResolver.class);
+    private Logger logger = LoggerFactory.getLogger(PathParameterArgumentResolver.class);
 
-    private Container container= ApplicationContext.getContainer();
+    private Container container = ApplicationContext.getContainer();
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -55,8 +55,12 @@ public class PathParameterArgumentResolver implements HandlerMethodArgumentResol
     public Object resolveArgument(MethodParameter methodParameter, ServletInvokableHandlerMethod executionChain,
                                   HttpServletRequest request) throws Exception {
 
+
+        if (StringUtility.isNullOrEmpty(executionChain.getActionRegex())) {
+            return null;
+        }
         List<String> pathParameterNameList = executionChain.getPathParameterNameList();
-        if(pathParameterNameList==null){
+        if (pathParameterNameList == null) {
             logger.warn("path parameter name list is null");
             return null;
         }

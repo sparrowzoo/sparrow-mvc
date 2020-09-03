@@ -409,7 +409,8 @@ public class DispatcherFilter implements Filter {
                     loginUrl = loginUrl + SYMBOL.QUESTION_MARK + redirectUrl;
                 }
             }
-            loginUrl = rootPath + loginUrl;
+            String passport=Config.getValue(CONFIG.PASSPORT_ROOT);
+            loginUrl = passport + loginUrl;
             if (!handlerExecutionChain.isJson()) {
                 if (isInFrame) {
                     HttpContext.getContext().execute(String.format("window.parent.location.href='%1$s'", loginUrl));

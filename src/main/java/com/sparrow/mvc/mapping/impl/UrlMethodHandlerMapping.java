@@ -78,7 +78,7 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
         try {
             document = documentLoader.loadDocument(xmlConfig, false);
         } catch (IOException e) {
-            logger.warn("io exception maybe [{}]file not found",xmlConfig);
+            logger.warn("io exception maybe [{}]file not found", xmlConfig);
             return;
         } catch (SAXException e) {
             logger.error("xml sax exception", e);
@@ -89,12 +89,11 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
         }
 
 
-        List<Element> actionElementList;
-        try {
-            actionElementList = Xml.getElementsByTagName(document, "action");
-            for (Element actionElement : actionElementList) {
+        List<Element> actionElementList = Xml.getElementsByTagName(document, "action");
+        for (Element actionElement : actionElementList) {
+            String actionName = actionElement.getAttribute("name");
+            try {
                 ServletInvokableHandlerMethod invokableHandlerMethod = new ServletInvokableHandlerMethod();
-                String actionName = actionElement.getAttribute("name");
                 String beanName = ((Element) actionElement.getParentNode())
                         .getAttribute("id");
 
@@ -166,9 +165,9 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                     mapping.put(actionName,
                             invokableHandlerMethod);
                 }
+            } catch (Throwable e) {
+                logger.error("controller parse error action-key {}", actionName);
             }
-        } catch (Exception e) {
-            logger.error("init action controller config error", e);
         }
     }
 

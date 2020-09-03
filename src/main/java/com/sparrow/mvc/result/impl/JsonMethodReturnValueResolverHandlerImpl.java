@@ -18,9 +18,11 @@
 package com.sparrow.mvc.result.impl;
 
 import com.sparrow.constant.SPARROW_ERROR;
+import com.sparrow.constant.cache.KEY;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
+import com.sparrow.mvc.result.ResultErrorAssembler;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.POJO;
 import com.sparrow.protocol.Result;
@@ -49,10 +51,15 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
 
     @Override
     public void errorResolve(Throwable exception, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+        HttpServletResponse response) throws IOException {
+        if(exception instanceof BusinessException){
+            Result result = ResultErrorAssembler.assemble((BusinessException) exception, null);
+            response.getWriter().write(JsonFactory.getProvider().toString(result));
+            return;
+        }
         //业务异常
         if (exception.getCause() != null && exception.getCause() instanceof BusinessException) {
-            Result result = Result.FAIL((BusinessException) exception.getCause());
+            Result result = ResultErrorAssembler.assemble((BusinessException) exception.getCause(), null);
             response.getWriter().write(JsonFactory.getProvider().toString(result));
             return;
         }
@@ -64,7 +71,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
     @Override
     public void resolve(ServletInvokableHandlerMethod handlerExecutionChain, Object returnValue, FilterChain chain,
         HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+        HttpServletResponse response) throws IOException {
         if(returnValue==null){
             returnValue= SYMBOL.EMPTY;
         }

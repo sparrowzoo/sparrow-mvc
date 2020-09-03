@@ -81,10 +81,10 @@ public class MethodControllerHandlerAdapter implements HandlerAdapter {
         HandlerMethodArgumentResolver attributeArgumentResolver = new RequestAttributeArgumentResolver();
         HandlerMethodArgumentResolver jsonBodyArgumentResolver = new JsonBodyArgumentResolver();
 
-        handlerMethodArgumentResolvers.add(jsonBodyArgumentResolver);
-        handlerMethodArgumentResolvers.add(requestParameterArgumentResolver);
         handlerMethodArgumentResolvers.add(attributeArgumentResolver);
+        handlerMethodArgumentResolvers.add(jsonBodyArgumentResolver);
         handlerMethodArgumentResolvers.add(pathParameterArgumentResolver);
+        handlerMethodArgumentResolvers.add(requestParameterArgumentResolver);
         this.argumentResolverComposite.addResolvers(handlerMethodArgumentResolvers);
     }
 

@@ -23,6 +23,7 @@ import com.sparrow.core.Pair;
 import com.sparrow.enums.LANGUAGE;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
+import com.sparrow.mvc.result.ResultErrorAssembler;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.Result;
 import com.sparrow.protocol.VO;
@@ -33,6 +34,7 @@ import com.sparrow.protocol.mvn.ViewWithModel;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.ClassUtility;
+import com.sparrow.utility.CollectionsUtility;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
@@ -175,31 +177,33 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             return;
         }
 
+
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        if (rootPath != null && url.startsWith(rootPath)) {
+            url = url.substring(rootPath.length());
+        }
         String flashUrl;
+
         switch (viewWithModel.getSwitchMode()) {
 
             case REDIRECT:
-                if (rootPath != null && !url.startsWith(rootPath)) {
-                    url = rootPath + url;
-                }
                 flashUrl = servletUtility.assembleActualUrl(url);
                 this.flash(request, flashUrl, CONSTANT.FLASH_SUCCESS_RESULT, viewWithModel.getVo());
                 response.sendRedirect(url);
                 break;
             case TRANSIT:
-                flashUrl = servletUtility.assembleActualUrl(referer);
+                flashUrl = servletUtility.assembleActualUrl(url);
                 this.flash(request, flashUrl, CONSTANT.FLASH_SUCCESS_RESULT, viewWithModel.getVo());
-                String transitUrl = Config.getValue(CONFIG.SUCCESS_TRANSIT_URL);
+                String transitUrl = viewWithModel.getTransitUrl();
+                if (StringUtility.isNullOrEmpty(transitUrl)) {
+                    transitUrl = Config.getValue(CONFIG.SUCCESS_TRANSIT_URL);
+                }
                 if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
                     transitUrl = rootPath + transitUrl;
                 }
                 response.sendRedirect(transitUrl + "?" + url);
                 break;
             case FORWARD:
-                if (rootPath != null && url.startsWith(rootPath)) {
-                    url = url.substring(rootPath.length());
-                }
                 VO data = viewWithModel.getVo();
                 if (data != null) {
                     request.setAttribute(ClassUtility.getEntityNameByClass(data.getClass()), data);
@@ -228,10 +232,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         } else {
             businessException = new BusinessException(SPARROW_ERROR.SYSTEM_SERVER_ERROR);
         }
-        Result result = Result.FAIL(businessException);
-        //todo set error msg
-        result.setError(Config.getLanguageValue(result.getKey(),LANGUAGE.EN.name()));
-
+        Result result = ResultErrorAssembler.assemble(businessException, null);
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
         String referer = servletUtility.referer(request);
         String relativeReferer = referer.substring(rootPath.length() + 1);
