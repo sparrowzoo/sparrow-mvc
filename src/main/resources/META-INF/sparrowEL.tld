@@ -34,12 +34,6 @@
     </function>
 
     <function>
-        <name>i18n_index</name>
-        <function-class>com.sparrow.utility.Config</function-class>
-        <function-signature>java.lang.String getLanguageValue(java.lang.String,java.lang.Integer)</function-signature>
-    </function>
-
-    <function>
         <name>config</name>
         <function-class>com.sparrow.utility.Config</function-class>
         <function-signature>java.lang.String getValue(java.lang.String)</function-signature>

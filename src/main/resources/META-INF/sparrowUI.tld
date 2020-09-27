@@ -235,6 +235,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>autocomplete</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>tabIndex</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -961,6 +966,31 @@
 
         <attribute>
             <name>showIndex</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>HorizontalMenu</name>
+        <tag-class>com.sparrow.mvc.ui.HorizontalMenu</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>currentUrl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>target</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>indexUrl</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

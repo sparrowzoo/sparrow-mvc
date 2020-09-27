@@ -17,15 +17,13 @@
 
 package com.sparrow.web.support;
 
-import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.servlet.impl.AbstractServletContainer;
 import com.sparrow.support.pager.SparrowPagerResult;
 import com.sparrow.support.web.HttpContext;
-
 import com.sparrow.utility.CollectionsUtility;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -93,9 +91,5 @@ public class SparrowServletContainer extends AbstractServletContainer {
     @Override
     public <T> T get(String key) {
         return (T) httpContext.get(key);
-    }
-
-    public void putURLParameter(Object... parameters) {
-        httpContext.put(CONSTANT.ACTION_RESULT_URL_PARAMETERS, Arrays.asList(parameters));
     }
 }

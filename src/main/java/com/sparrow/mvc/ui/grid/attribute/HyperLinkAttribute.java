@@ -23,7 +23,8 @@ import com.sparrow.mvc.ui.grid.BaseAttribute;
 import com.sparrow.utility.Config;
 
 /**
- * 格式hyperLink#name&id#format#url#target#textLength#defaultValue 例子hyperLink#filedName&idField#{0}#url?id={1}#_blank#100#查看
+ * 格式hyperLink#name&id#format#url#target#css#textLength#defaultValue
+ * 例子hyperLink#filedName&idField#{0}#url?id={1}#_blank#css$100#查看
  *
  * @author harry
  */
@@ -42,11 +43,15 @@ public class HyperLinkAttribute extends BaseAttribute {
         if (config.length > DIGIT.FOUR) {
             this.target = config[DIGIT.FOUR];
         }
+
         if (config.length > DIGIT.FIVE) {
-            this.textLength = Integer.valueOf(config[DIGIT.FIVE]);
+            this.css = config[DIGIT.FIVE];
         }
         if (config.length > DIGIT.SIX) {
-            this.defaultValue = config[DIGIT.SIX];
+            this.textLength = Integer.valueOf(config[DIGIT.SIX]);
+        }
+        if (config.length > DIGIT.SEVEN) {
+            this.defaultValue = config[DIGIT.SEVEN];
         }
     }
 

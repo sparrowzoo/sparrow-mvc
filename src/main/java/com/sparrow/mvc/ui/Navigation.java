@@ -6,6 +6,7 @@ import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.support.NavigationService;
+import com.sparrow.support.web.HttpContext;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
@@ -42,12 +43,18 @@ public class Navigation extends TagSupport {
                     .getAttribute(this.getId() + "." + "current");
         }
         if (requestForum == null) {
+            requestForum = HttpContext.getContext().get(this.getId() + "." + "current");
+        }
+        if (requestForum == null) {
             requestForum = this.pageContext.getRequest()
                     .getAttribute(CONSTANT.REQUEST_ACTION_CURRENT_FORUM);
         }
         if (requestForum != null) {
             this.current = requestForum.toString();
+            this.pageContext.getRequest()
+                    .setAttribute(CONSTANT.REQUEST_ACTION_CURRENT_FORUM, this.current);
         }
+
         return this.current;
     }
 
@@ -86,14 +93,14 @@ public class Navigation extends TagSupport {
                 String webSitName = Config.getLanguageValue(
                         CONFIG_KEY_LANGUAGE.WEBSITE_NAME, language);
                 navigation.append(String.format(
-                        "<a target=\"_blank\" href=\"%1$s\">%2$s</a>>>",
+                        "<a target=\"_blank\" href=\"%1$s\">%2$s</a>",
                         this.index, webSitName));
                 navigation.append(this.separator);
             }
 
 
             navigation.append(navigationService.navigation(this.getTop(),
-                    this.getCurrent(),manage, this.separator));
+                    this.getCurrent(), manage, this.separator));
             navigation.append("</div>");
             this.pageContext.getOut().print(navigation.toString());
         } catch (Exception ex) {

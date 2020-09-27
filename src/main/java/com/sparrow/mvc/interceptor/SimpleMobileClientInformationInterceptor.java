@@ -5,7 +5,7 @@ import com.sparrow.protocol.ClientInformation;
 import com.sparrow.protocol.constant.CLIENT_INFORMATION;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.enums.PLATFORM;
-import com.sparrow.protocol.mvn.HandlerInterceptor;
+import com.sparrow.protocol.mvc.HandlerInterceptor;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;

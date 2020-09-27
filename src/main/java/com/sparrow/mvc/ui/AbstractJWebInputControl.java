@@ -41,6 +41,7 @@ public abstract class AbstractJWebInputControl extends WebControl {
     private String type;
     private String tabIndex;
     private String placeHolder;
+    private String autocomplete;
 
     public String getTabIndex() {
         Integer tabIndex = 0;
@@ -88,6 +89,7 @@ public abstract class AbstractJWebInputControl extends WebControl {
         writeHTML.append(this.getMaxLength());
         writeHTML.append(this.getValue());
         writeHTML.append(this.getPlaceHolder());
+        writeHTML.append(this.getAutocomplete());
         writeHTML.append("/>");
         try {
             this.pageContext.getOut().print(writeHTML.toString());
@@ -198,6 +200,17 @@ public abstract class AbstractJWebInputControl extends WebControl {
             return SYMBOL.EMPTY;
         }
         return " placeholder=\"" + this.placeHolder + "\" ";
+    }
+
+    public String getAutocomplete() {
+        if (StringUtility.isNullOrEmpty(this.autocomplete)) {
+            return SYMBOL.EMPTY;
+        }
+        return " autocomplete=\"off\" ";
+    }
+
+    public void setAutocomplete(String autocomplete) {
+        this.autocomplete = autocomplete;
     }
 
     public void setPlaceHolder(String placeHolder) {

@@ -18,15 +18,16 @@
 package com.sparrow.web.support;
 
 import com.sparrow.constant.CONFIG;
-import com.sparrow.support.Size;
+import com.sparrow.protocol.Size;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.web.QRCodeUtility;
-import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * QRCode

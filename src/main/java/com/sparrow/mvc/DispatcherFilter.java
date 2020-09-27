@@ -37,7 +37,7 @@ import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.EXTENSION;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
-import com.sparrow.protocol.mvn.HandlerInterceptor;
+import com.sparrow.protocol.mvc.HandlerInterceptor;
 import com.sparrow.support.LoginDialog;
 import com.sparrow.support.web.CookieUtility;
 import com.sparrow.support.web.HttpContext;
@@ -116,7 +116,7 @@ public class DispatcherFilter implements Filter {
                 return;
             }
             this.initAttribute(httpRequest, httpResponse);
-            if (invokableHandlerMethod == null) {
+            if (invokableHandlerMethod == null||invokableHandlerMethod.getMethod()==null) {
                 String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
                 if (actionKey.endsWith(extension) || actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
@@ -433,11 +433,11 @@ public class DispatcherFilter implements Filter {
 
         PrivilegeSupport privilegeService = this.container.getBean(
             SYS_OBJECT_NAME.PRIVILEGE_SERVICE);
-        String forumCode = httpRequest.getParameter("forumCode");
+        String code = httpRequest.getParameter("resource-code");
 
         if (!privilegeService.accessible(
             user.getUserId(), actionName,
-            forumCode)) {
+            code)) {
             httpResponse.getWriter().write(CONSTANT.ACCESS_DENIED);
             this.sparrowServletUtility.moveAttribute(httpRequest);
             return false;

@@ -163,8 +163,7 @@ public class GridView extends WebControl {
                 }
 
                 if (this.isShowPage()) {
-
-                    SparrowPagerResult<POJO> result = new SparrowPagerResult<POJO>(this.pageSize,this.getCurrentPageIndex(),this.getRecordCount(),this.getDataSource());
+                    SparrowPagerResult<POJO> result = new SparrowPagerResult<>(this.pageSize,this.getCurrentPageIndex(),this.getRecordCount(),this.getDataSource());
                     result.setPageFormat(this.pageFormat);
                     result.setIndexPageFormat(this.pageFormat);
                     result.setSimple(false);

@@ -118,6 +118,8 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                 }
                 Method method = actionMethodMap.get(actionMethodName);
                 if (method == null) {
+                    mapping.put(actionName,
+                            invokableHandlerMethod);
                     continue;
                 }
                 // 获取所有参数名称列表

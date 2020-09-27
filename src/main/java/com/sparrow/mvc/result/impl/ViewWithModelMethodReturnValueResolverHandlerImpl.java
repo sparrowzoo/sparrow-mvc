@@ -20,7 +20,6 @@ package com.sparrow.mvc.result.impl;
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.SPARROW_ERROR;
 import com.sparrow.core.Pair;
-import com.sparrow.enums.LANGUAGE;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.mvc.result.ResultErrorAssembler;
@@ -29,8 +28,8 @@ import com.sparrow.protocol.Result;
 import com.sparrow.protocol.VO;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
-import com.sparrow.protocol.mvn.PageSwitchMode;
-import com.sparrow.protocol.mvn.ViewWithModel;
+import com.sparrow.protocol.mvc.PageSwitchMode;
+import com.sparrow.protocol.mvc.ViewWithModel;
 import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.ClassUtility;
@@ -39,7 +38,6 @@ import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
@@ -80,8 +78,6 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
      *                     <p>
      *                     direct:login.jsp
      *                     <p>
-     *                     direct:login|flash_url.jsp
-     *                     <p>
      *                     direct:success
      *                     <p>
      *                     login
@@ -99,7 +95,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         } else {
             url = actionResult;
         }
-        url = assembleUrl(referer, defaultSuccessUrl, url, pageSwitchMode);
+        url = assembleUrl(referer, defaultSuccessUrl, url, pageSwitchMode,null);
         switch (pageSwitchMode) {
             case FORWARD:
                 return ViewWithModel.forward(url);
@@ -112,17 +108,13 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         }
     }
 
-    private String assembleUrl(String referer, String defaultSucceessUrl, String url, PageSwitchMode pageSwitchMode) {
+    private String assembleUrl(String referer, String defaultSuccessUrl, String url, PageSwitchMode pageSwitchMode,String []urlArgs) {
+        if (CONSTANT.SUCCESS.equals(url) || StringUtility.isNullOrEmpty(url)) {
+            url = defaultSuccessUrl;
+        }
+
         if (StringUtility.isNullOrEmpty(url)) {
             url = referer;
-        }
-
-        if (StringUtility.isNullOrEmpty(url)) {
-            return null;
-        }
-
-        if (CONSTANT.SUCCESS.equals(url)) {
-            url = defaultSucceessUrl;
         }
 
         if (StringUtility.isNullOrEmpty(url)) {
@@ -138,14 +130,13 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             url = servletUtility.assembleActualUrl(url);
         }
 
-        Object urlParameters = HttpContext.getContext().get(CONSTANT.ACTION_RESULT_URL_PARAMETERS);
-        if (urlParameters != null) {
-            List<Object> listParameters = (List<Object>) urlParameters;
-            for (int i = 0; i < listParameters.size(); i++) {
-                if (listParameters.get(i) != null) {
-                    url = url.replace(SYMBOL.DOLLAR, SYMBOL.AND).replace(
-                            "{" + i + "}", listParameters.get(i).toString());
-                }
+        if (CollectionsUtility.isNullOrEmpty(urlArgs)) {
+            return url;
+        }
+        for (int i = 0; i < urlArgs.length; i++) {
+            if (urlArgs[i] != null) {
+                url = url.replace(SYMBOL.DOLLAR, SYMBOL.AND).replace(
+                        "{" + i + "}", urlArgs[i]);
             }
         }
         return url;
@@ -164,7 +155,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             url = viewWithModel.getUrl();
         } else if (returnValue instanceof ViewWithModel) {
             viewWithModel = (ViewWithModel) returnValue;
-            url = this.assembleUrl(referer, handlerExecutionChain.getSuccessUrl(), viewWithModel.getUrl(), viewWithModel.getSwitchMode());
+            url = this.assembleUrl(referer, handlerExecutionChain.getSuccessUrl(), viewWithModel.getUrl(), viewWithModel.getSwitchMode(),viewWithModel.getUrlArgs());
         }
 
         //无返回值，直接返回 不处理

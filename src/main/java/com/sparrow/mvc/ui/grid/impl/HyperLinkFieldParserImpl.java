@@ -19,6 +19,7 @@ package com.sparrow.mvc.ui.grid.impl;
 
 import com.sparrow.mvc.ui.grid.FieldParser;
 import com.sparrow.mvc.ui.grid.attribute.HyperLinkAttribute;
+import com.sparrow.utility.Config;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class HyperLinkFieldParserImpl implements FieldParser {
         for (int i = 0; i < valueList.size(); i++) {
             url = url.replace("{" + i + "}", valueList.get(i));
         }
-        return String.format("<a href=\"%1$s\" title=\"%2$s\" target=\"%4$s\">%3$s</a>", url, title, hyperLinkAttribute.subString(title), hyperLinkAttribute.getTarget());
+        title=Config.getLanguageValue(title);
+        return String.format("<a href=\"%1$s\" title=\"%2$s\" target=\"%4$s\" class=\"%5$s\">%3$s</a>", url, title, hyperLinkAttribute.subString(title), hyperLinkAttribute.getTarget(),hyperLinkAttribute.getCss());
     }
 }
