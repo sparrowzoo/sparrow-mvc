@@ -109,8 +109,8 @@ public abstract class AbstractJWebInputControl extends WebControl {
         } else if (this.readonly != null) {
             readonly = this.readonly;
         }
-
-        return readonly.trim().equalsIgnoreCase(Boolean.TRUE.toString()) ? " readonly=\"readonly\" " : SYMBOL.EMPTY;
+        boolean isReadonly= Boolean.TRUE.toString().equalsIgnoreCase(readonly.trim())||"readonly".equalsIgnoreCase(readonly.trim());
+        return isReadonly ? " readonly=\"readonly\" " : SYMBOL.EMPTY;
     }
 
     public void setReadonly(String readonly) {

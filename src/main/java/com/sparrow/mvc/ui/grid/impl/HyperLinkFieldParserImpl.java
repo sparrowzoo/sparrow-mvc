@@ -19,7 +19,9 @@ package com.sparrow.mvc.ui.grid.impl;
 
 import com.sparrow.mvc.ui.grid.FieldParser;
 import com.sparrow.mvc.ui.grid.attribute.HyperLinkAttribute;
+import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.utility.Config;
+import com.sparrow.utility.StringUtility;
 
 import java.util.List;
 
@@ -35,7 +37,11 @@ public class HyperLinkFieldParserImpl implements FieldParser {
         for (int i = 0; i < valueList.size(); i++) {
             url = url.replace("{" + i + "}", valueList.get(i));
         }
-        title=Config.getLanguageValue(title);
-        return String.format("<a href=\"%1$s\" title=\"%2$s\" target=\"%4$s\" class=\"%5$s\">%3$s</a>", url, title, hyperLinkAttribute.subString(title), hyperLinkAttribute.getTarget(),hyperLinkAttribute.getCss());
+        //允许配置为空串
+        String t = Config.getLanguageValue(title);
+        if (t != null) {
+            title = t;
+        }
+        return String.format("<a href=\"%1$s\" title=\"%2$s\" target=\"%4$s\" class=\"%5$s\">%3$s</a>", url, title, hyperLinkAttribute.subString(title), hyperLinkAttribute.getTarget(), hyperLinkAttribute.getCss());
     }
 }

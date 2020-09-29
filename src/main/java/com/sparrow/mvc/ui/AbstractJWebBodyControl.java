@@ -90,7 +90,7 @@ public abstract class AbstractJWebBodyControl extends WebControl {
             this.pageContext.getOut().print(content);
             this.pageContext.getOut().print("</" + this.getTagName() + ">");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("body control error {}",e);
         }
         return returnValue;
     }

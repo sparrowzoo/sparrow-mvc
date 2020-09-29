@@ -40,6 +40,7 @@ public class WebControl extends TagSupport {
     protected static Logger logger = LoggerFactory.getLogger(WebControl.class);
     private String id;
     private String name;
+    private String pojo;
     protected String cssClass = SYMBOL.EMPTY;
     private String cssText = SYMBOL.EMPTY;
     private String events = SYMBOL.EMPTY;
@@ -47,6 +48,14 @@ public class WebControl extends TagSupport {
     private String tagName;
     private String visible = Boolean.TRUE.toString();
     private boolean isNameOfEnum;
+
+    public String getPojo() {
+        return pojo;
+    }
+
+    public void setPojo(String pojo) {
+        this.pojo = pojo;
+    }
 
     public void setNameOfEnum(String enums) {
         String enumsArray[] = enums.split(":");
@@ -193,15 +202,12 @@ public class WebControl extends TagSupport {
             }
             return requestValue.toString();
         }
-        // 如果id.vlaue没有设置则获取model.name形式,需要反射
-        if (this.getCtrlName().contains(SYMBOL.DOT)) {
-            String[] modelArray = this.getCtrlName().split("\\.");
-            String propertyName = modelArray[0];
+        if (this.pojo != null) {
             requestValue = this.pageContext.getRequest().getAttribute(
-                    propertyName);
+                    this.pojo);
 
             if (requestValue == null) {
-                requestValue = HttpContext.getContext().get(propertyName);
+                requestValue = HttpContext.getContext().get(this.pojo);
             }
 
             if (requestValue != null) {
@@ -209,7 +215,7 @@ public class WebControl extends TagSupport {
                     MethodAccessor methodAccessor = ApplicationContext.getContainer()
                             .getProxyBean(
                                     requestValue.getClass());
-                    String getMethodName = PropertyNamer.getter(modelArray[1]);
+                    String getMethodName = PropertyNamer.getter(this.getCtrlName());
                     requestValue = methodAccessor.get(requestValue,
                             getMethodName);
                     if (requestValue != null) {
@@ -224,15 +230,8 @@ public class WebControl extends TagSupport {
                     return null;
                 }
             }
-            //直接获取属性
-            requestValue = this.pageContext.getRequest().getAttribute(
-                    modelArray[1]);
-            if (requestValue != null) {
-                return requestValue.toString();
-            }
         }
         // 如果model.name形式还没有，则获取请求参数，原样返回
-
         requestValue = this.pageContext.getRequest().getParameter(name);
         if (requestValue != null) {
             return requestValue.toString();

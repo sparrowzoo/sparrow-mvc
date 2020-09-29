@@ -160,6 +160,7 @@ public class DispatcherFilter implements Filter {
     }
 
     private void afterCompletion(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        HttpContext.getContext().remove();
         for (HandlerInterceptor handlerInterceptor : handlerInterceptorList) {
             try {
                 handlerInterceptor.afterCompletion(httpRequest, httpResponse);
@@ -247,7 +248,10 @@ public class DispatcherFilter implements Filter {
         String actionKey = sparrowServletUtility.getServletUtility().getActionKey(request);
         logger.debug("PARAMETERS:" + sparrowServletUtility.getServletUtility().getAllParameter(request));
         logger.debug("ACTION KEY:" + actionKey);
-        request.setAttribute(CONSTANT.REQUEST_ACTION_CURRENT_FORUM, request.getParameter("forumCode"));
+        String forumCode=request.getParameter("forumCode");
+        request.setAttribute(CONSTANT.REQUEST_ACTION_CURRENT_FORUM,forumCode);
+        request.setAttribute("divNavigation.current",forumCode);
+
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
         if (!StringUtility.isNullOrEmpty(rootPath)) {
             request.setAttribute(CONFIG.ROOT_PATH, rootPath);
@@ -384,8 +388,12 @@ public class DispatcherFilter implements Filter {
                 return false;
             }
 
-            String loginUrl = Config.getValue(CONFIG.LOGIN_TYPE_KEY
-                .get(handlerExecutionChain.getLoginType()));
+            String loginKey=CONFIG.LOGIN_TYPE_KEY
+                    .get(handlerExecutionChain.getLoginType());
+            String loginUrl = Config.getValue(loginKey);
+            if(StringUtility.isNullOrEmpty(loginUrl)){
+                logger.error("please config login url 【{}】",loginKey);
+            }
             boolean isInFrame = handlerExecutionChain.getLoginType() == LOGIN_TYPE.LOGIN_IFRAME
                 .ordinal();
             if (!StringUtility.isNullOrEmpty(loginUrl)) {
@@ -410,7 +418,9 @@ public class DispatcherFilter implements Filter {
                 }
             }
             String passport=Config.getValue(CONFIG.PASSPORT_ROOT);
-            loginUrl = passport + loginUrl;
+            if(passport!=null) {
+                loginUrl = passport + loginUrl;
+            }
             if (!handlerExecutionChain.isJson()) {
                 if (isInFrame) {
                     HttpContext.getContext().execute(String.format("window.parent.location.href='%1$s'", loginUrl));

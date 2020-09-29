@@ -24,7 +24,8 @@ import com.sparrow.utility.Config;
 
 /**
  * 格式hyperLink#name&id#format#url#target#css#textLength#defaultValue
- * 例子hyperLink#filedName&idField#{0}#url?id={1}#_blank#css$100#查看
+ * //todo 加是否可见表达式
+ * 例子hyperLink#filedName&idField#{0}#url?id={1}#_blank#css#100#查看
  *
  * @author harry
  */

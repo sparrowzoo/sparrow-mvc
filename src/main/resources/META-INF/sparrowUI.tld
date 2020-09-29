@@ -72,6 +72,11 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>pojo</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <!-- JDiv -->
     <tag>
@@ -86,6 +91,11 @@
         </attribute>
         <attribute>
             <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>pojo</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -136,6 +146,11 @@
             </description>
         </attribute>
         <attribute>
+            <name>pojo</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>cssClass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -174,6 +189,11 @@
         </attribute>
         <attribute>
             <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>pojo</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -217,7 +237,6 @@
 
     </tag>
 
-    <!-- FORMUI -->
     <!-- JTextBox -->
     <tag>
         <name>text_box</name>
@@ -232,6 +251,11 @@
         <attribute>
             <name>name</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>pojo</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -312,6 +336,7 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+
         <attribute>
             <name>tabIndex</name>
             <required>false</required>
@@ -450,6 +475,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>pojo</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>cssClass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -539,6 +569,11 @@
         <attribute>
             <name>name</name>
             <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>pojo</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
