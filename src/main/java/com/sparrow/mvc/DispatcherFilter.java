@@ -117,6 +117,7 @@ public class DispatcherFilter implements Filter {
             }
             this.initAttribute(httpRequest, httpResponse);
             if (invokableHandlerMethod == null||invokableHandlerMethod.getMethod()==null) {
+                logger.warn("invokableHandlerMethod is null or method not exist ");
                 String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
                 if (actionKey.endsWith(extension) || actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
