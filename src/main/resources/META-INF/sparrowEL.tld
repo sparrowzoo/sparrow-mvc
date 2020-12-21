@@ -61,4 +61,9 @@
         <function-class>com.sparrow.utility.StringUtility</function-class>
         <function-signature>java.lang.String subStringByByte(java.lang.String,int)</function-signature>
     </function>
+    <function>
+        <name>json</name>
+        <function-class>com.sparrow.utility.StringUtility</function-class>
+        <function-signature>java.lang.String json(com.sparrow.protocol.POJO)</function-signature>
+    </function>
 </taglib>

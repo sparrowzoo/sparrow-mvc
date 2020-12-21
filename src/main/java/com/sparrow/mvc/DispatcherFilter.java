@@ -447,7 +447,7 @@ public class DispatcherFilter implements Filter {
         String code = httpRequest.getParameter("resource-code");
 
         if (!privilegeService.accessible(
-            user.getUserId(), actionName,
+            user, actionName,
             code)) {
             httpResponse.getWriter().write(CONSTANT.ACCESS_DENIED);
             this.sparrowServletUtility.moveAttribute(httpRequest);
