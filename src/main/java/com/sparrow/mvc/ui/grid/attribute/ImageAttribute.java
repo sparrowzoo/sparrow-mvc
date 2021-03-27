@@ -17,11 +17,10 @@
 
 package com.sparrow.mvc.ui.grid.attribute;
 
-import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.Config;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.mvc.ui.grid.BaseAttribute;
-import com.sparrow.utility.Config;
 
 /**
  * 格式image#fielName#format#width#height#defaultIco 例子image#filedName#图片显示文本 title#60px#40px#http://r.**.net/defualt.ico
@@ -51,7 +50,7 @@ public class ImageAttribute extends BaseAttribute {
         if (config.length > DIGIT.FIVE) {
             this.defaultValue = config[DIGIT.FIVE];
             if (!this.defaultValue.startsWith(CONSTANT.HTTP_PROTOCOL)) {
-                this.defaultValue = Config.getValue(CONFIG.RESOURCE) + this.defaultValue;
+                this.defaultValue = com.sparrow.utility.Config.getValue(Config.RESOURCE) + this.defaultValue;
             }
         }
     }

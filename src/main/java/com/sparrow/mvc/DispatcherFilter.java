@@ -24,7 +24,7 @@ import com.sparrow.core.Pair;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.datasource.ConnectionContextHolder;
-import com.sparrow.enums.LOGIN_TYPE;
+import com.sparrow.enums.LoginType;
 import com.sparrow.mvc.adapter.HandlerAdapter;
 import com.sparrow.mvc.adapter.impl.MethodControllerHandlerAdapter;
 import com.sparrow.mvc.mapping.HandlerMapping;
@@ -41,7 +41,6 @@ import com.sparrow.protocol.mvc.HandlerInterceptor;
 import com.sparrow.support.LoginDialog;
 import com.sparrow.support.web.CookieUtility;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import com.sparrow.utility.web.SparrowServletUtility;
 import org.slf4j.Logger;
@@ -118,7 +117,7 @@ public class DispatcherFilter implements Filter {
             this.initAttribute(httpRequest, httpResponse);
             if (invokableHandlerMethod == null||invokableHandlerMethod.getMethod()==null) {
                 logger.warn("invokableHandlerMethod is null or method not exist ");
-                String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
+                String extension = com.sparrow.utility.Config.getValue(Config.DEFAULT_PAGE_EXTENSION, EXTENSION.JSP);
                 if (actionKey.endsWith(extension) || actionKey.endsWith(EXTENSION.JSON)) {
                     chain.doFilter(request, response);
                 } else {
@@ -253,43 +252,43 @@ public class DispatcherFilter implements Filter {
         request.setAttribute(CONSTANT.REQUEST_ACTION_CURRENT_FORUM,forumCode);
         request.setAttribute("divNavigation.current",forumCode);
 
-        String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        String rootPath = com.sparrow.utility.Config.getValue(Config.ROOT_PATH);
         if (!StringUtility.isNullOrEmpty(rootPath)) {
-            request.setAttribute(CONFIG.ROOT_PATH, rootPath);
-            request.setAttribute(CONFIG.WEBSITE,
-                Config.getValue(CONFIG.WEBSITE));
+            request.setAttribute(Config.ROOT_PATH, rootPath);
+            request.setAttribute(Config.WEBSITE,
+                com.sparrow.utility.Config.getValue(Config.WEBSITE));
         }
 
         //国际化
-        String internationalization = Config
-            .getValue(CONFIG.INTERNATIONALIZATION);
+        String internationalization = com.sparrow.utility.Config
+            .getValue(Config.INTERNATIONALIZATION);
         if (internationalization != null) {
             //设置当前请求语言
-            String language = request.getParameter(CONFIG.LANGUAGE);
+            String language = request.getParameter(Config.LANGUAGE);
             if (language == null
                 || !internationalization.contains(language)) {
-                language = Config.getValue(CONFIG.LANGUAGE);
+                language = com.sparrow.utility.Config.getValue(Config.LANGUAGE);
             }
             HttpContext.getContext().put(CONSTANT.REQUEST_LANGUAGE, language);
         }
         //设置资源根路径
-        request.setAttribute(CONFIG.RESOURCE,
-            Config.getValue(CONFIG.RESOURCE));
+        request.setAttribute(Config.RESOURCE,
+            com.sparrow.utility.Config.getValue(Config.RESOURCE));
 
-        request.setAttribute(CONFIG.UPLOAD_PATH, Config.getValue(CONFIG.UPLOAD_PATH));
+        request.setAttribute(Config.UPLOAD_PATH, com.sparrow.utility.Config.getValue(Config.UPLOAD_PATH));
 
         //设置图片域
-        request.setAttribute(CONFIG.IMAGE_WEBSITE, Config.getValue(CONFIG.IMAGE_WEBSITE));
+        request.setAttribute(Config.IMAGE_WEBSITE, com.sparrow.utility.Config.getValue(Config.IMAGE_WEBSITE));
 
-        String configWebsiteName = Config.getLanguageValue(
-            CONFIG_KEY_LANGUAGE.WEBSITE_NAME, Config.getValue(CONFIG.LANGUAGE));
-        request.setAttribute(CONFIG_KEY_LANGUAGE.WEBSITE_NAME, configWebsiteName);
+        String configWebsiteName = com.sparrow.utility.Config.getLanguageValue(
+            ConfigKeyLanguage.WEBSITE_NAME, com.sparrow.utility.Config.getValue(Config.LANGUAGE));
+        request.setAttribute(ConfigKeyLanguage.WEBSITE_NAME, configWebsiteName);
 
         if (configWebsiteName != null) {
             String currentWebsiteName = cookieUtility.get(request.getCookies(),
-                CONFIG_KEY_LANGUAGE.WEBSITE_NAME);
+                ConfigKeyLanguage.WEBSITE_NAME);
             if (!configWebsiteName.equals(currentWebsiteName)) {
-                cookieUtility.set(response, CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
+                cookieUtility.set(response, ConfigKeyLanguage.WEBSITE_NAME,
                     configWebsiteName, DIGIT.ALL);
             }
         }
@@ -371,35 +370,35 @@ public class DispatcherFilter implements Filter {
             return true;
         }
 
-        if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.NO_LOGIN.ordinal()) {
+        if (handlerExecutionChain.getLoginType() == LoginType.NO_LOGIN.ordinal()) {
             return true;
         }
 
         String actionName = handlerExecutionChain.getActionName();
         LoginToken user = this.cookieUtility.getUser(httpRequest);
-        httpRequest.setAttribute(USER.ID, user.getUserId());
-        httpRequest.setAttribute(USER.LOGIN_TOKEN, user);
+        httpRequest.setAttribute(User.ID, user.getUserId());
+        httpRequest.setAttribute(User.LOGIN_TOKEN, user);
 
 
-        if (user.getUserId().equals(USER.VISITOR_ID)) {
-            String rootPath = Config.getValue(CONFIG.ROOT_PATH);
-            if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.MESSAGE.ordinal()) {
-                Result result = new Result(SPARROW_ERROR.USER_NOT_LOGIN.getCode(), SPARROW_ERROR.USER_NOT_LOGIN.getMessage());
+        if (user.getUserId().equals(User.VISITOR_ID)) {
+            String rootPath = com.sparrow.utility.Config.getValue(Config.ROOT_PATH);
+            if (handlerExecutionChain.getLoginType() == LoginType.MESSAGE.ordinal()) {
+                Result result = new Result(SparrowError.USER_NOT_LOGIN.getCode(), SparrowError.USER_NOT_LOGIN.getMessage());
                 httpResponse.getWriter().write(JsonFactory.getProvider().toString(result));
                 return false;
             }
 
-            String loginKey=CONFIG.LOGIN_TYPE_KEY
+            String loginKey= Config.LOGIN_TYPE_KEY
                     .get(handlerExecutionChain.getLoginType());
-            String loginUrl = Config.getValue(loginKey);
+            String loginUrl = com.sparrow.utility.Config.getValue(loginKey);
             if(StringUtility.isNullOrEmpty(loginUrl)){
                 logger.error("please config login url 【{}】",loginKey);
             }
-            boolean isInFrame = handlerExecutionChain.getLoginType() == LOGIN_TYPE.LOGIN_IFRAME
+            boolean isInFrame = handlerExecutionChain.getLoginType() == LoginType.LOGIN_IFRAME
                 .ordinal();
             if (!StringUtility.isNullOrEmpty(loginUrl)) {
-                String defaultSystemPage = rootPath + Config.getValue(CONFIG.DEFAULT_SYSTEM_INDEX);
-                String defaultMenuPage = rootPath + Config.getValue(CONFIG.DEFAULT_MENU_PAGE);
+                String defaultSystemPage = rootPath + com.sparrow.utility.Config.getValue(Config.DEFAULT_SYSTEM_INDEX);
+                String defaultMenuPage = rootPath + com.sparrow.utility.Config.getValue(Config.DEFAULT_MENU_PAGE);
                 String redirectUrl = httpRequest.getRequestURL().toString();
                 if (redirectUrl.endsWith(EXTENSION.DO) || redirectUrl.endsWith(EXTENSION.JSON)) {
                     redirectUrl = sparrowServletUtility.getServletUtility().referer(httpRequest);
@@ -418,7 +417,7 @@ public class DispatcherFilter implements Filter {
                     loginUrl = loginUrl + SYMBOL.QUESTION_MARK + redirectUrl;
                 }
             }
-            String passport=Config.getValue(CONFIG.PASSPORT_ROOT);
+            String passport= com.sparrow.utility.Config.getValue(Config.PASSPORT_ROOT);
             if(passport!=null) {
                 loginUrl = passport + loginUrl;
             }
@@ -443,7 +442,7 @@ public class DispatcherFilter implements Filter {
         }
 
         PrivilegeSupport privilegeService = this.container.getBean(
-            SYS_OBJECT_NAME.PRIVILEGE_SERVICE);
+            SysObjectName.PRIVILEGE_SERVICE);
         String code = httpRequest.getParameter("resource-code");
 
         if (!privilegeService.accessible(
@@ -486,8 +485,8 @@ public class DispatcherFilter implements Filter {
     public void init(FilterConfig config) {
         this.config = config;
         this.container = ApplicationContext.getContainer();
-        this.cookieUtility = this.container.getBean(SYS_OBJECT_NAME.COOKIE_UTILITY);
-        this.connectionContextHolder = this.container.getBean(SYS_OBJECT_NAME.CONNECTION_CONTEXT_HOLDER);
+        this.cookieUtility = this.container.getBean(SysObjectName.COOKIE_UTILITY);
+        this.connectionContextHolder = this.container.getBean(SysObjectName.CONNECTION_CONTEXT_HOLDER);
         String exceptUrl = config.getInitParameter("except_url");
         if (!StringUtility.isNullOrEmpty(exceptUrl)) {
             this.exceptUrl = exceptUrl.split(",");

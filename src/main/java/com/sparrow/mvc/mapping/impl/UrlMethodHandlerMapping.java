@@ -17,7 +17,7 @@
 
 package com.sparrow.mvc.mapping.impl;
 
-import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.Config;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.EXTENSION;
 import com.sparrow.protocol.constant.magic.SYMBOL;
@@ -31,7 +31,6 @@ import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.*;
 import com.sparrow.xml.DefaultDocumentLoader;
 import com.sparrow.xml.DocumentLoader;
-import com.sparrow.xml.DtdSchemaResolverAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -69,7 +68,7 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
         Container container = ApplicationContext.getContainer();
         DocumentLoader documentLoader = new DefaultDocumentLoader();
 
-        String xmlConfig = Config.getValue(CONFIG.MVC_CONFIG);
+        String xmlConfig = com.sparrow.utility.Config.getValue(Config.MVC_CONFIG);
         if (StringUtility.isNullOrEmpty(xmlConfig)) {
             xmlConfig = "/controller.xml";
         }

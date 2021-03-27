@@ -1,13 +1,12 @@
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.CONFIG_KEY_LANGUAGE;
+import com.sparrow.constant.Config;
+import com.sparrow.constant.ConfigKeyLanguage;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.support.NavigationService;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
 import org.slf4j.Logger;
@@ -72,7 +71,7 @@ public class Navigation extends TagSupport {
 
     public String getIndex() {
         if (StringUtility.isNullOrEmpty(this.index)) {
-            this.index = Config.getValue(CONFIG.ROOT_PATH);
+            this.index = com.sparrow.utility.Config.getValue(Config.ROOT_PATH);
         }
         return this.index;
     }
@@ -85,13 +84,13 @@ public class Navigation extends TagSupport {
             String language = (String) this.pageContext.getSession().getAttribute(
                     "language");
             if (language == null) {
-                language = Config.getValue(CONFIG.LANGUAGE);
+                language = com.sparrow.utility.Config.getValue(Config.LANGUAGE);
             }
 
 
             if (this.showIndex) {
-                String webSitName = Config.getLanguageValue(
-                        CONFIG_KEY_LANGUAGE.WEBSITE_NAME, language);
+                String webSitName = com.sparrow.utility.Config.getLanguageValue(
+                        ConfigKeyLanguage.WEBSITE_NAME, language);
                 navigation.append(String.format(
                         "<a target=\"_blank\" href=\"%1$s\">%2$s</a>",
                         this.index, webSitName));

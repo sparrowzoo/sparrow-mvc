@@ -17,8 +17,7 @@
 
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.CONFIG;
-import com.sparrow.utility.Config;
+import com.sparrow.constant.Config;
 import com.sparrow.utility.StringUtility;
 
 import javax.servlet.jsp.JspException;
@@ -48,16 +47,16 @@ public class StyleLink extends TagSupport {
         String href = this.getHref();
         if (href.contains("$resource")) {
             href = href.replace("$resource",
-                    Config.getValue(CONFIG.RESOURCE));
+                    com.sparrow.utility.Config.getValue(Config.RESOURCE));
         }
         if (href.contains("$rootPath")) {
             href = href.replace("$rootPath",
-                    Config.getValue(CONFIG.ROOT_PATH));
+                    com.sparrow.utility.Config.getValue(Config.ROOT_PATH));
         }
 
         if (href.contains("$website")) {
             href = href.replace("$website",
-                    Config.getValue(CONFIG.WEBSITE));
+                    com.sparrow.utility.Config.getValue(Config.WEBSITE));
         }
         writeHTML.append(href);
         if (href.contains("?")) {
@@ -65,7 +64,7 @@ public class StyleLink extends TagSupport {
         } else {
             writeHTML.append("?");
         }
-        writeHTML.append("v=" + Config.getValue(CONFIG.RESOURCE_VERSION, "1.0")
+        writeHTML.append("v=" + com.sparrow.utility.Config.getValue(Config.RESOURCE_VERSION, "1.0")
                 + "\"");
         try {
             if (!StringUtility.isNullOrEmpty(writeHTML)) {

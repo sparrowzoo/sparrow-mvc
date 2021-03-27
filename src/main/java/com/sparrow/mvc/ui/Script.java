@@ -21,8 +21,7 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import com.sparrow.constant.CONFIG;
-import com.sparrow.utility.Config;
+import com.sparrow.constant.Config;
 import com.sparrow.utility.StringUtility;
 
 /**
@@ -57,7 +56,7 @@ public class Script extends TagSupport {
             Object language = this.pageContext.getSession().getAttribute(
                     "language");
             if (language == null) {
-                language = Config.getValue(CONFIG.LANGUAGE);
+                language = com.sparrow.utility.Config.getValue(Config.LANGUAGE);
             }
             this.setSrc(this.getSrc().replace("$language", language.toString()));
         }
@@ -71,16 +70,16 @@ public class Script extends TagSupport {
         String src = this.getSrc();
         if (src.contains("$resource")) {
             src = src.replace("$resource",
-                    Config.getValue(CONFIG.RESOURCE));
+                    com.sparrow.utility.Config.getValue(Config.RESOURCE));
         }
 
         if (src.contains("$rootPath")) {
             src = src.replace("$rootPath",
-                    Config.getValue(CONFIG.ROOT_PATH));
+                    com.sparrow.utility.Config.getValue(Config.ROOT_PATH));
         }
 
         if (src.contains("$website")) {
-            src = src.replace("$website", Config.getValue(CONFIG.WEBSITE));
+            src = src.replace("$website", com.sparrow.utility.Config.getValue(Config.WEBSITE));
         }
 
         writeHTML.append(src);
@@ -91,7 +90,7 @@ public class Script extends TagSupport {
             writeHTML.append("?");
         }
 
-        writeHTML.append("v=" + Config.getValue(CONFIG.RESOURCE_VERSION, "1.0")
+        writeHTML.append("v=" + com.sparrow.utility.Config.getValue(Config.RESOURCE_VERSION, "1.0")
                 + "\"></script>");
 
         try {

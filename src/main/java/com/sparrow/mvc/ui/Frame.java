@@ -17,10 +17,9 @@
 
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.Config;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.protocol.constant.magic.SYMBOL;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
@@ -69,8 +68,8 @@ public class Frame extends TagSupport {
     public String getSrc() {
         if (this.src != null) {
             return String.format(" src=\"%1$s\" ", this.src.replace(
-                "$rootPath", Config
-                    .getValue(CONFIG.ROOT_PATH)));
+                "$rootPath", com.sparrow.utility.Config
+                    .getValue(Config.ROOT_PATH)));
         }
         return SYMBOL.EMPTY;
     }

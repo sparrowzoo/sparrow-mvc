@@ -17,21 +17,18 @@
 
 package com.sparrow.mvc.result.impl;
 
-import com.sparrow.constant.SPARROW_ERROR;
-import com.sparrow.constant.cache.KEY;
+import com.sparrow.constant.SparrowError;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
 import com.sparrow.mvc.result.ResultErrorAssembler;
 import com.sparrow.protocol.BusinessException;
-import com.sparrow.protocol.POJO;
 import com.sparrow.protocol.Result;
 import com.sparrow.protocol.constant.EXTENSION;
 import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.support.web.HttpContext;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -63,7 +60,7 @@ public class JsonMethodReturnValueResolverHandlerImpl implements MethodReturnVal
             response.getWriter().write(JsonFactory.getProvider().toString(result));
             return;
         }
-        Result result = Result.FAIL(new BusinessException(SPARROW_ERROR.SYSTEM_SERVER_ERROR));
+        Result result = Result.FAIL(new BusinessException(SparrowError.SYSTEM_SERVER_ERROR));
         //result.setError();
         response.getWriter().write(JsonFactory.getProvider().toString(result));
     }

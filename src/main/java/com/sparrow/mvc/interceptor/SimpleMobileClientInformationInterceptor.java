@@ -1,13 +1,12 @@
 package com.sparrow.mvc.interceptor;
 
-import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.Config;
 import com.sparrow.protocol.ClientInformation;
 import com.sparrow.protocol.constant.CLIENT_INFORMATION;
 import com.sparrow.protocol.constant.CONSTANT;
 import com.sparrow.protocol.enums.PLATFORM;
 import com.sparrow.protocol.mvc.HandlerInterceptor;
 import com.sparrow.support.web.ServletUtility;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.DeviceType;
@@ -23,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class SimpleMobileClientInformationInterceptor implements HandlerInterceptor {
     private ServletUtility servletUtility=ServletUtility.getInstance();
     @Override public boolean preHandle(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        String rootPath = com.sparrow.utility.Config.getValue(Config.ROOT_PATH);
         ClientInformation clientInformation = new ClientInformation();
         clientInformation.setIp(servletUtility.getClientIp(request));
         String appId = request.getHeader(CLIENT_INFORMATION.APP_ID);

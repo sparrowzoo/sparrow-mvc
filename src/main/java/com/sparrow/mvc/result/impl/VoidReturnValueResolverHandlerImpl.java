@@ -1,6 +1,6 @@
 package com.sparrow.mvc.result.impl;
 
-import com.sparrow.constant.SPARROW_ERROR;
+import com.sparrow.constant.SparrowError;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
@@ -31,7 +31,7 @@ public class VoidReturnValueResolverHandlerImpl implements MethodReturnValueReso
             response.getWriter().write(JsonFactory.getProvider().toString(result));
             return;
         }
-        Result result = Result.FAIL(new BusinessException(SPARROW_ERROR.SYSTEM_SERVER_ERROR));
+        Result result = Result.FAIL(new BusinessException(SparrowError.SYSTEM_SERVER_ERROR));
         //result.setError();
         response.getWriter().write(JsonFactory.getProvider().toString(result));
     }

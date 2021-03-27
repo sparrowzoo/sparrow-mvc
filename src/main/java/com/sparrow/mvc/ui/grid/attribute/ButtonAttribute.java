@@ -17,10 +17,9 @@
 
 package com.sparrow.mvc.ui.grid.attribute;
 
-import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.Config;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.mvc.ui.grid.BaseAttribute;
-import com.sparrow.utility.Config;
 
 /**
  * 格式button#fieldName&fieldName2#format#javascriptClickEvent({0},{1})#cssClass#"" 例子button#filedName&idField#{0}查看详情#Sparrow.alert({0},{1})#button#defautValue
@@ -37,7 +36,7 @@ public class ButtonAttribute extends BaseAttribute {
         if (config.length > DIGIT.THREE) {
             this.click = config[DIGIT.THREE];
             if (this.click.contains("frontend_root_path")) {
-                this.click = this.click.replace("frontend_root_path", Config.getValue(CONFIG.FRONTEND_ROOT_PATH));
+                this.click = this.click.replace("frontend_root_path", com.sparrow.utility.Config.getValue(Config.FRONTEND_ROOT_PATH));
             }
         }
         if (config.length > DIGIT.FOUR) {

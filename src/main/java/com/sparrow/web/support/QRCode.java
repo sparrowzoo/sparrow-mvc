@@ -17,9 +17,8 @@
 
 package com.sparrow.web.support;
 
-import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.Config;
 import com.sparrow.protocol.Size;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.web.QRCodeUtility;
 
 import javax.servlet.ServletException;
@@ -98,7 +97,7 @@ public class QRCode extends HttpServlet {
         ServletOutputStream sos = resp.getOutputStream();
         String logo = req.getParameter("logo");
         if (logo != null) {
-            logo = Config.getValue(CONFIG.RESOURCE_PHYSICAL_PATH) + logo;
+            logo = com.sparrow.utility.Config.getValue(Config.RESOURCE_PHYSICAL_PATH) + logo;
         }
         try {
             QRCodeUtility.encode(code, sos, logo, new Size(currentQRWidth, currentQRHeight), new Size(currentLogoWidth, currentLogoHeight));

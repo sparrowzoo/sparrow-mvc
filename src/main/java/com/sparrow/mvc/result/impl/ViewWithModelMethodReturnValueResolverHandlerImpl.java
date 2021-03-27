@@ -17,8 +17,8 @@
 
 package com.sparrow.mvc.result.impl;
 
-import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.SPARROW_ERROR;
+import com.sparrow.constant.Config;
+import com.sparrow.constant.SparrowError;
 import com.sparrow.core.Pair;
 import com.sparrow.mvc.ServletInvokableHandlerMethod;
 import com.sparrow.mvc.result.MethodReturnValueResolverHandler;
@@ -34,7 +34,6 @@ import com.sparrow.support.web.HttpContext;
 import com.sparrow.support.web.ServletUtility;
 import com.sparrow.utility.ClassUtility;
 import com.sparrow.utility.CollectionsUtility;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 
 import java.io.IOException;
@@ -169,7 +168,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         }
 
 
-        String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        String rootPath = com.sparrow.utility.Config.getValue(Config.ROOT_PATH);
         if (rootPath != null && url.startsWith(rootPath)) {
             url = url.substring(rootPath.length());
         }
@@ -187,7 +186,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                 this.flash(request, flashUrl, CONSTANT.FLASH_SUCCESS_RESULT, viewWithModel.getVo());
                 String transitUrl = viewWithModel.getTransitUrl();
                 if (StringUtility.isNullOrEmpty(transitUrl)) {
-                    transitUrl = Config.getValue(CONFIG.SUCCESS_TRANSIT_URL);
+                    transitUrl = com.sparrow.utility.Config.getValue(Config.SUCCESS_TRANSIT_URL);
                 }
                 if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
                     transitUrl = rootPath + transitUrl;
@@ -212,7 +211,7 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
                              HttpServletResponse response) throws IOException, ServletException {
 
         PageSwitchMode errorPageSwitch = PageSwitchMode.REDIRECT;
-        String exceptionSwitchMode = Config.getValue(CONFIG.EXCEPTION_SWITCH_MODE);
+        String exceptionSwitchMode = com.sparrow.utility.Config.getValue(Config.EXCEPTION_SWITCH_MODE);
         if (!StringUtility.isNullOrEmpty(exceptionSwitchMode)) {
             errorPageSwitch = PageSwitchMode.valueOf(exceptionSwitchMode.toUpperCase());
         }
@@ -221,17 +220,17 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
         if (exception instanceof BusinessException) {
             businessException = (BusinessException) exception;
         } else {
-            businessException = new BusinessException(SPARROW_ERROR.SYSTEM_SERVER_ERROR);
+            businessException = new BusinessException(SparrowError.SYSTEM_SERVER_ERROR);
         }
         Result result = ResultErrorAssembler.assemble(businessException, null);
-        String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        String rootPath = com.sparrow.utility.Config.getValue(Config.ROOT_PATH);
         String referer = servletUtility.referer(request);
         String relativeReferer = referer.substring(rootPath.length() + 1);
         String flashUrl;
         switch (errorPageSwitch) {
             case FORWARD:
             case REDIRECT:
-                String url = Config.getValue(CONFIG.ERROR_URL);
+                String url = com.sparrow.utility.Config.getValue(Config.ERROR_URL);
                 if (StringUtility.isNullOrEmpty(url)) {
                     url = "/500";
                 }
@@ -242,9 +241,9 @@ public class ViewWithModelMethodReturnValueResolverHandlerImpl implements Method
             case TRANSIT:
                 flashUrl = servletUtility.assembleActualUrl(relativeReferer);
                 this.flash(request, flashUrl, CONSTANT.FLASH_EXCEPTION_RESULT, result);
-                String transitUrl = Config.getValue(CONFIG.TRANSIT_URL);
+                String transitUrl = com.sparrow.utility.Config.getValue(Config.TRANSIT_URL);
                 if (transitUrl != null && !transitUrl.startsWith(CONSTANT.HTTP_PROTOCOL)) {
-                    transitUrl = Config.getValue(CONFIG.ROOT_PATH) + transitUrl;
+                    transitUrl = com.sparrow.utility.Config.getValue(Config.ROOT_PATH) + transitUrl;
                 }
                 response.sendRedirect(transitUrl + "?" + relativeReferer);
             default:

@@ -18,8 +18,8 @@
 package com.sparrow.mvc.ui;
 
 import com.sparrow.cg.MethodAccessor;
-import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.PAGER;
+import com.sparrow.constant.Config;
+import com.sparrow.constant.Pager;
 import com.sparrow.protocol.constant.magic.DIGIT;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.mvc.ui.grid.CellAttribute;
@@ -27,7 +27,6 @@ import com.sparrow.mvc.ui.grid.Head;
 import com.sparrow.protocol.POJO;
 import com.sparrow.support.pager.SparrowPagerResult;
 import com.sparrow.support.web.HttpContext;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +86,7 @@ public class GridView extends WebControl {
     /**
      * 分页链接字符格式
      */
-    private String pageFormat = PAGER.ACTION_PAGE_FORMAT;
+    private String pageFormat = Pager.ACTION_PAGE_FORMAT;
     /**
      * 是否使用鼠标悬停事件
      */
@@ -291,7 +290,7 @@ public class GridView extends WebControl {
             this.pageFormat = requestPageFormat.toString();
         } else if (!StringUtility.isNullOrEmpty(this.pageFormat)) {
             this.pageFormat = this.pageFormat.replace("$root_path",
-                    Config.getValue(CONFIG.ROOT_PATH));
+                    com.sparrow.utility.Config.getValue(Config.ROOT_PATH));
         }
         return this.pageFormat;
     }

@@ -1,6 +1,6 @@
 package com.sparrow.mvc.ui;
 
-import com.sparrow.constant.CONFIG;
+import com.sparrow.constant.Config;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.protocol.BusinessException;
 import com.sparrow.protocol.constant.OPEN_TYPE;
@@ -8,7 +8,6 @@ import com.sparrow.protocol.constant.magic.SYMBOL;
 import com.sparrow.protocol.dto.SimpleItemDTO;
 import com.sparrow.support.MenuService;
 import com.sparrow.utility.CollectionsUtility;
-import com.sparrow.utility.Config;
 import com.sparrow.utility.HtmlUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,9 +74,9 @@ public class HorizontalMenu extends TagSupport {
             for (SimpleItemDTO menu : menus) {
                 String currentUrl = null;
                 if (this.getCurrentUrl().trim().equals(this.indexUrl)) {
-                    currentUrl = Config.getValue(CONFIG.ROOT_PATH);
+                    currentUrl = com.sparrow.utility.Config.getValue(Config.ROOT_PATH);
                 } else {
-                    currentUrl = Config.getValue(CONFIG.ROOT_PATH) + "/"
+                    currentUrl = com.sparrow.utility.Config.getValue(Config.ROOT_PATH) + "/"
                             + this.getCurrentUrl().trim();
                 }
                 if (menu.getUrl() != null
